@@ -17,8 +17,8 @@ import edu.wpi.first.math.util.Units;
 public class DriveConstants {
   public static final double maxSpeedMetersPerSec = 4.8;
   public static final double odometryFrequency = 100.0; // Hz
-  public static final double trackWidth = Units.inchesToMeters(26.5);
-  public static final double wheelBase = Units.inchesToMeters(26.5);
+  public static final double trackWidth = Units.inchesToMeters(22.0);
+  public static final double wheelBase = Units.inchesToMeters(22.0);
   public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
   public static final Translation2d[] moduleTranslations =
       new Translation2d[] {
@@ -28,30 +28,30 @@ public class DriveConstants {
         new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0)
       };
 
-  // Zeroed rotation values for each module, see setup instructions
+  // Zeroed rotation values for each module, see setup instructions TODO: Update motor zero states
   public static final Rotation2d frontLeftZeroRotation = new Rotation2d(0.0);
   public static final Rotation2d frontRightZeroRotation = new Rotation2d(0.0);
   public static final Rotation2d backLeftZeroRotation = new Rotation2d(0.0);
   public static final Rotation2d backRightZeroRotation = new Rotation2d(0.0);
 
-  // Device CAN IDs
+  // Device CAN IDs TODO: Update pigeonCanId
   public static final int pigeonCanId = 9;
 
-  public static final int frontLeftDriveCanId = 1;
-  public static final int backLeftDriveCanId = 3;
-  public static final int frontRightDriveCanId = 5;
-  public static final int backRightDriveCanId = 7;
+  public static final int frontLeftDriveCanId = 2;
+  public static final int backLeftDriveCanId = 4;
+  public static final int frontRightDriveCanId = 8;
+  public static final int backRightDriveCanId = 6;
 
-  public static final int frontLeftTurnCanId = 2;
-  public static final int backLeftTurnCanId = 4;
-  public static final int frontRightTurnCanId = 6;
-  public static final int backRightTurnCanId = 8;
+  public static final int frontLeftTurnCanId = 1;
+  public static final int backLeftTurnCanId = 3;
+  public static final int frontRightTurnCanId = 7;
+  public static final int backRightTurnCanId = 5;
 
   // Drive motor configuration
   public static final int driveMotorCurrentLimit = 50;
   public static final double wheelRadiusMeters = Units.inchesToMeters(1.5);
-  public static final double driveMotorReduction =
-      (45.0 * 22.0) / (14.0 * 15.0); // MAXSwerve with 14 pinion teeth
+  public static final double driveMotorReduction = (45.0 * 22) / (14 * 15);
+       // MAXSwerve with 14 pinion teeth
   // and 22 spur teeth
   public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
 
