@@ -51,7 +51,7 @@ public class DriveConstants {
   public static final int driveMotorCurrentLimit = 50;
   public static final double wheelRadiusMeters = Units.inchesToMeters(1.5);
   public static final double driveMotorReduction = (45.0 * 22) / (14 * 15);
-       // MAXSwerve with 14 pinion teeth
+  // MAXSwerve with 14 pinion teeth
   // and 22 spur teeth
   public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
 
