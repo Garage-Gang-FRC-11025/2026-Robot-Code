@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -27,5 +28,12 @@ public final class Constants {
 
     /** Replaying from a log file. */
     REPLAY
+  }
+
+  public final class ShooterConstants {
+    public final class TurretConstants {
+      public static final Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(0);
+    }
   }
 }
