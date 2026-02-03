@@ -81,4 +81,10 @@ public final class Constants {
   
   public static final double MAX_VOLTAGE = 12.0;
   public static final double kDefaultPeriod = 0.02;
+  public final class ShooterConstants {
+    public final class TurretConstants {
+      public static final Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(0);
+    }
+  }
 }

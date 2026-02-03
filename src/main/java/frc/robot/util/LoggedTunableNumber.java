@@ -1,4 +1,5 @@
 // Copyright (c) 2025 FRC 6328
+// Copyright (c) 2025-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by an MIT-style
@@ -57,6 +58,7 @@ public class LoggedTunableNumber implements DoubleSupplier {
     if (!hasDefault) {
       hasDefault = true;
       this.defaultValue = defaultValue;
+
       dashboardNumber = new LoggedNetworkNumber(key, defaultValue);
     }
   }
