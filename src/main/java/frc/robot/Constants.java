@@ -37,8 +37,7 @@ public final class Constants {
         public static final double STATOR_CURRENT_LIMIT = 0;
         public static final double ROLLER_GEARING = 0;
         public static final double SUPPLY_VOLTAGE_TIME = 0;
-
-
+        public static final double ROLLER_MOI = 0;
 
     }
     public class ExtenderConstants{
@@ -51,13 +50,23 @@ public final class Constants {
         public static final double SUPPLY_VOLTAGE_TIME = 0;
         public static final double PULLEY_DIAMETER_INCHES = 0;
         public static final double INCHES_TO_MOTOR_ROT = GEAR_RATIO / (Math.PI * PULLEY_DIAMETER_INCHES);
+        public static final double EXTENDER_MOI = 0;
+        public static final String EXTENDER_LENGTH = null;
 
     }
 
   }
     public class CanIDs {
-      public static final int INTAKE_ROLLER_CAN_ID = 9;
-      public static final int INTAKE_EXTENDER_CAN_ID = 10;
+      public static final int FRONT_LEFT_WHEEL_CAN_ID = 1;
+      public static final int FRONT_LEFT_ANGLE_CAN_ID = 2;
+      public static final int FRONT_RIGHT_WHEEL_CAN_ID = 3;
+      public static final int FRONT_RIGHT_ANGLE_CAN_ID = 4;
+      public static final int BACK_LEFT_WHEEL_CAN_ID = 5;
+      public static final int BACK_LEFT_ANGLE_CAN_ID = 6;
+      public static final int BACK_RIGHT_WHEEL_CAN_ID = 7;
+      public static final int BACK_RIGHT_ANGLE_CAN_ID = 8;
+      public static final int INTAKE_EXTENDER_CAN_ID = 9;
+      public static final int INTAKE_ROLLER_CAN_ID = 10;
 
   }
 }

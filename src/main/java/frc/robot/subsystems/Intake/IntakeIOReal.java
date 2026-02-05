@@ -31,7 +31,7 @@ import frc.robot.Constants.IntakeConstants.RollerConstants;
 public class IntakeIOReal implements IntakeIO{
     
 private final TalonFX rollerMotor = new TalonFX(Constants.CanIDs.INTAKE_ROLLER_CAN_ID);
-private final TalonFX extenderMotor = new TalonFX(Constants.CanIDs.INTAKE_ROLLER_CAN_ID);
+private final TalonFX extenderMotor = new TalonFX(Constants.CanIDs.INTAKE_EXTENDER_CAN_ID);
 
   private final StatusSignal<Current> rollerCurrent;
   private final StatusSignal<Temperature> rollerDeviceTemp;

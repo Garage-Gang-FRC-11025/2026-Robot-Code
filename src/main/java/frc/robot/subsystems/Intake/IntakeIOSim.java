@@ -1,0 +1,111 @@
+package frc.robot.subsystems.Intake;
+
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants.ExtenderConstants;
+import frc.robot.Constants.IntakeConstants.RollerConstants;
+
+
+public class IntakeIOSim implements IntakeIO{
+
+    
+  private TalonFXSim rollerMotor =
+      new TalonFXSim(
+          DCMotor.getKrakenX60Foc(1), RollerConstants.ROLLER_GEARING, RollerConstants.ROLLER_MOI);
+
+  private TalonFXArmSim extenderSim =
+      new TalonFXArmSim(
+          new SingleJointedArmSim(
+              DCMotor.getFalcon500Foc(1),
+              frc.robot.Constants.IntakeConstants.ExtenderConstants.GEAR_RATIO,
+              ExtenderConstants.EXTENDER_MOI,
+              ExtenderConstants.EXTENDER_LENGTH.in(Units.Meters),
+              ExtenderConstants.MIN_EXTENDER_ANGLE.getRadians(),
+              ExtenderConstants.MAX_EXTENDER_ANGLE.getRadians(),
+              false));
+
+  private VoltageOut rollerOpenLoopControl = new VoltageOut(0);
+  private VelocityVoltage rollerClosedLoopControl = new VelocityVoltage(0);
+
+  private VoltageOut extenderOpenLoopControl = new VoltageOut(0);
+  private MotionMagicVoltage extenderClosedLoopControl = new MotionMagicVoltage(0);
+
+  public boolean tofActivated = false;
+
+  public IntakeIOSim() {}
+
+  @Override
+  public void updateInputs(IntakeInputs inputs) {
+    rollerMotor.update(Constants.kDefaultPeriod);
+    inputs.rollersAppliedOutput = rollerMotor.getVoltage();
+    inputs.rollersVelocityRPM = rollerMotor.getVelocity().in(Units.RPM);
+
+    extenderSim.update(Constants.kDefaultPeriod);
+
+    inputs.extenderPosition = new Rotation2d(extenderSim.getPosition());
+    inputs.extenderAppliedOutput = extenderSim.getVoltage().in(Units.Volts);
+    inputs.extenderVelocity = extenderSim.getVelocity().in(Units.DegreesPerSecond);
+
+  }
+
+  @Override
+  public void setRollerVoltage(double volts) {
+    rollerMotor.setControl(rollerOpenLoopControl.withOutput(volts));
+  }
+
+  @Override
+  public void setRollerVelocity(double revPerMin) {
+    rollerMotor.setControl(rollerClosedLoopControl.withVelocity(revPerMin));
+  }
+
+  @Override
+  public void setRollerClosedLoopConstants(
+      double kP, double kV, double kS, double maxProfiledAcceleration) {
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    Slot0Configs slot0Configs = new Slot0Configs();
+
+    slot0Configs.kP = kP;
+    slot0Configs.kV = kV;
+    slot0Configs.kS = kS;
+
+    config.Slot0 = slot0Configs;
+
+    rollerMotor.setConfig(config);
+  }
+
+  @Override
+  public void setExtenderVoltage(double volts) {
+    extenderSim.setControl(extenderOpenLoopControl.withOutput(volts));
+  }
+
+  @Override
+  public void setExtenderClosedLoopPosition(Rotation2d angle) {
+    extenderSim.setControl(extenderClosedLoopControl.withPosition(angle.getRotations()));
+  }
+
+  @Override
+  public void setExtenderClosedLoopConstants(
+      double kP, double kD, double kG) {
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    Slot0Configs slot0Configs = new Slot0Configs();
+
+    slot0Configs.kP = kP;
+    slot0Configs.kD = kD;
+    slot0Configs.kG = kG;
+
+    config.Slot0 = slot0Configs;
+    config.MotionMagic = mmConfigs;
+
+    extenderSim.setConfig(config);
+  }
+}

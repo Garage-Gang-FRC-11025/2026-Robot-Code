@@ -19,6 +19,8 @@ public interface IntakeIO {
     public double extenderAppliedOutput;
     public double extenderCurrentAmps;
     public double extenderTempCelsius;
+    public double extenderVelocity;
+    public double extenderPosition;
     }
 
 public default void updateInputs(IntakeInputs inputs) {}
