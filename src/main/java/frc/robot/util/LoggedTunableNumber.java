@@ -57,9 +57,9 @@ public class LoggedTunableNumber implements DoubleSupplier {
     if (!hasDefault) {
       hasDefault = true;
       this.defaultValue = defaultValue;
-        dashboardNumber = new LoggedNetworkNumber(key, defaultValue);
-      }
+      dashboardNumber = new LoggedNetworkNumber(key, defaultValue);
     }
+  }
 
   /**
    * Get the current value, from dashboard if available and in tuning mode.

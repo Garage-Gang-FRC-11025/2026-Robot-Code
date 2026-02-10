@@ -15,23 +15,21 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants.ExtenderConstants;
 import frc.robot.Constants.IntakeConstants.RollerConstants;
 
-public class IntakeIOReal implements IntakeIO{
-    
-private final TalonFX rollerMotor = new TalonFX(Constants.CanIDs.INTAKE_ROLLER_CAN_ID);
-private final TalonFX extenderMotor = new TalonFX(Constants.CanIDs.INTAKE_EXTENDER_CAN_ID);
+public class IntakeIOReal implements IntakeIO {
+
+  private final TalonFX rollerMotor = new TalonFX(Constants.CanIDs.INTAKE_ROLLER_CAN_ID);
+  private final TalonFX extenderMotor = new TalonFX(Constants.CanIDs.INTAKE_EXTENDER_CAN_ID);
 
   private final StatusSignal<Current> rollerCurrent;
   private final StatusSignal<Temperature> rollerDeviceTemp;
@@ -46,14 +44,13 @@ private final TalonFX extenderMotor = new TalonFX(Constants.CanIDs.INTAKE_EXTEND
 
   private final VoltageOut extenderOpenLoopControl = new VoltageOut(0.0).withEnableFOC(false);
 
-    private final MotionMagicVelocityVoltage rollerClosedLoopControl =
+  private final MotionMagicVelocityVoltage rollerClosedLoopControl =
       new MotionMagicVelocityVoltage(0).withEnableFOC(false);
 
-      private final MotionMagicVoltage extenderClosedLoopControl =
+  private final MotionMagicVoltage extenderClosedLoopControl =
       new MotionMagicVoltage(0).withEnableFOC(false);
 
-    
-public IntakeIOReal() {
+  public IntakeIOReal() {
     // Motor config
     TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
     CurrentLimitsConfigs rollerCurrentLimitConfig = new CurrentLimitsConfigs();
@@ -122,43 +119,49 @@ public IntakeIOReal() {
 
     // Update status signals
 
-    BaseStatusSignal.setUpdateFrequencyForAll(
-        100, extenderAppliedVoltage, extenderAngle);
+    BaseStatusSignal.setUpdateFrequencyForAll(100, extenderAppliedVoltage, extenderAngle);
     BaseStatusSignal.setUpdateFrequencyForAll(50, extenderCurrent);
     BaseStatusSignal.setUpdateFrequencyForAll(1, extenderDeviceTemp);
 
     extenderMotor.optimizeBusUtilization();
-}
+  }
 
-@Override
-  public void updateInputs(IntakeInputs inputs) {   
-    BaseStatusSignal.refreshAll(rollerAppliedVoltage, rollerCurrent, rollerDeviceTemp, rollerVelocity, extenderAngle, extenderCurrent, extenderAppliedVoltage, extenderDeviceTemp);      
+  @Override
+  public void updateInputs(IntakeInputs inputs) {
+    BaseStatusSignal.refreshAll(
+        rollerAppliedVoltage,
+        rollerCurrent,
+        rollerDeviceTemp,
+        rollerVelocity,
+        extenderAngle,
+        extenderCurrent,
+        extenderAppliedVoltage,
+        extenderDeviceTemp);
 
     inputs.rollersCurrentAmps = rollerCurrent.getValue().in(Units.Amps);
     inputs.rollersTempCelsius = rollerDeviceTemp.getValue().in(Units.Celsius);
     inputs.rollersAppliedOutput = rollerAppliedVoltage.getValue().in(Units.Volts);
     inputs.rollersVelocityRPM = rollerVelocity.getValue().in(Units.RPM);
 
-    inputs.extenderPositionInches = extenderAngle.getValue().in(Units.Rotations) / ExtenderConstants.INCHES_TO_MOTOR_ROT;
+    inputs.extenderPositionInches =
+        extenderAngle.getValue().in(Units.Rotations) / ExtenderConstants.GEAR_RATIO;
     inputs.extenderAppliedOutput = extenderAppliedVoltage.getValue().in(Units.Volts);
     inputs.extenderCurrentAmps = extenderCurrent.getValue().in(Units.Amps);
     inputs.extenderTempCelsius = extenderDeviceTemp.getValue().in(Units.Celsius);
   }
 
-    @Override
+  @Override
   public void setRollerVoltage(double volts) {
     rollerMotor.setControl(rollerOpenLoopControl.withOutput(volts));
   }
 
   @Override
   public void setRollerVel(AngularVelocity vel) {
-    rollerMotor.setControl(
-        rollerClosedLoopControl.withVelocity(vel.in(Units.RotationsPerSecond)));
+    rollerMotor.setControl(rollerClosedLoopControl.withVelocity(vel.in(Units.RotationsPerSecond)));
   }
 
-@Override
-  public void configRollers(
-      double kV, double kP, double maxAcceleration) {
+  @Override
+  public void configRollers(double kV, double kP, double maxAcceleration) {
     Slot0Configs pidConfig = new Slot0Configs();
     MotionMagicConfigs mmConfig = new MotionMagicConfigs();
 
@@ -174,18 +177,16 @@ public IntakeIOReal() {
 
     rollerConfig.apply(pidConfig);
     rollerConfig.apply(mmConfig);
-
   }
 
   @Override
-  public void setExtenderPos(Distance length) {
-    extenderClosedLoopControl.withPosition(length.in(Units.Inches));
+  public void setExtenderPos(Rotation2d pos) {
+    extenderClosedLoopControl.withPosition(pos.getRotations());
     extenderMotor.setControl(extenderClosedLoopControl);
   }
 
   @Override
-  public void configExtender(
-      double kP, double kD, MotionMagicConfigs mmConfigs) {
+  public void configExtender(double kP, double kD, MotionMagicConfigs mmConfigs) {
     var slot0Configs = new Slot0Configs();
 
     extenderMotor.getConfigurator().refresh(slot0Configs);
@@ -215,5 +216,4 @@ public IntakeIOReal() {
     extenderMotor.getConfigurator().apply(config);
     return true;
   }
-
 }

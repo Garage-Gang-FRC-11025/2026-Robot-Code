@@ -1,26 +1,30 @@
 package frc.robot.subsystems.Intake;
 
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.Mode;
-import frc.robot.subsystems.Intake.IntakeIO.IntakeInputs;
 import frc.robot.util.LoggedTunableNumber;
-
 
 public class Intake extends SubsystemBase {
 
   private final IntakeIO intakeIO;
-  private final IntakeInputs inputs = new IntakeInputs();
+  private final IntakeInputsAutoLogged inputs = new IntakeInputsAutoLogged();
 
-   private static final LoggedTunableNumber rKP = new LoggedTunableNumber("Intake/Roller/kP");
-      private static final LoggedTunableNumber rKV = new LoggedTunableNumber("Intake/Roller/kV");
-      private static final LoggedTunableNumber eKP = new LoggedTunableNumber("Intake/Extender/kP");
-      private static final LoggedTunableNumber eKD = new LoggedTunableNumber("Intake/Extender/kD");
-      private static final LoggedTunableNumber rollerTargetAccelerationConfig = new LoggedTunableNumber("Intake/Roller/Acceleration");
-      private static final LoggedTunableNumber extenderMaxVelocityConfig = new LoggedTunableNumber("Intake/Extender/MaxVel");
-      private static final LoggedTunableNumber extenderTargetAccelerationConfig = new LoggedTunableNumber("Intake/Extender/TargetAcceleration");
-
-
+  private static final LoggedTunableNumber rKP = new LoggedTunableNumber("Intake/Roller/kP");
+  private static final LoggedTunableNumber rKV = new LoggedTunableNumber("Intake/Roller/kV");
+  private static final LoggedTunableNumber eKP = new LoggedTunableNumber("Intake/Extender/kP");
+  private static final LoggedTunableNumber eKD = new LoggedTunableNumber("Intake/Extender/kD");
+  private static final LoggedTunableNumber rollerTargetAccelerationConfig =
+      new LoggedTunableNumber("Intake/Roller/Acceleration");
+  private static final LoggedTunableNumber extenderMaxVelocityConfig =
+      new LoggedTunableNumber("Intake/Extender/MaxVel");
+  private static final LoggedTunableNumber extenderTargetAccelerationConfig =
+      new LoggedTunableNumber("Intake/Extender/TargetAcceleration");
 
   static {
     if (Constants.currentMode == Mode.REAL) {
@@ -30,7 +34,6 @@ public class Intake extends SubsystemBase {
 
       eKP.initDefault(70.0);
       eKD.initDefault(1.6);
-
 
       extenderMaxVelocityConfig.initDefault(10);
       extenderTargetAccelerationConfig.initDefault(10);
@@ -44,12 +47,22 @@ public class Intake extends SubsystemBase {
 
       extenderMaxVelocityConfig.initDefault(40);
       extenderTargetAccelerationConfig.initDefault(80);
-    } 
+    }
   }
 
   public Intake(IntakeIO intakeIO) {
     this.intakeIO = intakeIO;
   }
 
-  public void periodic() {}
+  public void periodic() {
+    Logger.processInputs("Intake", inputs);
+  }
+
+  public void setRollerVoltage(double volts) {}
+
+  public void setExtenderVoltage(double volts) {}
+
+  public void setRollerVel(AngularVelocity vel) {}
+
+  public void setExtenderPos(Rotation2d pos) {}
 }
