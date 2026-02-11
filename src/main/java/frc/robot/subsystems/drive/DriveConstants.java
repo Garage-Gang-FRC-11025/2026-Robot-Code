@@ -28,13 +28,12 @@ public class DriveConstants {
         new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0)
       };
 
-  // Zeroed rotation values for each module, see setup instructions TODO: Update motor zero states
-  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(0.0);
-  public static final Rotation2d frontRightZeroRotation = new Rotation2d(0.0);
-  public static final Rotation2d backLeftZeroRotation = new Rotation2d(0.0);
-  public static final Rotation2d backRightZeroRotation = new Rotation2d(0.0);
 
-  // Device CAN IDs TODO: Update pigeonCanId
+  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(4.71238);
+  public static final Rotation2d frontRightZeroRotation = new Rotation2d(0.0);
+  public static final Rotation2d backLeftZeroRotation = new Rotation2d(3.14159);
+  public static final Rotation2d backRightZeroRotation = new Rotation2d(1.57079);
+
   public static final int pigeonCanId = 9;
 
   public static final int frontLeftDriveCanId = 2;
