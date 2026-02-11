@@ -10,6 +10,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,6 +28,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -41,6 +43,10 @@ public class RobotContainer {
   private final Intake intake;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+
+  // Tunable numbers
+  private static final LoggedTunableNumber rollerVelocityConfig =
+      new LoggedTunableNumber("Intake/Roller/Velocity");
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -146,6 +152,12 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
+
+    controller
+        .y()
+        .whileTrue(
+            Commands.run(() -> intake.setRollerVel(Units.RPM.of(rollerVelocityConfig.get()))))
+        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
   }
 
   /**

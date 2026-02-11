@@ -1,14 +1,12 @@
 package frc.robot.subsystems.Intake;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.Mode;
 import frc.robot.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
 
@@ -58,11 +56,19 @@ public class Intake extends SubsystemBase {
     Logger.processInputs("Intake", inputs);
   }
 
-  public void setRollerVoltage(double volts) {}
+  public void setRollerVoltage(double volts) {
+    intakeIO.setRollerVoltage(volts);
+  }
 
-  public void setExtenderVoltage(double volts) {}
+  public void setExtenderVoltage(double volts) {
+    intakeIO.setExtenderVoltage(volts);
+  }
 
-  public void setRollerVel(AngularVelocity vel) {}
+  public void setRollerVel(AngularVelocity vel) {
+    intakeIO.setRollerVel(vel);
+  }
 
-  public void setExtenderPos(Rotation2d pos) {}
+  public void setExtenderPos(Rotation2d pos) {
+    intakeIO.setExtenderPos(pos);
+  }
 }
