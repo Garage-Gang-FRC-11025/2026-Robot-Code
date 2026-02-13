@@ -13,7 +13,6 @@ public interface IntakeIO {
     public double rollersAppliedOutput;
     public double rollersCurrentAmps;
     public double rollersTempCelsius;
-    public double extenderPositionInches;
     public double extenderAppliedOutput;
     public double extenderCurrentAmps;
     public double extenderTempCelsius;

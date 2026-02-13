@@ -47,6 +47,9 @@ public class RobotContainer {
   // Tunable numbers
   private static final LoggedTunableNumber rollerVelocityConfig =
       new LoggedTunableNumber("Intake/Roller/Velocity");
+  private static final LoggedTunableNumber extenderVelocityConfig =
+      new LoggedTunableNumber("Intake/Extender/Velocity");
+  private static final LoggedTunableNumber tunablePos = new LoggedTunableNumber("tunablePos", 90);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -153,10 +156,21 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
+    // extend the extender to out position when Y button is held
     controller
         .y()
-        .whileTrue(
-            Commands.run(() -> intake.setRollerVel(Units.RPM.of(rollerVelocityConfig.get()))))
+        .toggleOnTrue(
+            Commands.run(() -> intake.setExtenderPos(Rotation2d.fromDegrees(tunablePos.get()))))
+        .toggleOnFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
+
+    controller
+        .rightBumper()
+        .whileTrue(Commands.run(() -> intake.setRollerVoltage(1)))
+        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
+
+    controller
+        .leftBumper()
+        .whileTrue(Commands.run(() -> intake.setRollerVoltage(-1)))
         .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
   }
 

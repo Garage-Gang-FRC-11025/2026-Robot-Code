@@ -45,7 +45,7 @@ public final class Constants {
 
     public class ExtenderConstants {
 
-      public static final double GEAR_RATIO = 9;
+      public static final double GEAR_RATIO = 75; // will need to be changed ALOT
       public static final Rotation2d MAX_EXTENDER_ANGLE = Rotation2d.fromDegrees(130);
       public static final Rotation2d MIN_EXTENDER_ANGLE = Rotation2d.fromDegrees(0);
       public static final double SUPPLY_CURRENT_LIMIT = 0;

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Intake;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,7 +41,7 @@ public class Intake extends SubsystemBase {
       rKV.initDefault(0.0002);
       rollerTargetAccelerationConfig.initDefault(0.0);
 
-      eKP.initDefault(120);
+      eKP.initDefault(2);
       eKD.initDefault(0);
 
       extenderMaxVelocityConfig.initDefault(40);
@@ -50,10 +51,24 @@ public class Intake extends SubsystemBase {
 
   public Intake(IntakeIO intakeIO) {
     this.intakeIO = intakeIO;
+    configExtender();
   }
 
   public void periodic() {
     Logger.processInputs("Intake", inputs);
+    int hc = hashCode();
+    if (eKP.hasChanged(hc)
+        || eKD.hasChanged(hc)
+        || extenderMaxVelocityConfig.hasChanged(hc)
+        || extenderTargetAccelerationConfig.hasChanged(hc)) configExtender();
+    intakeIO.updateInputs(inputs);
+  }
+
+  private void configExtender() {
+    MotionMagicConfigs mmConfigs = new MotionMagicConfigs();
+    mmConfigs.MotionMagicAcceleration = extenderTargetAccelerationConfig.get();
+    mmConfigs.MotionMagicCruiseVelocity = extenderMaxVelocityConfig.get();
+    intakeIO.configExtender(eKP.get(), eKD.get(), mmConfigs);
   }
 
   public void setRollerVoltage(double volts) {
