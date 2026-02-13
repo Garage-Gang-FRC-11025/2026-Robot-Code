@@ -35,5 +35,7 @@ public final class Constants {
       public static final Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);
       public static final Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(0);
     }
-  }
+  public static final int horizontalAngleMotorCanId = 6;
+  public static final int verticalAngleMotorCanId = 7;
+    public static final int shooterMotorCanId = 8;
 }
