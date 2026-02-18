@@ -22,6 +22,10 @@ import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIO;
 import frc.robot.subsystems.Intake.IntakeIOReal;
 import frc.robot.subsystems.Intake.IntakeIOSim;
+import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.ElevatorIO;
+import frc.robot.subsystems.Elevator.ElevatorIOReal;
+import frc.robot.subsystems.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -41,6 +45,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Intake intake;
+  private final Elevator elevator;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -67,6 +72,7 @@ public class RobotContainer {
                 new ModuleIOSpark(2),
                 new ModuleIOSpark(3));
         intake = new Intake(new IntakeIOReal());
+        elevator = new Elevator(new ElevatorIOReal());
         break;
 
       case SIM:
@@ -79,6 +85,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         intake = new Intake(new IntakeIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
         break;
 
       default:
@@ -91,6 +98,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         intake = new Intake(new IntakeIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
         break;
     }
 
@@ -172,6 +180,10 @@ public class RobotContainer {
         .leftBumper()
         .whileTrue(Commands.run(() -> intake.setRollerVoltage(-1)))
         .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
+    controller
+        .rightTrigger()
+        .whileTrue(Commands.run(() -> elevator.setElevatorVoltage(1)))
+        .onFalse(Commands.runOnce(() -> elevator.setElevatorVoltage(0)));
   }
 
   /**
