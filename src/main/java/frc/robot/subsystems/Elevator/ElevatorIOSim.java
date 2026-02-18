@@ -15,7 +15,9 @@ public class ElevatorIOSim implements ElevatorIO {
 
   private TalonFXSim elevatorMotor =
       new TalonFXSim(
-          DCMotor.getKrakenX60Foc(1), ElevatorConstants.ELEVATOR_GEARING, ElevatorConstants.ELEVATOR_MOI);
+          DCMotor.getKrakenX60Foc(1),
+          ElevatorConstants.ELEVATOR_GEARING,
+          ElevatorConstants.ELEVATOR_MOI);
 
   private VoltageOut elevatorOpenLoopControl = new VoltageOut(0);
   private VelocityVoltage elevatorClosedLoopControl = new VelocityVoltage(0);
