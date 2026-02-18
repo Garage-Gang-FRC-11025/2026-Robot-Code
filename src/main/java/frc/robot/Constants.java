@@ -55,11 +55,11 @@ public final class Constants {
   }
   public class ElevatorConstants {
 
-      public static final double SUPPLY_CURRENT_LIMIT = 0;
-      public static final double STATOR_CURRENT_LIMIT = 0;
-      public static final double SUPPLY_VOLTAGE_TIME = 0;
-      public static final double ELEVATOR_GEARING = 1;
-      public static final double ELEVATOR_MOI = 0.1;
+    public static final double SUPPLY_CURRENT_LIMIT = 0;
+    public static final double STATOR_CURRENT_LIMIT = 0;
+    public static final double SUPPLY_VOLTAGE_TIME = 0;
+    public static final double ELEVATOR_GEARING = 1;
+    public static final double ELEVATOR_MOI = 0.1;
   }
 
   public class CanIDs {
