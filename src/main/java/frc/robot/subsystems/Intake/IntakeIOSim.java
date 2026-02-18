@@ -41,8 +41,6 @@ public class IntakeIOSim implements IntakeIO {
   private VoltageOut extenderOpenLoopControl = new VoltageOut(0);
   private MotionMagicVoltage extenderClosedLoopControl = new MotionMagicVoltage(0);
 
-  public boolean tofActivated = false;
-
   public IntakeIOSim() {}
 
   @Override
