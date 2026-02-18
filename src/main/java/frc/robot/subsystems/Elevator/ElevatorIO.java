@@ -14,9 +14,9 @@ public interface ElevatorIO {
 
   public default void updateInputs(ElevatorInputs inputs) {}
 
-  public default void setRollerVoltage(double volts) {}
+  public default void setElevatorVoltage(double volts) {}
 
-  public default void setRollerVel(AngularVelocity vel) {}
+  public default void setElevatorVel(AngularVelocity vel) {}
 
-  public default void configRollers(double kV, double kP, double maxAcceleration) {}
+  public default void configElevators(double kV, double kP, double maxAcceleration) {}
 }

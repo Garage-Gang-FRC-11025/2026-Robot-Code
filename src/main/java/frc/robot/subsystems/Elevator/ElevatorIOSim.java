@@ -8,14 +8,14 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants;
-import frc.robot.Constants.ElevatorConstants.RollerConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.util.TalonFXSim;
 
 public class ElevatorIOSim implements ElevatorIO {
 
   private TalonFXSim elevatorMotor =
       new TalonFXSim(
-          DCMotor.getKrakenX60Foc(1), RollerConstants.ROLLER_GEARING, RollerConstants.ROLLER_MOI);
+          DCMotor.getKrakenX60Foc(1), ElevatorConstants.ELEVATOR_GEARING, ElevatorConstants.ELEVATOR_MOI);
 
   private VoltageOut elevatorOpenLoopControl = new VoltageOut(0);
   private VelocityVoltage elevatorClosedLoopControl = new VelocityVoltage(0);
@@ -32,17 +32,17 @@ public class ElevatorIOSim implements ElevatorIO {
   }
 
   @Override
-  public void setRollerVoltage(double volts) {
+  public void setElevatorVoltage(double volts) {
     elevatorMotor.setControl(elevatorOpenLoopControl.withOutput(volts));
   }
 
   @Override
-  public void setRollerVel(AngularVelocity revPerMin) {
+  public void setElevatorVel(AngularVelocity revPerMin) {
     elevatorMotor.setControl(elevatorClosedLoopControl.withVelocity(revPerMin));
   }
 
   @Override
-  public void configRollers(double kV, double kP, double maxAcceleration) {
+  public void configElevators(double kV, double kP, double maxAcceleration) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     Slot0Configs slot0Configs = new Slot0Configs();
 

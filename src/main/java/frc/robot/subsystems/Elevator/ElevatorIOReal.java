@@ -18,11 +18,11 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
-import frc.robot.Constants.ElevatorConstants.RollerConstants;
+import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorIOReal implements ElevatorIO {
 
-  private final TalonFX elevatorMotor = new TalonFX(Constants.CanIDs.ELEVATOR_ROLLER_CAN_ID);
+  private final TalonFX elevatorMotor = new TalonFX(Constants.CanIDs.ELEVATOR_ELEVATOR_CAN_ID);
 
   private final StatusSignal<Current> elevatorCurrent;
   private final StatusSignal<Temperature> elevatorDeviceTemp;
@@ -31,31 +31,25 @@ public class ElevatorIOReal implements ElevatorIO {
 
   private final VoltageOut elevatorOpenLoopControl = new VoltageOut(0.0).withEnableFOC(false);
 
-  private final VoltageOut extenderOpenLoopControl = new VoltageOut(0.0).withEnableFOC(false);
-
   private final MotionMagicVelocityVoltage elevatorClosedLoopControl =
       new MotionMagicVelocityVoltage(0).withEnableFOC(false);
-
-  private final MotionMagicVoltage extenderClosedLoopControl =
-      new MotionMagicVoltage(0).withEnableFOC(false);
 
   public ElevatorIOReal() {
     // Motor config
     TalonFXConfiguration elevatorConfig = new TalonFXConfiguration();
     CurrentLimitsConfigs elevatorCurrentLimitConfig = new CurrentLimitsConfigs();
 
-    elevatorCurrentLimitConfig.SupplyCurrentLimit = RollerConstants.SUPPLY_CURRENT_LIMIT;
+    elevatorCurrentLimitConfig.SupplyCurrentLimit = ElevatorConstants.SUPPLY_CURRENT_LIMIT;
     elevatorCurrentLimitConfig.SupplyCurrentLimitEnable = true;
-    elevatorCurrentLimitConfig.StatorCurrentLimit = RollerConstants.STATOR_CURRENT_LIMIT;
+    elevatorCurrentLimitConfig.StatorCurrentLimit = ElevatorConstants.STATOR_CURRENT_LIMIT;
     elevatorCurrentLimitConfig.StatorCurrentLimitEnable = true;
 
     elevatorConfig.CurrentLimits = elevatorCurrentLimitConfig;
 
-    elevatorConfig.Feedback.SensorToMechanismRatio = RollerConstants.ROLLER_GEARING;
     elevatorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     elevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    elevatorConfig.Voltage.SupplyVoltageTimeConstant = RollerConstants.SUPPLY_VOLTAGE_TIME;
+    elevatorConfig.Voltage.SupplyVoltageTimeConstant = ElevatorConstants.SUPPLY_VOLTAGE_TIME;
 
     elevatorMotor.getConfigurator().apply(elevatorConfig);
 
@@ -87,18 +81,18 @@ public class ElevatorIOReal implements ElevatorIO {
   }
 
   @Override
-  public void setRollerVoltage(double volts) {
+  public void setElevatorVoltage(double volts) {
     elevatorMotor.setControl(elevatorOpenLoopControl.withOutput(volts));
   }
 
   @Override
-  public void setRollerVel(AngularVelocity vel) {
+  public void setElevatorVel(AngularVelocity vel) {
     elevatorMotor.setControl(
         elevatorClosedLoopControl.withVelocity(vel.in(Units.RotationsPerSecond)));
   }
 
   @Override
-  public void configRollers(double kV, double kP, double maxAcceleration) {
+  public void configElevators(double kV, double kP, double maxAcceleration) {
     Slot0Configs pidConfig = new Slot0Configs();
     MotionMagicConfigs mmConfig = new MotionMagicConfigs();
 
