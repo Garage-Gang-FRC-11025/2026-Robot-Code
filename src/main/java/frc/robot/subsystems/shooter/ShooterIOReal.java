@@ -38,7 +38,7 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants.WheelConstants;
 import frc.robot.Constants.ShooterConstants.HoodConstants;
-import frc.robot.constants.ShooterConstants.RotationConstants;
+import frc.robot.Constants.ShooterConstants.RotationConstants;
 
 // public class ShooterIOReal implements ShooterIO {
 
