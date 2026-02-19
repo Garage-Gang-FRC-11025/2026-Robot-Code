@@ -12,7 +12,7 @@ import org.littletonrobotics.junction.Logger;
 public class Shooter extends SubsystemBase {
 
   private final ShooterIO shooterIO;
-  private final ShooterInputsAutoLogged inputs = new ShooterInputsAutoLogged();
+  private final shooterInputsAutoLogged inputs = new shooterInputsAutoLogged();
 
   private static final LoggedTunableNumber wKP = new LoggedTunableNumber("shooter/Wheel/kP");
   private static final LoggedTunableNumber wKV = new LoggedTunableNumber("shooter/Wheel/kV");
@@ -50,8 +50,8 @@ public class Shooter extends SubsystemBase {
       rotationMaxVelocityConfig.initDefault(10);
       rotationTargetAccelerationConfig.initDefault(10);
     } else {
-      wKP.initDefault(0.00006);
-      wKV.initDefault(0.0002);
+      wKP.initDefault(0.0);
+      wKV.initDefault(0.120);
       wheelTargetAccelerationConfig.initDefault(0.0);
 
       hKP.initDefault(2);
@@ -71,15 +71,23 @@ public class Shooter extends SubsystemBase {
   public Shooter(ShooterIO shooterIO) {
     this.shooterIO = shooterIO;
     configHood();
+    configWheel();
+    configRotation();
   }
 
   public void periodic() {
     Logger.processInputs("shooter", inputs);
     int hc = hashCode();
+    if (wKV.hasChanged(hc) || wKP.hasChanged(hc) || wheelTargetAccelerationConfig.hasChanged(hc))
+      configWheel();
     if (hKP.hasChanged(hc)
         || hKD.hasChanged(hc)
         || hoodMaxVelocityConfig.hasChanged(hc)
         || hoodTargetAccelerationConfig.hasChanged(hc)) configHood();
+    if (rKP.hasChanged(hc)
+        || rKD.hasChanged(hc)
+        || rotationMaxVelocityConfig.hasChanged(hc)
+        || rotationTargetAccelerationConfig.hasChanged(hc)) configRotation();
     shooterIO.updateInputs(inputs);
   }
 
@@ -87,37 +95,41 @@ public class Shooter extends SubsystemBase {
     MotionMagicConfigs mmConfigs = new MotionMagicConfigs();
     mmConfigs.MotionMagicAcceleration = hoodTargetAccelerationConfig.get();
     mmConfigs.MotionMagicCruiseVelocity = hoodMaxVelocityConfig.get();
-    shooterIO.confighood(hKP.get(), hKD.get(), mmConfigs);
+    shooterIO.configHood(hKP.get(), hKD.get(), mmConfigs);
   }
 
   private void configRotation() {
     MotionMagicConfigs mmConfigs = new MotionMagicConfigs();
     mmConfigs.MotionMagicAcceleration = rotationTargetAccelerationConfig.get();
     mmConfigs.MotionMagicCruiseVelocity = rotationMaxVelocityConfig.get();
-    shooterIO.configrotation(rKP.get(), rKD.get(), mmConfigs);
+    shooterIO.configRotation(rKP.get(), rKD.get(), mmConfigs);
   }
 
-  public void setwheelVoltage(double volts) {
-    shooterIO.setwheelVoltage(volts);
+  private void configWheel() {
+    shooterIO.configWheel(wKV.get(), wKP.get(), wheelTargetAccelerationConfig.get());
+  }
+
+  public void setWheelVoltage(double volts) {
+    shooterIO.setWheelVoltage(volts);
   }
 
   public void setrotationVoltage(double volts) {
-    shooterIO.setrotationVoltage(volts);
+    shooterIO.setRotationVoltage(volts);
   }
 
-  public void sethoodVoltage(double volts) {
-    shooterIO.sethoodVoltage(volts);
+  public void setHoodVoltage(double volts) {
+    shooterIO.setHoodVoltage(volts);
   }
 
-  public void setwheelVel(AngularVelocity vel) {
-    shooterIO.setwheelVel(vel);
+  public void setWheelVel(AngularVelocity vel) {
+    shooterIO.setWheelVel(vel);
   }
 
   public void sethoodPos(Rotation2d pos) {
-    shooterIO.sethoodPos(pos);
+    shooterIO.setHoodPos(pos);
   }
 
-  public void setrotationPos(Rotation2d pos) {
-    shooterIO.setrotationPos(pos);
+  public void setRotationPos(Rotation2d pos) {
+    shooterIO.setRotationPos(pos);
   }
 }
