@@ -1,79 +1,231 @@
 package frc.robot.subsystems.shooter;
 
-import com.revrobotics.REVLibError;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkFlexConfig;
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Temperature;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
-import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.ShooterConstants.WheelConstants;
+import frc.robot.Constants.ShooterConstants.HoodConstants;
+import frc.robot.constants.ShooterConstants.RotationConstants;
 
 public class ShooterIOReal implements ShooterIO {
 
-  private final SparkFlex leadMotor =
-      new SparkFlex(Constants.CanIDs.SHOOTER_LEAD_CAN_ID, MotorType.kBrushless);
-  private SparkFlexConfig config = ShooterConstants.MOTOR_CONFIG();
+  private final TalonFX wheelMotor = new TalonFX(Constants.CanIDs.SHOOTER_WHEEL_CAN_ID);
+  private final TalonFX hoodMotor = new TalonFX(Constants.CanIDs.SHOOTER_HOOD_CAN_ID);
+  private final TalonFX rotationMotor = new TalonFX(Constants.CanIDs.SHOOTER_ROTATION_CAN_ID);
 
-  private final RelativeEncoder encoder = leadMotor.getEncoder();
 
-  private final SparkFlexConfig followConfig = new SparkFlexConfig();
+  private final StatusSignal<Current> wheelCurrent;
+  private final StatusSignal<Temperature> wheelDeviceTemp;
+  private final StatusSignal<Voltage> wheelAppliedVoltage;
+  private final StatusSignal<AngularVelocity> wheelVelocity;
+  private final StatusSignal<Current> rotationCurrent;
+  private final StatusSignal<Temperature> rotationDeviceTemp;
+  private final StatusSignal<Voltage> rotationAppliedVoltage;
+  private final StatusSignal<AngularVelocity> rotationVelocity;
+  private final StatusSignal<Temperature> hoodDeviceTemp;
+  private final StatusSignal<Voltage> hoodAppliedVoltage;
+  private final StatusSignal<Angle> hoodAngle;
+  private final StatusSignal<Current> hoodCurrent;
 
-  // private final VL6180 timeOfFlight = new VL6180(Port.kOnboard);
+  private final VoltageOut wheelOpenLoopControl = new VoltageOut(0.0).withEnableFOC(false);
+
+  private final VoltageOut hoodOpenLoopControl = new VoltageOut(0.0).withEnableFOC(false);
+
+  private final VoltageOut rotationOpenLoopControl = new VoltageOut(0.0).withEnableFOC(false);
+
+  private final MotionMagicVelocityVoltage wheelClosedLoopControl =
+      new MotionMagicVelocityVoltage(0).withEnableFOC(false);
+
+  private final MotionMagicVelocityVoltage rotationClosedLoopControl =
+      new MotionMagicVelocityVoltage(0).withEnableFOC(false);
+
+  private final MotionMagicVoltage hoodClosedLoopControl =
+      new MotionMagicVoltage(0).withEnableFOC(false);
 
   public ShooterIOReal() {
-    followConfig.follow(leadMotor, ShooterConstants.FOLLOW_INVERT);
-    followMotor.configure(
-        followConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // Motor config
+    TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
+    CurrentLimitsConfigs wheelCurrentLimitConfig = new CurrentLimitsConfigs();
+
+    wheelCurrentLimitConfig.SupplyCurrentLimit = WheelConstants.SUPPLY_CURRENT_LIMIT;
+    wheelCurrentLimitConfig.SupplyCurrentLimitEnable = true;
+    wheelCurrentLimitConfig.StatorCurrentLimit = WheelConstants.STATOR_CURRENT_LIMIT;
+    wheelCurrentLimitConfig.StatorCurrentLimitEnable = true;
+
+    wheelConfig.CurrentLimits = wheelCurrentLimitConfig;
+
+    wheelConfig.Feedback.SensorToMechanismRatio = wheelConstants.WHEEL_GEARING;
+    wheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    wheelConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    
+    wheelConfig.Voltage.SupplyVoltageTimeConstant = WheelConstants.SUPPLY_VOLTAGE_TIME;
+
+    wheelMotor.getConfigurator().apply(wheelConfig);
+
+    // Status signals
+
+    wheelCurrent = wheelMotor.getStatorCurrent();
+    wheelDeviceTemp = wheelMotor.getDeviceTemp();
+    wheelAppliedVoltage = wheelMotor.getMotorVoltage();
+    wheelVelocity = wheelMotor.getVelocity();
+
+    // Update status signals
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50, wheelAppliedVoltage, wheelCurrent, wheelVelocity);
+    BaseStatusSignal.setUpdateFrequencyForAll(1, wheelDeviceTemp);
+
+    wheelMotor.optimizeBusUtilization();
+
+    TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
+
+    hoodConfig.CurrentLimits.SupplyCurrentLimit = HoodConstants.SUPPLY_CURRENT_LIMIT;
+    hoodConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    hoodConfig.CurrentLimits.StatorCurrentLimit = HoodConstants.STATOR_CURRENT_LIMIT;
+    hoodConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+    hoodConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    hoodConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    hoodConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
+    hoodConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        HoodConstants.MAX_HOOD_ANGLE.getRotations();
+    hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+        HoodConstants.MIN_HOOD_ANGLE.minus(Rotation2d.fromDegrees(2.0)).getRotations();
+
+    hoodConfig.Feedback.SensorToMechanismRatio = HoodConstants.GEAR_RATIO;
+    hoodConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+
+    hoodConfig.Voltage.SupplyVoltageTimeConstant = HoodConstants.SUPPLY_VOLTAGE_TIME;
+
+    hoodMotor.getConfigurator().apply(hoodConfig);
+
+    // Status signals
+
+    hoodAppliedVoltage = hoodMotor.getMotorVoltage();
+    hoodAngle = hoodMotor.getPosition();
+    hoodCurrent = hoodMotor.getStatorCurrent();
+    hoodDeviceTemp = hoodMotor.getDeviceTemp();
+
+    // Update status signals
+
+    BaseStatusSignal.setUpdateFrequencyForAll(100, hoodAppliedVoltage, hoodAngle);
+    BaseStatusSignal.setUpdateFrequencyForAll(50, hoodCurrent);
+    BaseStatusSignal.setUpdateFrequencyForAll(1, hoodDeviceTemp);
+
+    hoodMotor.optimizeBusUtilization();
   }
 
   @Override
-  public void updateInputs(ShooterInputs inputs) {
-    inputs.velocityRPM = encoder.getVelocity();
-    inputs.appliedOutput = leadMotor.getAppliedOutput();
-    inputs.leadCurrentAmps = leadMotor.getOutputCurrent();
-    inputs.leadTempCelsius = leadMotor.getMotorTemperature();
-    inputs.followCurrentAmps = followMotor.getOutputCurrent();
-    inputs.followTempCelsius = followMotor.getMotorTemperature();
-    // inputs.tofDistanceInches = timeOfFlight.getDistance().in(Units.Inches);
+  public void updateInputs(IntakeInputs inputs) {
+    BaseStatusSignal.refreshAll(
+        wheelAppliedVoltage,
+        wheelCurrent,
+        wheelDeviceTemp,
+        wheelVelocity,
+        hoodAngle,
+        hoodCurrent,
+        hoodAppliedVoltage,
+        hoodDeviceTemp
+        rotationAngle,
+        rotationCurrent,
+        rotationAppliedVoltage,
+        rotationDeviceTemp        
+        
+        );
+
+    inputs.wheelCurrentAmps = wheelCurrent.getValue().in(Units.Amps);
+    inputs.wheelTempCelsius = wheelDeviceTemp.getValue().in(Units.Celsius);
+    inputs.wheelAppliedOutput = wheelAppliedVoltage.getValue().in(Units.Volts);
+    inputs.wheelVelocityRPM = wheelVelocity.getValue().in(Units.RPM);
   }
 
   @Override
-  public void setVoltage(double volts) {
-    leadMotor.setVoltage(volts);
+  public void setWheelVoltage(double volts) {
+    wheelMotor.setControl(wheelOpenLoopControl.withOutput(volts));
   }
 
   @Override
-  public void setVel(AngularVelocity angle) {
-    leadMotor
-        .getClosedLoopController()
-        .setReference(
-            angle.in(Units.RPM) / ShooterConstants.GEAR_RATIO,
-            ControlType.kMAXMotionVelocityControl);
+  public void setWheelVel(AngularVelocity vel) {
+    wheelMotor.setControl(wheelClosedLoopControl.withVelocity(vel.in(Units.RotationsPerSecond)));
   }
 
   @Override
-  public void configMotor(double kV, double kP, double maxAcceleration) {
-    config.closedLoop.pidf(kP, 0, 0, kV);
-    config.closedLoop.maxMotion.maxAcceleration(maxAcceleration);
-    leadMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  public void configWheel(double kV, double kP, double maxAcceleration) {
+    Slot0Configs pidConfig = new Slot0Configs();
+    MotionMagicConfigs mmConfig = new MotionMagicConfigs();
+
+    var rollerConfig = wheelMotor.getConfigurator();
+
+    wheelConfig.refresh(pidConfig);
+    wheelConfig.refresh(mmConfig);
+
+    pidConfig.kP = kP;
+    pidConfig.kV = kV;
+
+    mmConfig.MotionMagicAcceleration = maxAcceleration;
+
+    wheelConfig.apply(pidConfig);
+    wheelConfig.apply(mmConfig);
   }
 
   @Override
-  public boolean setIdleMode(IdleMode value) {
-    config.idleMode(value);
-    followConfig.idleMode(value);
-    return leadMotor.configure(
-                config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-            == REVLibError.kOk
-        && followMotor.configure(
-                followConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-            == REVLibError.kOk;
+  public void setExtenderPos(Rotation2d pos) {
+    hoodClosedLoopControl.withPosition(pos.getRotations());
+    hoodMotor.setControl(hoodClosedLoopControl);
+  }
+
+  @Override
+  public void configExtender(double kP, double kD, MotionMagicConfigs mmConfigs) {
+    var slot0Configs = new Slot0Configs();
+
+    hoodMotor.getConfigurator().refresh(slot0Configs);
+
+    slot0Configs.kP = kP;
+    slot0Configs.kD = kD;
+
+    hoodMotor.getConfigurator().apply(slot0Configs);
+    hoodMotor.getConfigurator().apply(mmConfigs);
+  }
+
+  @Override
+  public void setHoodVoltage(double volts) {
+    hoodMotor.setControl(hoodOpenLoopControl.withOutput(volts));
+  }
+
+  @Override
+  public boolean setHoodNeutralMode(NeutralModeValue value) {
+    var config = new MotorOutputConfigs();
+
+    var status = hoodMotor.getConfigurator().refresh(config);
+
+    if (status != StatusCode.OK) return false;
+
+    config.NeutralMode = value;
+
+    hoodMotor.getConfigurator().apply(config);
+    return true;
   }
 }
-
