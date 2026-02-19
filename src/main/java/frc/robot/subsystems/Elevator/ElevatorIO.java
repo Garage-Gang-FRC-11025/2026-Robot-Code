@@ -18,5 +18,5 @@ public interface ElevatorIO {
 
   public default void setElevatorVel(AngularVelocity vel) {}
 
-  public default void configElevators(double kV, double kP, double maxAcceleration) {}
+  public default void configElevator(double kP, double kV, double maxAcceleration) {}
 }

@@ -21,7 +21,7 @@ import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorIOReal implements ElevatorIO {
 
-  private final TalonFX elevatorMotor = new TalonFX(Constants.CanIDs.ELEVATOR_ELEVATOR_CAN_ID);
+  private final TalonFX elevatorMotor = new TalonFX(Constants.CanIDs.ELEVATOR_CAN_ID);
 
   private final StatusSignal<Current> elevatorCurrent;
   private final StatusSignal<Temperature> elevatorDeviceTemp;
@@ -90,7 +90,6 @@ public class ElevatorIOReal implements ElevatorIO {
         elevatorClosedLoopControl.withVelocity(vel.in(Units.RotationsPerSecond)));
   }
 
-  @Override
   public void configElevators(double kV, double kP, double maxAcceleration) {
     Slot0Configs pidConfig = new Slot0Configs();
     MotionMagicConfigs mmConfig = new MotionMagicConfigs();

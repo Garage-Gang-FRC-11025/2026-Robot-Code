@@ -55,8 +55,8 @@ public final class Constants {
   }
   public class ElevatorConstants {
 
-    public static final double SUPPLY_CURRENT_LIMIT = 0;
-    public static final double STATOR_CURRENT_LIMIT = 0;
+    public static final double SUPPLY_CURRENT_LIMIT = 30;
+    public static final double STATOR_CURRENT_LIMIT = 30;
     public static final double SUPPLY_VOLTAGE_TIME = 0;
     public static final double ELEVATOR_GEARING = 1;
     public static final double ELEVATOR_MOI = 0.1;
@@ -75,6 +75,7 @@ public final class Constants {
     public static final int INTAKE_ROLLER_CAN_ID = 10;
     public static final int ELEVATOR_ROLLER_CAN_ID = 11;
     public static final int ELEVATOR_ELEVATOR_CAN_ID = 12;
+    public static final int ELEVATOR_CAN_ID = 12;
   }
 
   

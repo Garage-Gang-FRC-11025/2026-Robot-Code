@@ -22,8 +22,6 @@ public class ElevatorIOSim implements ElevatorIO {
   private VoltageOut elevatorOpenLoopControl = new VoltageOut(0);
   private VelocityVoltage elevatorClosedLoopControl = new VelocityVoltage(0);
 
-  public boolean tofActivated = false;
-
   public ElevatorIOSim() {}
 
   @Override
@@ -43,7 +41,6 @@ public class ElevatorIOSim implements ElevatorIO {
     elevatorMotor.setControl(elevatorClosedLoopControl.withVelocity(revPerMin));
   }
 
-  @Override
   public void configElevators(double kV, double kP, double maxAcceleration) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     Slot0Configs slot0Configs = new Slot0Configs();
