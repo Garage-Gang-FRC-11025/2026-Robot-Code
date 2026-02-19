@@ -82,11 +82,19 @@ public final class Constants {
   public static final double MAX_VOLTAGE = 12.0;
   public static final double kDefaultPeriod = 0.02;
   public final class ShooterConstants {
+    public static final double GEAR_RATIO = 1.0;
+
     public final class TurretConstants {
-      public static final Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);
-      public static final Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d HORIZONTAL_MIN_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d HORIZONTAL_MAX_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d VERTICAL_MIN_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d VERTICAL_MAX_ANGLE = Rotation2d.fromDegrees(0);
     }
-  public static final int horizontalAngleMotorCanId = 6;
-  public static final int verticalAngleMotorCanId = 7;
-    public static final int shooterMotorCanId = 8;
+
+    public class CanIDs {
+      public static final int HORIZONTAL_ANGLE_MOTOR_CAN_ID = 6;
+      public static final int VERTICAL_ANGLE_MOTOR_CAN_ID = 7;
+      public static final int SHOOTER_MOTOR_CAN_ID = 8;
+    }
+  }
 }

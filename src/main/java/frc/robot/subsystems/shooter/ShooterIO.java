@@ -1,32 +1,59 @@
 package frc.robot.subsystems.shooter;
 
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ShooterIO {
-  /** Contains all of the input data received from hardware. */
   @AutoLog
-  class ShooterInputs {
-    public double velocityRPM;
-    public double appliedOutput;
-    public double leadCurrentAmps;
-    public double leadTempCelsius;
-    public double tofDistanceInches;
-    public double followCurrentAmps;
-    public double followTempCelsius;
+  class shooterInputs {
+    public double wheelsVelocityRPM;
+    public double wheelAppliedOutput;
+    public double wheelCurrentAmps;
+    public double wheelTempCelsius;
+
+    public double hoodAppliedOutput;
+    public double hoodCurrentAmps;
+    public double hoodTempCelsius;
+    public double hoodVelocity;
+    public Rotation2d hoodPosition;
+
+    public double rotattionVelocityRPM;
+    public double rotattionAppliedOutput;
+    public double rotattionCurrentAmps;
+    public double rotattionTempCelsius;
+    public Rotation2d rotationPosition;
   }
 
-  /** Updates the set of loggable inputs. */
-  public default void updateInputs(ShooterInputs inputs) {}
+  public default void updateInputs(shooterInputs inputs) {}
 
-  public default void setVoltage(double volts) {}
+  public default void setwheelVoltage(double volts) {}
 
-  public default void setVel(AngularVelocity angle) {}
+  public default void sethoodVoltage(double volts) {}
 
-  public default void configMotor(double kV, double kP, double maxAcceleration) {}
+  public default void setrotationVoltage(double volts) {}
 
-  public default boolean setIdleMode(IdleMode value) {
+  public default void setwheelVel(AngularVelocity vel) {}
+
+  public default void sethoodPos(Rotation2d pos) {}
+
+  public default void setrotationPos(Rotation2d pos) {}
+
+  public default void setrotationVel(AngularVelocity vel) {}
+
+  public default void configwheels(double kV, double kP, double maxAcceleration) {}
+
+  public default void confighood(double kP, double kD, MotionMagicConfigs mmConfigs) {}
+
+  public default void configrotation(double kP, double kD, MotionMagicConfigs mmConfigs) {}
+
+  public default boolean sethoodNeutralMode(NeutralModeValue value) {
+    return false;
+  }
+
+  public default boolean setrotationNeutralMode(NeutralModeValue value) {
     return false;
   }
 }
