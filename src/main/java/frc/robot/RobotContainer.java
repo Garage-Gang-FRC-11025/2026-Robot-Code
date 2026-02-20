@@ -33,6 +33,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.util.LoggedTunableNumber;
+import frc.robot.subsystems.shooter.Shooter;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -46,6 +47,8 @@ public class RobotContainer {
   private final Drive drive;
   private final Intake intake;
   private final Elevator elevator;
+
+  private final Shooter shooter;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -184,6 +187,18 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(Commands.run(() -> elevator.setElevatorVoltage(1)))
         .onFalse(Commands.runOnce(() -> elevator.setElevatorVoltage(0)));
+    controller
+      .rightTrigger()
+      .whileTrue(
+            Commands.run(
+                    () -> 
+                        shooter.setWheelVoltage(1)))
+    .onFalse(
+            Commands.runOnce(
+                    () -> 
+                        shooter.setWheelVoltage(0)));
+
+
   }
 
   /**
