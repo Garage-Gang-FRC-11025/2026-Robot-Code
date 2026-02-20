@@ -97,8 +97,14 @@ public final class Constants {
     }
 
     public final class RotationConstants {
-      public static final Rotation2d ROTATION_MIN_ANGLE = Rotation2d.fromDegrees(0);
-      public static final Rotation2d ROTATION_MAX_ANGLE = Rotation2d.fromDegrees(180);
+      public static final Rotation2d MIN_ROTATION_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d MAX_ROTATION_ANGLE = Rotation2d.fromDegrees(180);
+      public static final double GEAR_RATIO = 1.0;
+      public static final double STATOR_CURRENT_LIMIT = 20;
+      public static final double SUPPLY_CURRENT_LIMIT = 20;
+      public static final double MAX_VELOCITY = 10;
+      public static final double TARGET_ACCELERATION = 10;
+      public static final double SUPPLY_VOLTAGE_TIME = 0.5;
     }
 
         public final class WheelConstants {
@@ -110,4 +116,6 @@ public final class Constants {
       public static final double SUPPLY_VOLTAGE_TIME = 0.5;
         }
   }
+
+      public static final double MAX_VOLTAGE = 12.0;
 }
