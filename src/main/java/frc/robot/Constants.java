@@ -8,9 +8,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.units.Units;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -32,11 +32,11 @@ public final class Constants {
     REPLAY
   }
 
-      public class CanIDs {
-      public static final int SHOOTER_WHEEL_CAN_ID = 6;
-      public static final int SHOOTER_HOOD_CAN_ID = 7;
-      public static final int SHOOTER_ROTATION_CAN_ID = 8;
-    }
+  public class CanIDs {
+    public static final int SHOOTER_WHEEL_CAN_ID = 6;
+    public static final int SHOOTER_HOOD_CAN_ID = 7;
+    public static final int SHOOTER_ROTATION_CAN_ID = 8;
+  }
 
   public final class ShooterConstants {
     public static final double GEAR_RATIO = 1.0;
@@ -67,17 +67,16 @@ public final class Constants {
       public static final Distance ROTATION_LENGTH = Units.Inches.of(0.5);
     }
 
-        public final class WheelConstants {
+    public final class WheelConstants {
       public static final double WHEEL_RADIUS_METERS = 0.0762; // 3 inches
       public static final double WHEEL_GEARING = 1.0;
       public static final double WHEEL_MOI = 0.1;
       public static final double SUPPLY_CURRENT_LIMIT = 40;
       public static final double STATOR_CURRENT_LIMIT = 40;
       public static final double SUPPLY_VOLTAGE_TIME = 0.5;
-        }
+    }
   }
 
   public static final double MAX_VOLTAGE = 12.0;
   public static final double kDefaultPeriod = 0.02;
-
 }
