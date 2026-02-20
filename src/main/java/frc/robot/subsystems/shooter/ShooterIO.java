@@ -9,7 +9,7 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ShooterIO {
   @AutoLog
   class shooterInputs {
-    public double wheelVelocityRPM;
+    public double wheelsVelocityRPM;
     public double wheelAppliedOutput;
     public double wheelCurrentAmps;
     public double wheelTempCelsius;
@@ -20,6 +20,7 @@ public interface ShooterIO {
     public double hoodVelocity;
     public Rotation2d hoodPosition;
 
+    public double rotationVelocity;
     public double rotationAppliedOutput;
     public double rotationCurrentAmps;
     public double rotationTempCelsius;
