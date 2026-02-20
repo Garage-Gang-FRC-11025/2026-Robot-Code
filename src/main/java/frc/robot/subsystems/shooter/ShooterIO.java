@@ -29,31 +29,31 @@ public interface ShooterIO {
 
   public default void updateInputs(shooterInputs inputs) {}
 
-  public default void setwheelVoltage(double volts) {}
+  public default void setWheelVoltage(double volts) {}
 
-  public default void sethoodVoltage(double volts) {}
+  public default void setHoodVoltage(double volts) {}
 
-  public default void setrotationVoltage(double volts) {}
+  public default void setRotationVoltage(double volts) {}
 
-  public default void setwheelVel(AngularVelocity vel) {}
+  public default void setWheelVel(AngularVelocity vel) {}
 
-  public default void sethoodPos(Rotation2d pos) {}
+  public default void setHoodPos(Rotation2d pos) {}
 
-  public default void setrotationPos(Rotation2d pos) {}
+  public default void setRotationPos(Rotation2d pos) {}
 
-  public default void setrotationVel(AngularVelocity vel) {}
+  public default void setRotationVel(AngularVelocity vel) {}
 
-  public default void configwheels(double kV, double kP, double maxAcceleration) {}
+  public default void configWheel(double kV, double kP, double maxAcceleration) {}
 
-  public default void confighood(double kP, double kD, MotionMagicConfigs mmConfigs) {}
+  public default void configHood(double kP, double kD, MotionMagicConfigs mmConfigs) {}
 
-  public default void configrotation(double kP, double kD, MotionMagicConfigs mmConfigs) {}
+  public default void configRotation(double kP, double kD, MotionMagicConfigs mmConfigs) {}
 
-  public default boolean sethoodNeutralMode(NeutralModeValue value) {
+  public default boolean setHoodNeutralMode(NeutralModeValue value) {
     return false;
   }
 
-  public default boolean setrotationNeutralMode(NeutralModeValue value) {
+  public default boolean setRotationNeutralMode(NeutralModeValue value) {
     return false;
   }
 }
