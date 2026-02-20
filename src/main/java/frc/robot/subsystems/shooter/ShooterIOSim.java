@@ -13,8 +13,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants.HoodConstants;
-import frc.robot.Constants.ShooterConstants.WheelConstants;
 import frc.robot.Constants.ShooterConstants.RotationConstants;
+import frc.robot.Constants.ShooterConstants.WheelConstants;
 import frc.robot.util.TalonFXArmSim;
 import frc.robot.util.TalonFXSim;
 
@@ -62,17 +62,17 @@ public class ShooterIOSim implements ShooterIO {
   @Override
   public void updateInputs(shooterInputs inputs) {
     wheelMotor.update(Constants.kDefaultPeriod);
-      inputs.wheelAppliedOutput = wheelMotor.getVoltage();
-      inputs.wheelsVelocityRPM = wheelMotor.getVelocity().in(Units.RPM);
+    inputs.wheelAppliedOutput = wheelMotor.getVoltage();
+    inputs.wheelsVelocityRPM = wheelMotor.getVelocity().in(Units.RPM);
 
     HoodSim.update(Constants.kDefaultPeriod);
-      inputs.hoodPosition = new Rotation2d(HoodSim.getPosition());
-      inputs.hoodAppliedOutput = HoodSim.getVoltage().in(Units.Volts);
-      inputs.hoodVelocity = HoodSim.getVelocity().in(Units.DegreesPerSecond);
+    inputs.hoodPosition = new Rotation2d(HoodSim.getPosition());
+    inputs.hoodAppliedOutput = HoodSim.getVoltage().in(Units.Volts);
+    inputs.hoodVelocity = HoodSim.getVelocity().in(Units.DegreesPerSecond);
     RotationSim.update(Constants.kDefaultPeriod);
-      inputs.rotationPosition = new Rotation2d(RotationSim.getPosition());
-      inputs.rotationAppliedOutput = RotationSim.getVoltage().in(Units.Volts);
-      inputs.rotationVelocity = RotationSim.getVelocity().in(Units.DegreesPerSecond);
+    inputs.rotationPosition = new Rotation2d(RotationSim.getPosition());
+    inputs.rotationAppliedOutput = RotationSim.getVoltage().in(Units.Volts);
+    inputs.rotationVelocity = RotationSim.getVelocity().in(Units.DegreesPerSecond);
   }
 
   @Override
@@ -121,6 +121,7 @@ public class ShooterIOSim implements ShooterIO {
 
     HoodSim.setConfig(config);
   }
+
   @Override
   public void setRotationVoltage(double volts) {
     RotationSim.setControl(rotationOpenLoopControl.withOutput(volts));

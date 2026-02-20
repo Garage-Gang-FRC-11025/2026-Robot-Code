@@ -23,18 +23,15 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
-import frc.robot.Constants.CanIDs;
-import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.ShooterConstants.WheelConstants;
 import frc.robot.Constants.ShooterConstants.HoodConstants;
 import frc.robot.Constants.ShooterConstants.RotationConstants;
+import frc.robot.Constants.ShooterConstants.WheelConstants;
 
- public class ShooterIOReal implements ShooterIO {
+public class ShooterIOReal implements ShooterIO {
 
   private final TalonFX wheelMotor = new TalonFX(Constants.CanIDs.SHOOTER_WHEEL_CAN_ID);
   private final TalonFX hoodMotor = new TalonFX(Constants.CanIDs.SHOOTER_HOOD_CAN_ID);
   private final TalonFX rotationMotor = new TalonFX(Constants.CanIDs.SHOOTER_ROTATION_CAN_ID);
-
 
   private final StatusSignal<Current> wheelCurrent;
   private final StatusSignal<Temperature> wheelDeviceTemp;
@@ -78,7 +75,7 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
     wheelConfig.Feedback.SensorToMechanismRatio = WheelConstants.WHEEL_GEARING;
     wheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     wheelConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    
+
     wheelConfig.Voltage.SupplyVoltageTimeConstant = WheelConstants.SUPPLY_VOLTAGE_TIME;
 
     wheelMotor.getConfigurator().apply(wheelConfig);
@@ -92,8 +89,7 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
 
     // Update status signals
 
-    BaseStatusSignal.setUpdateFrequencyForAll(
-        50, wheelAppliedVoltage, wheelCurrent, wheelVelocity);
+    BaseStatusSignal.setUpdateFrequencyForAll(50, wheelAppliedVoltage, wheelCurrent, wheelVelocity);
     BaseStatusSignal.setUpdateFrequencyForAll(1, wheelDeviceTemp);
 
     wheelMotor.optimizeBusUtilization();
@@ -183,14 +179,12 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
         rotationAngle,
         rotationCurrent,
         rotationAppliedVoltage,
-        rotationDeviceTemp        
-        
-        );
+        rotationDeviceTemp);
 
     inputs.wheelCurrentAmps = wheelCurrent.getValue().in(Units.Amps);
     inputs.wheelTempCelsius = wheelDeviceTemp.getValue().in(Units.Celsius);
     inputs.wheelAppliedOutput = wheelAppliedVoltage.getValue().in(Units.Volts);
-    inputs.wheelVelocityRPM = wheelVelocity.getValue().in(Units.RPM);
+    inputs.wheelsVelocityRPM = wheelVelocity.getValue().in(Units.RPM);
   }
 
   @Override
@@ -232,7 +226,6 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
     rotationMotor.setControl(rotationClosedLoopControl);
   }
 
-
   public void configHood(double kP, double kD, MotionMagicConfigs mmConfigs) {
     var slot0Configs = new Slot0Configs();
 
@@ -245,7 +238,7 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
     hoodMotor.getConfigurator().apply(mmConfigs);
   }
 
-    public void configRotation(double kP, double kD, MotionMagicConfigs mmConfigs) {
+  public void configRotation(double kP, double kD, MotionMagicConfigs mmConfigs) {
     var slot0Configs = new Slot0Configs();
 
     rotationMotor.getConfigurator().refresh(slot0Configs);
@@ -261,7 +254,7 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
     hoodMotor.setControl(hoodOpenLoopControl.withOutput(volts));
   }
 
-    public void setRotationVoltage(double volts) {
+  public void setRotationVoltage(double volts) {
     rotationMotor.setControl(rotationOpenLoopControl.withOutput(volts));
   }
 
@@ -278,7 +271,7 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
     return true;
   }
 
-    public boolean setRotationNeutralMode(NeutralModeValue value) {
+  public boolean setRotationNeutralMode(NeutralModeValue value) {
     var config = new MotorOutputConfigs();
 
     var status = rotationMotor.getConfigurator().refresh(config);
@@ -290,4 +283,4 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
     rotationMotor.getConfigurator().apply(config);
     return true;
   }
- }
+}
