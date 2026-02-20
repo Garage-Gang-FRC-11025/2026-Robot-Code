@@ -63,7 +63,7 @@ public class ShooterIOSim implements ShooterIO {
   public void updateInputs(shooterInputs inputs) {
     wheelMotor.update(Constants.kDefaultPeriod);
       inputs.wheelAppliedOutput = wheelMotor.getVoltage();
-      inputs.wheelsVelocityRPM = wheelMotor.getVelocity().in(Units.RPM);
+      inputs.wheelVelocityRPM = wheelMotor.getVelocity().in(Units.RPM);
 
     HoodSim.update(Constants.kDefaultPeriod);
       inputs.hoodPosition = new Rotation2d(HoodSim.getPosition());
