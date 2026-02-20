@@ -12,7 +12,7 @@ import org.littletonrobotics.junction.Logger;
 public class Shooter extends SubsystemBase {
 
   private final ShooterIO shooterIO;
-  private final ShooterInputsAutoLogged inputs = new ShooterInputsAutoLogged();
+  private final shooterInputsAutoLogged inputs = new shooterInputsAutoLogged();
 
   private static final LoggedTunableNumber wKP = new LoggedTunableNumber("shooter/Wheel/kP");
   private static final LoggedTunableNumber wKV = new LoggedTunableNumber("shooter/Wheel/kV");
@@ -80,6 +80,10 @@ public class Shooter extends SubsystemBase {
         || hKD.hasChanged(hc)
         || hoodMaxVelocityConfig.hasChanged(hc)
         || hoodTargetAccelerationConfig.hasChanged(hc)) configHood();
+    if (rKP.hasChanged(hc)
+        || rKD.hasChanged(hc)
+        || rotationMaxVelocityConfig.hasChanged(hc)
+        || rotationTargetAccelerationConfig.hasChanged(hc)) configRotation();
     shooterIO.updateInputs(inputs);
   }
 
