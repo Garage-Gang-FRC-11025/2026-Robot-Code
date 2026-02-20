@@ -30,20 +30,38 @@ public final class Constants {
     REPLAY
   }
 
+      public class CanIDs {
+      public static final int SHOOTER_WHEEL_CAN_ID = 6;
+      public static final int SHOOTER_HOOD_CAN_ID = 7;
+      public static final int SHOOTER_ROTATION_CAN_ID = 8;
+    }
+
   public final class ShooterConstants {
     public static final double GEAR_RATIO = 1.0;
 
-    public final class TurretConstants {
-      public static final Rotation2d HORIZONTAL_MIN_ANGLE = Rotation2d.fromDegrees(0);
-      public static final Rotation2d HORIZONTAL_MAX_ANGLE = Rotation2d.fromDegrees(0);
-      public static final Rotation2d VERTICAL_MIN_ANGLE = Rotation2d.fromDegrees(0);
-      public static final Rotation2d VERTICAL_MAX_ANGLE = Rotation2d.fromDegrees(0);
+    public final class HoodConstants {
+      public static final Rotation2d MIN_HOOD_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d MAX_HOOD_ANGLE = Rotation2d.fromDegrees(90);
+      public static final double STATOR_CURRENT_LIMIT = 20;
+      public static final double SUPPLY_CURRENT_LIMIT = 20;
+      public static final double MAX_VELOCITY = 10;
+      public static final double TARGET_ACCELERATION = 10;
+      public static final double GEAR_RATIO = 1.0;
+      public static final double SUPPLY_VOLTAGE_TIME = 0.5;
     }
 
-    public class CanIDs {
-      public static final int HORIZONTAL_ANGLE_MOTOR_CAN_ID = 6;
-      public static final int VERTICAL_ANGLE_MOTOR_CAN_ID = 7;
-      public static final int SHOOTER_MOTOR_CAN_ID = 8;
+    public final class RotationConstants {
+      public static final Rotation2d ROTATION_MIN_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d ROTATION_MAX_ANGLE = Rotation2d.fromDegrees(180);
     }
+
+        public final class WheelConstants {
+      public static final double WHEEL_RADIUS_METERS = 0.0762; // 3 inches
+      public static final double WHEEL_GEARING = 1.0;
+      public static final double WHEEL_MOI = 0.1;
+      public static final double SUPPLY_CURRENT_LIMIT = 40;
+      public static final double STATOR_CURRENT_LIMIT = 40;
+      public static final double SUPPLY_VOLTAGE_TIME = 0.5;
+        }
   }
 }
