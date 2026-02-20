@@ -14,20 +14,21 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants.HoodConstants;
 import frc.robot.Constants.ShooterConstants.WheelConstants;
+import frc.robot.Constants.ShooterConstants.RotationConstants;
 import frc.robot.util.TalonFXArmSim;
 import frc.robot.util.TalonFXSim;
 
 public class ShooterIOSim implements ShooterIO {
 
-  private TalonFXSim rollerMotor =
+  private TalonFXSim wheelMotor =
       new TalonFXSim(
-          DCMotor.getKrakenX60Foc(1), RollerConstants.ROLLER_GEARING, RollerConstants.ROLLER_MOI);
+          DCMotor.getKrakenX60Foc(1), WheelConstants.WHEEL_GEARING, WheelConstants.WHEEL_MOI);
 
   private TalonFXArmSim HoodSim =
       new TalonFXArmSim(
           new SingleJointedArmSim(
               DCMotor.getFalcon500Foc(1),
-              frc.robot.Constants.IntakeConstants.HoodConstants.GEAR_RATIO,
+              frc.robot.Constants.ShooterConstants.HoodConstants.GEAR_RATIO,
               HoodConstants.HOOD_MOI,
               HoodConstants.HOOD_LENGTH.in(Units.Meters),
               HoodConstants.MIN_HOOD_ANGLE.getRadians(),
@@ -35,39 +36,57 @@ public class ShooterIOSim implements ShooterIO {
               false,
               0));
 
-  private VoltageOut rollerOpenLoopControl = new VoltageOut(0);
-  private VelocityVoltage rollerClosedLoopControl = new VelocityVoltage(0);
+  private TalonFXArmSim RotationSim =
+      new TalonFXArmSim(
+          new SingleJointedArmSim(
+              DCMotor.getFalcon500Foc(1),
+              frc.robot.Constants.ShooterConstants.HoodConstants.GEAR_RATIO,
+              RotationConstants.ROTATION_MOI,
+              RotationConstants.ROTATION_LENGTH.in(Units.Meters),
+              RotationConstants.MIN_ROTATION_ANGLE.getRadians(),
+              RotationConstants.MAX_ROTATION_ANGLE.getRadians(),
+              false,
+              0));
 
-  private VoltageOut HoodOpenLoopControl = new VoltageOut(0);
-  private MotionMagicVoltage HoodClosedLoopControl = new MotionMagicVoltage(0);
+  private VoltageOut wheelOpenLoopControl = new VoltageOut(0);
+  private VelocityVoltage wheelClosedLoopControl = new VelocityVoltage(0);
 
-  public IntakeIOSim() {}
+  private VoltageOut hoodOpenLoopControl = new VoltageOut(0);
+  private MotionMagicVoltage hoodClosedLoopControl = new MotionMagicVoltage(0);
+
+  private VoltageOut rotationOpenLoopControl = new VoltageOut(0);
+  private MotionMagicVoltage rotationClosedLoopControl = new MotionMagicVoltage(0);
+
+  public ShooterIOSim() {}
 
   @Override
-  public void updateInputs(IntakeInputs inputs) {
-    rollerMotor.update(Constants.kDefaultPeriod);
-    inputs.rollersAppliedOutput = rollerMotor.getVoltage();
-    inputs.rollersVelocityRPM = rollerMotor.getVelocity().in(Units.RPM);
+  public void updateInputs(shooterInputs inputs) {
+    wheelMotor.update(Constants.kDefaultPeriod);
+      inputs.wheelAppliedOutput = wheelMotor.getVoltage();
+      inputs.wheelsVelocityRPM = wheelMotor.getVelocity().in(Units.RPM);
 
     HoodSim.update(Constants.kDefaultPeriod);
-
-    inputs.HoodPosition = new Rotation2d(HoodSim.getPosition());
-    inputs.HoodAppliedOutput = HoodSim.getVoltage().in(Units.Volts);
-    inputs.HoodVelocity = HoodSim.getVelocity().in(Units.DegreesPerSecond);
+      inputs.hoodPosition = new Rotation2d(HoodSim.getPosition());
+      inputs.hoodAppliedOutput = HoodSim.getVoltage().in(Units.Volts);
+      inputs.hoodVelocity = HoodSim.getVelocity().in(Units.DegreesPerSecond);
+    RotationSim.update(Constants.kDefaultPeriod);
+      inputs.rotationPosition = new Rotation2d(RotationSim.getPosition());
+      inputs.rotationAppliedOutput = RotationSim.getVoltage().in(Units.Volts);
+      inputs.rotationVelocity = RotationSim.getVelocity().in(Units.DegreesPerSecond);
   }
 
   @Override
-  public void setRollerVoltage(double volts) {
-    rollerMotor.setControl(rollerOpenLoopControl.withOutput(volts));
+  public void setWheelVoltage(double volts) {
+    wheelMotor.setControl(wheelOpenLoopControl.withOutput(volts));
   }
 
   @Override
-  public void setRollerVel(AngularVelocity revPerMin) {
-    rollerMotor.setControl(rollerClosedLoopControl.withVelocity(revPerMin));
+  public void setWheelVel(AngularVelocity revPerMin) {
+    wheelMotor.setControl(wheelClosedLoopControl.withVelocity(revPerMin));
   }
 
   @Override
-  public void configRollers(double kV, double kP, double maxAcceleration) {
+  public void configWheel(double kV, double kP, double maxAcceleration) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     Slot0Configs slot0Configs = new Slot0Configs();
 
@@ -76,17 +95,17 @@ public class ShooterIOSim implements ShooterIO {
 
     config.Slot0 = slot0Configs;
 
-    rollerMotor.setConfig(config);
+    wheelMotor.setConfig(config);
   }
 
   @Override
   public void setHoodVoltage(double volts) {
-    HoodSim.setControl(HoodOpenLoopControl.withOutput(volts));
+    HoodSim.setControl(hoodOpenLoopControl.withOutput(volts));
   }
 
   @Override
   public void setHoodPos(Rotation2d angle) {
-    HoodSim.setControl(HoodClosedLoopControl.withPosition(angle.getRotations()));
+    HoodSim.setControl(hoodClosedLoopControl.withPosition(angle.getRotations()));
   }
 
   @Override
@@ -101,5 +120,28 @@ public class ShooterIOSim implements ShooterIO {
     config.MotionMagic = mmConfigs;
 
     HoodSim.setConfig(config);
+  }
+  @Override
+  public void setRotationVoltage(double volts) {
+    RotationSim.setControl(rotationOpenLoopControl.withOutput(volts));
+  }
+
+  @Override
+  public void setRotationPos(Rotation2d angle) {
+    RotationSim.setControl(rotationClosedLoopControl.withPosition(angle.getRotations()));
+  }
+
+  @Override
+  public void configRotation(double kP, double kD, MotionMagicConfigs mmConfigs) {
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    Slot0Configs slot0Configs = new Slot0Configs();
+
+    slot0Configs.kP = kP;
+    slot0Configs.kD = kD;
+
+    config.Slot0 = slot0Configs;
+    config.MotionMagic = mmConfigs;
+
+    RotationSim.setConfig(config);
   }
 }
