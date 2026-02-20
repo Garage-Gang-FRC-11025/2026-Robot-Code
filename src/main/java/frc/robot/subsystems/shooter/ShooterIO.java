@@ -25,7 +25,6 @@ public interface ShooterIO {
     public double rotationCurrentAmps;
     public double rotationTempCelsius;
     public Rotation2d rotationPosition;
-    public double rotationVelocity;
   }
 
   public default void updateInputs(shooterInputs inputs) {}
