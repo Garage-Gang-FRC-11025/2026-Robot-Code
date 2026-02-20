@@ -23,6 +23,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.subsystems.shooter.Shooter;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -35,6 +36,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
 
+  private final Shooter shooter;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -139,6 +141,18 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
+    controller
+      .rightTrigger()
+      .whileTrue(
+            Commands.run(
+                    () -> 
+                        shooter.setWheelVoltage(1)))
+    .onFalse(
+            Commands.runOnce(
+                    () -> 
+                        shooter.setWheelVoltage(0)));
+
+
   }
 
   /**
