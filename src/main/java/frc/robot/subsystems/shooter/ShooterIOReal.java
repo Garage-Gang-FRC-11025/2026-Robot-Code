@@ -1,4 +1,4 @@
-// package frc.robot.subsystems.shooter;
+package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
@@ -23,11 +23,13 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
+import frc.robot.Constants.CanIDs;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterConstants.WheelConstants;
 import frc.robot.Constants.ShooterConstants.HoodConstants;
 import frc.robot.Constants.ShooterConstants.RotationConstants;
 
-// public class ShooterIOReal implements ShooterIO {
+ public class ShooterIOReal implements ShooterIO {
 
   private final TalonFX wheelMotor = new TalonFX(Constants.CanIDs.SHOOTER_WHEEL_CAN_ID);
   private final TalonFX hoodMotor = new TalonFX(Constants.CanIDs.SHOOTER_HOOD_CAN_ID);
@@ -42,6 +44,7 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
   private final StatusSignal<Temperature> rotationDeviceTemp;
   private final StatusSignal<Voltage> rotationAppliedVoltage;
   private final StatusSignal<AngularVelocity> rotationVelocity;
+  private final StatusSignal<Angle> rotationAngle;
   private final StatusSignal<Temperature> hoodDeviceTemp;
   private final StatusSignal<Voltage> hoodAppliedVoltage;
   private final StatusSignal<Angle> hoodAngle;
@@ -64,17 +67,16 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
 
   public ShooterIOReal() {
     // Motor config
-    TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
+    TalonFXConfiguration wheelConfig = new TalonFXConfiguration();
     CurrentLimitsConfigs wheelCurrentLimitConfig = new CurrentLimitsConfigs();
 
     wheelCurrentLimitConfig.SupplyCurrentLimit = WheelConstants.SUPPLY_CURRENT_LIMIT;
     wheelCurrentLimitConfig.SupplyCurrentLimitEnable = true;
     wheelCurrentLimitConfig.StatorCurrentLimit = WheelConstants.STATOR_CURRENT_LIMIT;
     wheelCurrentLimitConfig.StatorCurrentLimitEnable = true;
-
     wheelConfig.CurrentLimits = wheelCurrentLimitConfig;
 
-    wheelConfig.Feedback.SensorToMechanismRatio = wheelConstants.WHEEL_GEARING;
+    wheelConfig.Feedback.SensorToMechanismRatio = WheelConstants.WHEEL_GEARING;
     wheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     wheelConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     
@@ -139,7 +141,7 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
   }
 
   @Override
-  public void updateInputs(IntakeInputs inputs) {
+  public void updateInputs(ShooterInputs inputs) {
     BaseStatusSignal.refreshAll(
         wheelAppliedVoltage,
         wheelCurrent,
@@ -148,7 +150,7 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
         hoodAngle,
         hoodCurrent,
         hoodAppliedVoltage,
-        hoodDeviceTemp
+        hoodDeviceTemp,
         rotationAngle,
         rotationCurrent,
         rotationAppliedVoltage,
@@ -177,7 +179,7 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
     Slot0Configs pidConfig = new Slot0Configs();
     MotionMagicConfigs mmConfig = new MotionMagicConfigs();
 
-    var rollerConfig = wheelMotor.getConfigurator();
+    var wheelConfig = wheelMotor.getConfigurator();
 
     wheelConfig.refresh(pidConfig);
     wheelConfig.refresh(mmConfig);
@@ -191,14 +193,12 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
     wheelConfig.apply(mmConfig);
   }
 
-  @Override
-  public void setExtenderPos(Rotation2d pos) {
+  public void setHoodPos(Rotation2d pos) {
     hoodClosedLoopControl.withPosition(pos.getRotations());
     hoodMotor.setControl(hoodClosedLoopControl);
   }
 
-  @Override
-  public void configExtender(double kP, double kD, MotionMagicConfigs mmConfigs) {
+  public void configHood(double kP, double kD, MotionMagicConfigs mmConfigs) {
     var slot0Configs = new Slot0Configs();
 
     hoodMotor.getConfigurator().refresh(slot0Configs);
@@ -210,12 +210,10 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
     hoodMotor.getConfigurator().apply(mmConfigs);
   }
 
-  @Override
   public void setHoodVoltage(double volts) {
     hoodMotor.setControl(hoodOpenLoopControl.withOutput(volts));
   }
 
-  @Override
   public boolean setHoodNeutralMode(NeutralModeValue value) {
     var config = new MotorOutputConfigs();
 
@@ -228,4 +226,4 @@ import frc.robot.Constants.ShooterConstants.RotationConstants;
     hoodMotor.getConfigurator().apply(config);
     return true;
   }
-}
+ }

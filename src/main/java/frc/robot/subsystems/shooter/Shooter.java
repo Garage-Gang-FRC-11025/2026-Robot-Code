@@ -87,37 +87,37 @@ public class Shooter extends SubsystemBase {
     MotionMagicConfigs mmConfigs = new MotionMagicConfigs();
     mmConfigs.MotionMagicAcceleration = hoodTargetAccelerationConfig.get();
     mmConfigs.MotionMagicCruiseVelocity = hoodMaxVelocityConfig.get();
-    shooterIO.confighood(hKP.get(), hKD.get(), mmConfigs);
+    shooterIO.configHood(hKP.get(), hKD.get(), mmConfigs);
   }
 
   private void configRotation() {
     MotionMagicConfigs mmConfigs = new MotionMagicConfigs();
     mmConfigs.MotionMagicAcceleration = rotationTargetAccelerationConfig.get();
     mmConfigs.MotionMagicCruiseVelocity = rotationMaxVelocityConfig.get();
-    shooterIO.configrotation(rKP.get(), rKD.get(), mmConfigs);
+    shooterIO.configRotation(rKP.get(), rKD.get(), mmConfigs);
   }
 
-  public void setwheelVoltage(double volts) {
-    shooterIO.setwheelVoltage(volts);
+  public void setWheelVoltage(double volts) {
+    shooterIO.setWheelVoltage(volts);
   }
 
   public void setrotationVoltage(double volts) {
-    shooterIO.setrotationVoltage(volts);
+    shooterIO.setRotationVoltage(volts);
   }
 
-  public void sethoodVoltage(double volts) {
-    shooterIO.sethoodVoltage(volts);
+  public void setHoodVoltage(double volts) {
+    shooterIO.setHoodVoltage(volts);
   }
 
-  public void setwheelVel(AngularVelocity vel) {
-    shooterIO.setwheelVel(vel);
+  public void setWheelVel(AngularVelocity vel) {
+    shooterIO.setWheelVel(vel);
   }
 
   public void sethoodPos(Rotation2d pos) {
-    shooterIO.sethoodPos(pos);
+    shooterIO.setHoodPos(pos);
   }
 
-  public void setrotationPos(Rotation2d pos) {
-    shooterIO.setrotationPos(pos);
+  public void setRotationPos(Rotation2d pos) {
+    shooterIO.setRotationPos(pos);
   }
 }

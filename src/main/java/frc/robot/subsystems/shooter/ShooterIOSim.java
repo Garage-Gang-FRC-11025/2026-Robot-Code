@@ -12,34 +12,34 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
-import frc.robot.Constants.IntakeConstants.ExtenderConstants;
-import frc.robot.Constants.IntakeConstants.RollerConstants;
+import frc.robot.Constants.ShooterConstants.HoodConstants;
+import frc.robot.Constants.ShooterConstants.WheelConstants;
 import frc.robot.util.TalonFXArmSim;
 import frc.robot.util.TalonFXSim;
 
-public class IntakeIOSim implements IntakeIO {
+public class ShooterIOSim implements ShooterIO {
 
   private TalonFXSim rollerMotor =
       new TalonFXSim(
           DCMotor.getKrakenX60Foc(1), RollerConstants.ROLLER_GEARING, RollerConstants.ROLLER_MOI);
 
-  private TalonFXArmSim extenderSim =
+  private TalonFXArmSim HoodSim =
       new TalonFXArmSim(
           new SingleJointedArmSim(
               DCMotor.getFalcon500Foc(1),
-              frc.robot.Constants.IntakeConstants.ExtenderConstants.GEAR_RATIO,
-              ExtenderConstants.EXTENDER_MOI,
-              ExtenderConstants.EXTENDER_LENGTH.in(Units.Meters),
-              ExtenderConstants.MIN_EXTENDER_ANGLE.getRadians(),
-              ExtenderConstants.MAX_EXTENDER_ANGLE.getRadians(),
+              frc.robot.Constants.IntakeConstants.HoodConstants.GEAR_RATIO,
+              HoodConstants.HOOD_MOI,
+              HoodConstants.HOOD_LENGTH.in(Units.Meters),
+              HoodConstants.MIN_HOOD_ANGLE.getRadians(),
+              HoodConstants.MAX_HOOD_ANGLE.getRadians(),
               false,
               0));
 
   private VoltageOut rollerOpenLoopControl = new VoltageOut(0);
   private VelocityVoltage rollerClosedLoopControl = new VelocityVoltage(0);
 
-  private VoltageOut extenderOpenLoopControl = new VoltageOut(0);
-  private MotionMagicVoltage extenderClosedLoopControl = new MotionMagicVoltage(0);
+  private VoltageOut HoodOpenLoopControl = new VoltageOut(0);
+  private MotionMagicVoltage HoodClosedLoopControl = new MotionMagicVoltage(0);
 
   public IntakeIOSim() {}
 
@@ -49,11 +49,11 @@ public class IntakeIOSim implements IntakeIO {
     inputs.rollersAppliedOutput = rollerMotor.getVoltage();
     inputs.rollersVelocityRPM = rollerMotor.getVelocity().in(Units.RPM);
 
-    extenderSim.update(Constants.kDefaultPeriod);
+    HoodSim.update(Constants.kDefaultPeriod);
 
-    inputs.extenderPosition = new Rotation2d(extenderSim.getPosition());
-    inputs.extenderAppliedOutput = extenderSim.getVoltage().in(Units.Volts);
-    inputs.extenderVelocity = extenderSim.getVelocity().in(Units.DegreesPerSecond);
+    inputs.HoodPosition = new Rotation2d(HoodSim.getPosition());
+    inputs.HoodAppliedOutput = HoodSim.getVoltage().in(Units.Volts);
+    inputs.HoodVelocity = HoodSim.getVelocity().in(Units.DegreesPerSecond);
   }
 
   @Override
@@ -80,17 +80,17 @@ public class IntakeIOSim implements IntakeIO {
   }
 
   @Override
-  public void setExtenderVoltage(double volts) {
-    extenderSim.setControl(extenderOpenLoopControl.withOutput(volts));
+  public void setHoodVoltage(double volts) {
+    HoodSim.setControl(HoodOpenLoopControl.withOutput(volts));
   }
 
   @Override
-  public void setExtenderPos(Rotation2d angle) {
-    extenderSim.setControl(extenderClosedLoopControl.withPosition(angle.getRotations()));
+  public void setHoodPos(Rotation2d angle) {
+    HoodSim.setControl(HoodClosedLoopControl.withPosition(angle.getRotations()));
   }
 
   @Override
-  public void configExtender(double kP, double kD, MotionMagicConfigs mmConfigs) {
+  public void configHood(double kP, double kD, MotionMagicConfigs mmConfigs) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     Slot0Configs slot0Configs = new Slot0Configs();
 
@@ -100,6 +100,6 @@ public class IntakeIOSim implements IntakeIO {
     config.Slot0 = slot0Configs;
     config.MotionMagic = mmConfigs;
 
-    extenderSim.setConfig(config);
+    HoodSim.setConfig(config);
   }
 }
