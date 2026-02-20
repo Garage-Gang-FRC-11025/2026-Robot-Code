@@ -41,6 +41,8 @@ public class ShooterIOSim implements ShooterIO {
           new SingleJointedArmSim(
               DCMotor.getKrakenX60Foc(1),
               frc.robot.Constants.ShooterConstants.HoodConstants.GEAR_RATIO,
+              DCMotor.getFalcon500Foc(1),
+              frc.robot.Constants.ShooterConstants.RotationConstants.GEAR_RATIO,
               RotationConstants.ROTATION_MOI,
               RotationConstants.ROTATION_LENGTH.in(Units.Meters),
               RotationConstants.MIN_ROTATION_ANGLE.getRadians(),
