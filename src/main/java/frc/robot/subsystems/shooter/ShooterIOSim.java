@@ -40,7 +40,7 @@ public class ShooterIOSim implements ShooterIO {
       new TalonFXArmSim(
           new SingleJointedArmSim(
               DCMotor.getFalcon500Foc(1),
-              frc.robot.Constants.ShooterConstants.HoodConstants.GEAR_RATIO,
+              frc.robot.Constants.ShooterConstants.RotationConstants.GEAR_RATIO,
               RotationConstants.ROTATION_MOI,
               RotationConstants.ROTATION_LENGTH.in(Units.Meters),
               RotationConstants.MIN_ROTATION_ANGLE.getRadians(),

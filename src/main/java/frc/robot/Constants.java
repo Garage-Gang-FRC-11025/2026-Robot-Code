@@ -62,9 +62,8 @@ public final class Constants {
       public static final double SUPPLY_CURRENT_LIMIT = 20;
       public static final double MAX_VELOCITY = 10;
       public static final double TARGET_ACCELERATION = 10;
-      public static final double GEAR_RATIO = 1.0;
+      public static final double GEAR_RATIO = 6.6667;
       public static final double SUPPLY_VOLTAGE_TIME = 0.5;
-      public static final Distance ROTATION_LENGTH = Units.Inches.of(0.5);
     }
 
         public final class WheelConstants {
