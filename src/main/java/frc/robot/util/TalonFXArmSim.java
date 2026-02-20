@@ -94,3 +94,4 @@ public class TalonFXArmSim {
     sim.setState(angleRadians, velocityRadPerSec);
   }
 }
+
