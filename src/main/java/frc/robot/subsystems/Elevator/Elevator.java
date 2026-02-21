@@ -16,7 +16,6 @@ public class Elevator extends SubsystemBase {
 
   private static final LoggedTunableNumber eleKP = new LoggedTunableNumber("Elevator/kP");
   private static final LoggedTunableNumber eleKV = new LoggedTunableNumber("Elevator/kV");
-    private static final LoggedTunableNumber eleKD = new LoggedTunableNumber("Elevator/kD");
   private static final LoggedTunableNumber elevatorTargetAccelerationConfig =
       new LoggedTunableNumber("Elevator/Acceleration");
     private static final LoggedTunableNumber elevatorMaxVelocityConfig =
@@ -25,7 +24,6 @@ public class Elevator extends SubsystemBase {
     if (Constants.currentMode == Mode.REAL) {
       eleKP.initDefault(0.8);
       eleKV.initDefault(0.15);
-      eleKD.initDefault(0);
       
       elevatorTargetAccelerationConfig.initDefault(300.0);
       elevatorMaxVelocityConfig.initDefault(1500.0);
@@ -33,7 +31,6 @@ public class Elevator extends SubsystemBase {
     else{
       eleKP.initDefault(1);
       eleKV.initDefault(1);
-      eleKD.initDefault(10);
 
       elevatorTargetAccelerationConfig.initDefault(500.0);
       elevatorMaxVelocityConfig.initDefault(2000.0);
