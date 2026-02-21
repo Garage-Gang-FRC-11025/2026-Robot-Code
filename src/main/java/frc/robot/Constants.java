@@ -120,6 +120,6 @@ public final class Constants {
     }
   }
 
-      public static final double MAX_VOLTAGE = 12.0;
+  public static final double MAX_VOLTAGE = 12.0;
   public static final double kDefaultPeriod = 0.02;
 }

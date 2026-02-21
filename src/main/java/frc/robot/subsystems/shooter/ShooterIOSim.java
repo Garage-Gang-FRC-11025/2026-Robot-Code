@@ -40,8 +40,6 @@ public class ShooterIOSim implements ShooterIO {
       new TalonFXArmSim(
           new SingleJointedArmSim(
               DCMotor.getKrakenX60Foc(1),
-              frc.robot.Constants.ShooterConstants.HoodConstants.GEAR_RATIO,
-              DCMotor.getFalcon500Foc(1),
               frc.robot.Constants.ShooterConstants.RotationConstants.GEAR_RATIO,
               RotationConstants.ROTATION_MOI,
               0.5,
@@ -64,8 +62,8 @@ public class ShooterIOSim implements ShooterIO {
   @Override
   public void updateInputs(shooterInputs inputs) {
     wheelMotor.update(Constants.kDefaultPeriod);
-      inputs.wheelAppliedOutput = wheelMotor.getVoltage();
-      inputs.wheelVelocityRPM = wheelMotor.getVelocity().in(Units.RPM);
+    inputs.wheelAppliedOutput = wheelMotor.getVoltage();
+    inputs.wheelsVelocityRPM = wheelMotor.getVelocity().in(Units.RPM);
 
     HoodSim.update(Constants.kDefaultPeriod);
     inputs.hoodPosition = new Rotation2d(HoodSim.getPosition());

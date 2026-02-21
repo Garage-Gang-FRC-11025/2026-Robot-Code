@@ -42,60 +42,61 @@ import frc.robot.Constants.ShooterConstants.WheelConstants;
 
 public class ShooterIOReal implements ShooterIO {
 
-//   private final SparkFlex leadMotor =
-//       new SparkFlex(Constants.ShooterConstants.CanIDs.SHOOTER_MOTOR_CAN_ID,
-// MotorType.kBrushless);
-//   private SparkFlexConfig config = ShooterConstants.MOTOR_CONFIG();
+  //   private final SparkFlex leadMotor =
+  //       new SparkFlex(Constants.ShooterConstants.CanIDs.SHOOTER_MOTOR_CAN_ID,
+  // MotorType.kBrushless);
+  //   private SparkFlexConfig config = ShooterConstants.MOTOR_CONFIG();
 
-//   private final RelativeEncoder encoder = leadMotor.getEncoder();
+  //   private final RelativeEncoder encoder = leadMotor.getEncoder();
 
-//   private final SparkFlexConfig followConfig = new SparkFlexConfig();
+  //   private final SparkFlexConfig followConfig = new SparkFlexConfig();
 
-//   // private final VL6180 timeOfFlight = new VL6180(Port.kOnboard);
+  //   // private final VL6180 timeOfFlight = new VL6180(Port.kOnboard);
 
-//   @Override
-//   public void updateInputs(ShooterInputs inputs) {
-//     inputs.velocityRPM = encoder.getVelocity();
-//     inputs.appliedOutput = leadMotor.getAppliedOutput();
-//     inputs.leadCurrentAmps = leadMotor.getOutputCurrent();
-//     inputs.leadTempCelsius = leadMotor.getMotorTemperature();
+  //   @Override
+  //   public void updateInputs(ShooterInputs inputs) {
+  //     inputs.velocityRPM = encoder.getVelocity();
+  //     inputs.appliedOutput = leadMotor.getAppliedOutput();
+  //     inputs.leadCurrentAmps = leadMotor.getOutputCurrent();
+  //     inputs.leadTempCelsius = leadMotor.getMotorTemperature();
 
-//     // inputs.tofDistanceInches = timeOfFlight.getDistance().in(Units.Inches);
-//   }
+  //     // inputs.tofDistanceInches = timeOfFlight.getDistance().in(Units.Inches);
+  //   }
 
-//   @Override
-//   public void setVoltage(double volts) {
-//     leadMotor.setVoltage(volts);
-//   }
+  //   @Override
+  //   public void setVoltage(double volts) {
+  //     leadMotor.setVoltage(volts);
+  //   }
 
-//   @Override
-//   public void setVel(AngularVelocity angle) {
-//     leadMotor
-//         .getClosedLoopController()
-//         .setReference(
-//             angle.in(Units.RPM) / ShooterConstants.GEAR_RATIO,
-//             ControlType.kMAXMotionVelocityControl);
-//   }
+  //   @Override
+  //   public void setVel(AngularVelocity angle) {
+  //     leadMotor
+  //         .getClosedLoopController()
+  //         .setReference(
+  //             angle.in(Units.RPM) / ShooterConstants.GEAR_RATIO,
+  //             ControlType.kMAXMotionVelocityControl);
+  //   }
 
-//   @Override
-//   public void configMotor(double kV, double kP, double maxAcceleration) {
-//     config.closedLoop.pidf(kP, 0, 0, kV);
-//     config.closedLoop.maxMotion.maxAcceleration(maxAcceleration);
-//     leadMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-//   }
+  //   @Override
+  //   public void configMotor(double kV, double kP, double maxAcceleration) {
+  //     config.closedLoop.pidf(kP, 0, 0, kV);
+  //     config.closedLoop.maxMotion.maxAcceleration(maxAcceleration);
+  //     leadMotor.configure(config, ResetMode.kResetSafeParameters,
+  // PersistMode.kPersistParameters);
+  //   }
 
-//   @Override
-//   public boolean setIdleMode(IdleMode value) {
-//     config.idleMode(value);
-//     followConfig.idleMode(value);
-//     return leadMotor.configure(
-//                 config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-//             == REVLibError.kOk
-//         && followMotor.configure(
-//                 followConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-//             == REVLibError.kOk;
-//   }
-// }
+  //   @Override
+  //   public boolean setIdleMode(IdleMode value) {
+  //     config.idleMode(value);
+  //     followConfig.idleMode(value);
+  //     return leadMotor.configure(
+  //                 config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+  //             == REVLibError.kOk
+  //         && followMotor.configure(
+  //                 followConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+  //             == REVLibError.kOk;
+  //   }
+  // }
   private final TalonFX wheelMotor = new TalonFX(Constants.CanIDs.SHOOTER_WHEEL_CAN_ID);
   private final TalonFX hoodMotor = new TalonFX(Constants.CanIDs.SHOOTER_HOOD_CAN_ID);
   private final TalonFX rotationMotor = new TalonFX(Constants.CanIDs.SHOOTER_ROTATION_CAN_ID);
@@ -338,9 +339,8 @@ public class ShooterIOReal implements ShooterIO {
     return true;
   }
 
- 
-    public boolean setRotationNeutralMode(NeutralModeValue value) {
-   
+  public boolean setRotationNeutralMode(NeutralModeValue value) {
+
     var config = new MotorOutputConfigs();
 
     var status = rotationMotor.getConfigurator().refresh(config);
