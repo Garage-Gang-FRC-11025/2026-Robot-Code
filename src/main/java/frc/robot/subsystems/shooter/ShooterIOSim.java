@@ -84,14 +84,11 @@ public class ShooterIOSim implements ShooterIO {
 
   @Override
   public void setWheelVel(AngularVelocity revPerMin) {
-    System.out.println(revPerMin.in(Units.RPM));
     wheelMotor.setControl(wheelClosedLoopControl.withVelocity(revPerMin));
   }
 
   @Override
   public void configWheel(double kV, double kP, double maxAcceleration) {
-    System.out.println("kV" + kV);
-    System.out.println("kP" + kP);
     TalonFXConfiguration config = new TalonFXConfiguration();
     Slot0Configs slot0Configs = new Slot0Configs();
 
