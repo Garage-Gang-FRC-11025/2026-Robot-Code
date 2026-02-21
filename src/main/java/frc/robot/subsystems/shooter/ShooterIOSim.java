@@ -44,7 +44,7 @@ public class ShooterIOSim implements ShooterIO {
               DCMotor.getFalcon500Foc(1),
               frc.robot.Constants.ShooterConstants.RotationConstants.GEAR_RATIO,
               RotationConstants.ROTATION_MOI,
-              RotationConstants.ROTATION_LENGTH.in(Units.Meters),
+              0.5,
               RotationConstants.MIN_ROTATION_ANGLE.getRadians(),
               RotationConstants.MAX_ROTATION_ANGLE.getRadians(),
               false,
@@ -84,11 +84,14 @@ public class ShooterIOSim implements ShooterIO {
 
   @Override
   public void setWheelVel(AngularVelocity revPerMin) {
+    System.out.println(revPerMin.in(Units.RPM));
     wheelMotor.setControl(wheelClosedLoopControl.withVelocity(revPerMin));
   }
 
   @Override
   public void configWheel(double kV, double kP, double maxAcceleration) {
+    System.out.println("kV" + kV);
+    System.out.println("kP" + kP);
     TalonFXConfiguration config = new TalonFXConfiguration();
     Slot0Configs slot0Configs = new Slot0Configs();
 

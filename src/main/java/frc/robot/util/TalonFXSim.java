@@ -60,7 +60,7 @@ public class TalonFXSim {
         error = targetOutput - adjustedVelocity;
         deltaError = (error - lastError) / dtSeconds;
         velSum += (adjustedVelocity + lastVel) / 2.0 * dtSeconds;
-        volts += kV * error + kS * velSum + kP * deltaError;
+        volts = kV * targetOutput + kS * velSum + kP * deltaError;
         lastError = error;
         break;
       case POSITION:

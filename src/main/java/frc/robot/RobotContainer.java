@@ -34,6 +34,9 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOReal;
+import frc.robot.subsystems.shooter.ShooterIOSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -76,6 +79,8 @@ public class RobotContainer {
                 new ModuleIOSpark(3));
         intake = new Intake(new IntakeIOReal());
         elevator = new Elevator(new ElevatorIOReal());
+        shooter = new Shooter(new ShooterIOReal());
+
         break;
 
       case SIM:
@@ -89,6 +94,7 @@ public class RobotContainer {
                 new ModuleIOSim());
         intake = new Intake(new IntakeIOSim());
         elevator = new Elevator(new ElevatorIOSim());
+        shooter = new Shooter(new ShooterIOSim());
         break;
 
       default:
@@ -102,6 +108,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         intake = new Intake(new IntakeIO() {});
         elevator = new Elevator(new ElevatorIO() {});
+        shooter = new Shooter(new ShooterIO() {});
         break;
     }
 
@@ -188,17 +195,10 @@ public class RobotContainer {
         .whileTrue(Commands.run(() -> elevator.setElevatorVoltage(1)))
         .onFalse(Commands.runOnce(() -> elevator.setElevatorVoltage(0)));
     controller
-      .rightTrigger()
-      .whileTrue(
-            Commands.run(
-                    () -> 
-                        shooter.setWheelVoltage(1)))
-    .onFalse(
-            Commands.runOnce(
-                    () -> 
-                        shooter.setWheelVoltage(0)));
-
-
+        .rightTrigger()
+        .whileTrue(Commands.run(() -> shooter.sethoodPos(Rotation2d.fromDegrees(180))))
+        .onFalse(Commands.runOnce(() -> shooter.sethoodPos(Rotation2d.fromDegrees(0))));
+    // Simulated wheel, rotation, hood
   }
 
   /**
