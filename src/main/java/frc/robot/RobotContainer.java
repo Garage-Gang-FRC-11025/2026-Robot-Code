@@ -24,6 +24,9 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOReal;
+import frc.robot.subsystems.shooter.ShooterIOSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -55,6 +58,8 @@ public class RobotContainer {
                 new ModuleIOSpark(1),
                 new ModuleIOSpark(2),
                 new ModuleIOSpark(3));
+        shooter = new Shooter(new ShooterIOReal());
+
         break;
 
       case SIM:
@@ -66,6 +71,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
+        shooter = new Shooter(new ShooterIOSim());
         break;
 
       default:
@@ -77,6 +83,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        shooter = new Shooter(new ShooterIO() {});
         break;
     }
 
@@ -142,17 +149,10 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
     controller
-      .rightTrigger()
-      .whileTrue(
-            Commands.run(
-                    () -> 
-                        shooter.setWheelVoltage(1)))
-    .onFalse(
-            Commands.runOnce(
-                    () -> 
-                        shooter.setWheelVoltage(0)));
-
-
+        .rightTrigger()
+        .whileTrue(Commands.run(() -> shooter.sethoodPos(Rotation2d.fromDegrees(180))))
+        .onFalse(Commands.runOnce(() -> shooter.sethoodPos(Rotation2d.fromDegrees(0))));
+    // Simulated wheel, rotation, hood
   }
 
   /**
