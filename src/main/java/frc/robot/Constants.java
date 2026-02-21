@@ -33,16 +33,6 @@ public final class Constants {
   }
 
   public class IntakeConstants {
-
-    public class RollerConstants {
-
-      public static final double SUPPLY_CURRENT_LIMIT = 0;
-      public static final double STATOR_CURRENT_LIMIT = 0;
-      public static final double ROLLER_GEARING = 3;
-      public static final double SUPPLY_VOLTAGE_TIME = 0;
-      public static final double ROLLER_MOI = 0.1;
-    }
-
     public class ExtenderConstants {
 
       public static final double GEAR_RATIO = 75; // will need to be changed ALOT
@@ -54,6 +44,22 @@ public final class Constants {
       public static final double EXTENDER_MOI = 0.1;
       public static final Distance EXTENDER_LENGTH = Units.Inches.of(12.5);
     }
+    public class RollerConstants {
+
+      public static final double SUPPLY_CURRENT_LIMIT = 0;
+      public static final double STATOR_CURRENT_LIMIT = 0;
+      public static final double ROLLER_GEARING = 3;
+      public static final double SUPPLY_VOLTAGE_TIME = 0;
+      public static final double ROLLER_MOI = 0.1;
+    }
+  }
+  public class ElevatorConstants {
+
+    public static final double SUPPLY_CURRENT_LIMIT = 30;
+    public static final double STATOR_CURRENT_LIMIT = 30;
+    public static final double SUPPLY_VOLTAGE_TIME = 0;
+    public static final double ELEVATOR_GEARING = 1;
+    public static final double ELEVATOR_MOI = 0.1;
   }
 
   public class CanIDs {
@@ -67,8 +73,12 @@ public final class Constants {
     public static final int BACK_RIGHT_ANGLE_CAN_ID = 8;
     public static final int INTAKE_EXTENDER_CAN_ID = 9;
     public static final int INTAKE_ROLLER_CAN_ID = 10;
+    public static final int ELEVATOR_ROLLER_CAN_ID = 11;
+    public static final int ELEVATOR_ELEVATOR_CAN_ID = 12;
+    public static final int ELEVATOR_CAN_ID = 12;
   }
 
+  
   public static final double MAX_VOLTAGE = 12.0;
   public static final double kDefaultPeriod = 0.02;
 }
