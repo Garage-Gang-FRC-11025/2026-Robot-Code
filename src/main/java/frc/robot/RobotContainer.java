@@ -10,6 +10,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,12 +18,17 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.IntakeIO;
+import frc.robot.subsystems.Intake.IntakeIOReal;
+import frc.robot.subsystems.Intake.IntakeIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -34,9 +40,16 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-
+  private final Intake intake;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+
+  // Tunable numbers
+  private static final LoggedTunableNumber rollerVelocityConfig =
+      new LoggedTunableNumber("Intake/Roller/Velocity");
+  private static final LoggedTunableNumber extenderVelocityConfig =
+      new LoggedTunableNumber("Intake/Extender/Velocity");
+  private static final LoggedTunableNumber tunablePos = new LoggedTunableNumber("tunablePos", 90);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -53,6 +66,7 @@ public class RobotContainer {
                 new ModuleIOSpark(1),
                 new ModuleIOSpark(2),
                 new ModuleIOSpark(3));
+        intake = new Intake(new IntakeIOReal());
         break;
 
       case SIM:
@@ -64,6 +78,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
+        intake = new Intake(new IntakeIOSim());
         break;
 
       default:
@@ -75,6 +90,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        intake = new Intake(new IntakeIO() {});
         break;
     }
 
@@ -114,7 +130,7 @@ public class RobotContainer {
             drive,
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () -> controller.getRightX())); // Changed into a positive from a negitive
 
     // Lock to 0° when A button is held
     controller
@@ -139,6 +155,23 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
+
+    // extend the extender to out position when Y button is held
+    controller
+        .y()
+        .toggleOnTrue(
+            Commands.run(() -> intake.setExtenderPos(Rotation2d.fromDegrees(tunablePos.get()))))
+        .toggleOnFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
+
+    controller
+        .rightBumper()
+        .whileTrue(Commands.run(() -> intake.setRollerVoltage(1)))
+        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
+
+    controller
+        .leftBumper()
+        .whileTrue(Commands.run(() -> intake.setRollerVoltage(-1)))
+        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
   }
 
   /**

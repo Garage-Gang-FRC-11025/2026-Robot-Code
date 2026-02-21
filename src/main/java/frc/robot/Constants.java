@@ -7,6 +7,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -28,4 +31,44 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
+
+  public class IntakeConstants {
+
+    public class RollerConstants {
+
+      public static final double SUPPLY_CURRENT_LIMIT = 0;
+      public static final double STATOR_CURRENT_LIMIT = 0;
+      public static final double ROLLER_GEARING = 3;
+      public static final double SUPPLY_VOLTAGE_TIME = 0;
+      public static final double ROLLER_MOI = 0.1;
+    }
+
+    public class ExtenderConstants {
+
+      public static final double GEAR_RATIO = 75; // will need to be changed ALOT
+      public static final Rotation2d MAX_EXTENDER_ANGLE = Rotation2d.fromDegrees(130);
+      public static final Rotation2d MIN_EXTENDER_ANGLE = Rotation2d.fromDegrees(0);
+      public static final double SUPPLY_CURRENT_LIMIT = 0;
+      public static final double STATOR_CURRENT_LIMIT = 0;
+      public static final double SUPPLY_VOLTAGE_TIME = 0;
+      public static final double EXTENDER_MOI = 0.1;
+      public static final Distance EXTENDER_LENGTH = Units.Inches.of(12.5);
+    }
+  }
+
+  public class CanIDs {
+    public static final int FRONT_LEFT_WHEEL_CAN_ID = 1;
+    public static final int FRONT_LEFT_ANGLE_CAN_ID = 2;
+    public static final int FRONT_RIGHT_WHEEL_CAN_ID = 3;
+    public static final int FRONT_RIGHT_ANGLE_CAN_ID = 4;
+    public static final int BACK_LEFT_WHEEL_CAN_ID = 5;
+    public static final int BACK_LEFT_ANGLE_CAN_ID = 6;
+    public static final int BACK_RIGHT_WHEEL_CAN_ID = 7;
+    public static final int BACK_RIGHT_ANGLE_CAN_ID = 8;
+    public static final int INTAKE_EXTENDER_CAN_ID = 9;
+    public static final int INTAKE_ROLLER_CAN_ID = 10;
+  }
+
+  public static final double MAX_VOLTAGE = 12.0;
+  public static final double kDefaultPeriod = 0.02;
 }
