@@ -18,20 +18,24 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.Intake.Intake;
-import frc.robot.subsystems.Intake.IntakeIO;
-import frc.robot.subsystems.Intake.IntakeIOReal;
-import frc.robot.subsystems.Intake.IntakeIOSim;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.ElevatorIOReal;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.IntakeIO;
+import frc.robot.subsystems.Intake.IntakeIOReal;
+import frc.robot.subsystems.Intake.IntakeIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOReal;
+import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -46,6 +50,8 @@ public class RobotContainer {
   private final Drive drive;
   private final Intake intake;
   private final Elevator elevator;
+
+  private final Shooter shooter;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -73,6 +79,8 @@ public class RobotContainer {
                 new ModuleIOSpark(3));
         intake = new Intake(new IntakeIOReal());
         elevator = new Elevator(new ElevatorIOReal());
+        shooter = new Shooter(new ShooterIOReal());
+
         break;
 
       case SIM:
@@ -86,6 +94,7 @@ public class RobotContainer {
                 new ModuleIOSim());
         intake = new Intake(new IntakeIOSim());
         elevator = new Elevator(new ElevatorIOSim());
+        shooter = new Shooter(new ShooterIOSim());
         break;
 
       default:
@@ -99,6 +108,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         intake = new Intake(new IntakeIO() {});
         elevator = new Elevator(new ElevatorIO() {});
+        shooter = new Shooter(new ShooterIO() {});
         break;
     }
 
@@ -180,10 +190,12 @@ public class RobotContainer {
         .leftBumper()
         .whileTrue(Commands.run(() -> intake.setRollerVoltage(-1)))
         .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
+    
     controller
         .rightTrigger()
-        .whileTrue(Commands.run(() -> elevator.setElevatorVoltage(1)))
-        .onFalse(Commands.runOnce(() -> elevator.setElevatorVoltage(0)));
+        .whileTrue(Commands.run(() -> shooter.sethoodPos(Rotation2d.fromDegrees(180))))
+        .onFalse(Commands.runOnce(() -> shooter.sethoodPos(Rotation2d.fromDegrees(0))));
+    // Simulated wheel, rotation, hood
   }
 
   /**
