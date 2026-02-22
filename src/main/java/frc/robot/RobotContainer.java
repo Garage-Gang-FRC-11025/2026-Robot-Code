@@ -177,6 +177,12 @@ public class RobotContainer {
                 () -> -controller.getLeftY(),
                 () -> -controller.getLeftX(),
                 () -> Rotation2d.kZero));
+    // Intake should move in and out when A button is held
+    var pos1 = Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(0)), intake);
+    var pos2 = Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(360)), intake);
+    Command alternatingCommand =
+        Commands.sequence(pos1, Commands.waitSeconds(1.0), pos2, Commands.waitSeconds(0.5))
+            .repeatedly();
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -213,7 +219,6 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(Commands.run(() -> shooter.sethoodPos(Rotation2d.fromDegrees(180))))
         .onFalse(Commands.runOnce(() -> shooter.sethoodPos(Rotation2d.fromDegrees(0))));
-    // Simulated wheel, rotation, hood
   }
 
   /**
