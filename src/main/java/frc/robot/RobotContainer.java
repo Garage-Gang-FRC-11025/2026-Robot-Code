@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.vision.VisionConstants.*;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -36,6 +38,10 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -52,6 +58,7 @@ public class RobotContainer {
   private final Elevator elevator;
 
   private final Shooter shooter;
+  private final Vision vision;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -81,6 +88,11 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOReal());
         shooter = new Shooter(new ShooterIOReal());
 
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVision(camera0Name, robotToCamera0),
+                new VisionIOPhotonVision(camera1Name, robotToCamera1));
         break;
 
       case SIM:
@@ -95,6 +107,11 @@ public class RobotContainer {
         intake = new Intake(new IntakeIOSim());
         elevator = new Elevator(new ElevatorIOSim());
         shooter = new Shooter(new ShooterIOSim());
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
+                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
         break;
 
       default:
@@ -109,6 +126,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeIO() {});
         elevator = new Elevator(new ElevatorIO() {});
         shooter = new Shooter(new ShooterIO() {});
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
     }
 
@@ -190,7 +208,7 @@ public class RobotContainer {
         .leftBumper()
         .whileTrue(Commands.run(() -> intake.setRollerVoltage(-1)))
         .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
-    
+
     controller
         .rightTrigger()
         .whileTrue(Commands.run(() -> shooter.sethoodPos(Rotation2d.fromDegrees(180))))

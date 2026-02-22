@@ -1,18 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import com.revrobotics.REVLibError;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkFlexConfig;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.AngularVelocity;
-import frc.robot.Constants;
-import frc.robot.Constants.ShooterConstants;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -73,7 +60,7 @@ public class ShooterIOReal implements ShooterIO {
 
   private final MotionMagicVoltage hoodClosedLoopControl =
       new MotionMagicVoltage(0).withEnableFOC(false);
-  
+
   public ShooterIOReal() {
     // Motor config
     TalonFXConfiguration wheelConfig = new TalonFXConfiguration();
@@ -101,9 +88,6 @@ public class ShooterIOReal implements ShooterIO {
     wheelVelocity = wheelMotor.getVelocity();
 
     // Update status signals
-
-
-  
 
     TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
 
