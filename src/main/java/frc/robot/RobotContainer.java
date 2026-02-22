@@ -38,11 +38,11 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
-import frc.robot.util.LoggedTunableNumber;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -87,7 +87,6 @@ public class RobotContainer {
         intake = new Intake(new IntakeIOReal());
         elevator = new Elevator(new ElevatorIOReal());
         shooter = new Shooter(new ShooterIOReal());
-
 
         vision =
             new Vision(
@@ -209,7 +208,7 @@ public class RobotContainer {
         .leftBumper()
         .whileTrue(Commands.run(() -> intake.setRollerVoltage(-1)))
         .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
-    
+
     controller
         .rightTrigger()
         .whileTrue(Commands.run(() -> shooter.sethoodPos(Rotation2d.fromDegrees(180))))
