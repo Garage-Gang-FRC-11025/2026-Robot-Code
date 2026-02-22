@@ -12,7 +12,7 @@ import org.littletonrobotics.junction.Logger;
 public class Shooter extends SubsystemBase {
 
   private final ShooterIO shooterIO;
-  private final shooterInputsAutoLogged inputs = new shooterInputsAutoLogged();
+  private final ShooterInputsAutoLogged inputs = new ShooterInputsAutoLogged();
 
   private static final LoggedTunableNumber wKP = new LoggedTunableNumber("shooter/Wheel/kP");
   private static final LoggedTunableNumber wKV = new LoggedTunableNumber("shooter/Wheel/kV");

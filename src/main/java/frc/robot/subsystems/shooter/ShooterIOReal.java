@@ -1,18 +1,18 @@
 package frc.robot.subsystems.shooter;
 
-// import com.revrobotics.REVLibError;
-// import com.revrobotics.RelativeEncoder;
-// import com.revrobotics.spark.SparkBase.ControlType;
-// import com.revrobotics.spark.SparkBase.PersistMode;
-// import com.revrobotics.spark.SparkBase.ResetMode;
-// import com.revrobotics.spark.SparkFlex;
-// import com.revrobotics.spark.SparkLowLevel.MotorType;
-// import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-// import com.revrobotics.spark.config.SparkFlexConfig;
-// import edu.wpi.first.units.Units;
-// import edu.wpi.first.units.measure.AngularVelocity;
-// import frc.robot.Constants;
-// import frc.robot.Constants.ShooterConstants;
+import com.revrobotics.REVLibError;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
+import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -42,61 +42,6 @@ import frc.robot.Constants.ShooterConstants.WheelConstants;
 
 public class ShooterIOReal implements ShooterIO {
 
-  //   private final SparkFlex leadMotor =
-  //       new SparkFlex(Constants.ShooterConstants.CanIDs.SHOOTER_MOTOR_CAN_ID,
-  // MotorType.kBrushless);
-  //   private SparkFlexConfig config = ShooterConstants.MOTOR_CONFIG();
-
-  //   private final RelativeEncoder encoder = leadMotor.getEncoder();
-
-  //   private final SparkFlexConfig followConfig = new SparkFlexConfig();
-
-  //   // private final VL6180 timeOfFlight = new VL6180(Port.kOnboard);
-
-  //   @Override
-  //   public void updateInputs(ShooterInputs inputs) {
-  //     inputs.velocityRPM = encoder.getVelocity();
-  //     inputs.appliedOutput = leadMotor.getAppliedOutput();
-  //     inputs.leadCurrentAmps = leadMotor.getOutputCurrent();
-  //     inputs.leadTempCelsius = leadMotor.getMotorTemperature();
-
-  //     // inputs.tofDistanceInches = timeOfFlight.getDistance().in(Units.Inches);
-  //   }
-
-  //   @Override
-  //   public void setVoltage(double volts) {
-  //     leadMotor.setVoltage(volts);
-  //   }
-
-  //   @Override
-  //   public void setVel(AngularVelocity angle) {
-  //     leadMotor
-  //         .getClosedLoopController()
-  //         .setReference(
-  //             angle.in(Units.RPM) / ShooterConstants.GEAR_RATIO,
-  //             ControlType.kMAXMotionVelocityControl);
-  //   }
-
-  //   @Override
-  //   public void configMotor(double kV, double kP, double maxAcceleration) {
-  //     config.closedLoop.pidf(kP, 0, 0, kV);
-  //     config.closedLoop.maxMotion.maxAcceleration(maxAcceleration);
-  //     leadMotor.configure(config, ResetMode.kResetSafeParameters,
-  // PersistMode.kPersistParameters);
-  //   }
-
-  //   @Override
-  //   public boolean setIdleMode(IdleMode value) {
-  //     config.idleMode(value);
-  //     followConfig.idleMode(value);
-  //     return leadMotor.configure(
-  //                 config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-  //             == REVLibError.kOk
-  //         && followMotor.configure(
-  //                 followConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-  //             == REVLibError.kOk;
-  //   }
-  // }
   private final TalonFX wheelMotor = new TalonFX(Constants.CanIDs.SHOOTER_WHEEL_CAN_ID);
   private final TalonFX hoodMotor = new TalonFX(Constants.CanIDs.SHOOTER_HOOD_CAN_ID);
   private final TalonFX rotationMotor = new TalonFX(Constants.CanIDs.SHOOTER_ROTATION_CAN_ID);
@@ -128,7 +73,7 @@ public class ShooterIOReal implements ShooterIO {
 
   private final MotionMagicVoltage hoodClosedLoopControl =
       new MotionMagicVoltage(0).withEnableFOC(false);
-
+  
   public ShooterIOReal() {
     // Motor config
     TalonFXConfiguration wheelConfig = new TalonFXConfiguration();
@@ -157,10 +102,8 @@ public class ShooterIOReal implements ShooterIO {
 
     // Update status signals
 
-    BaseStatusSignal.setUpdateFrequencyForAll(50, wheelAppliedVoltage, wheelCurrent, wheelVelocity);
-    BaseStatusSignal.setUpdateFrequencyForAll(1, wheelDeviceTemp);
 
-    wheelMotor.optimizeBusUtilization();
+  
 
     TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
 
@@ -169,7 +112,7 @@ public class ShooterIOReal implements ShooterIO {
     hoodConfig.CurrentLimits.SupplyCurrentLimit = HoodConstants.SUPPLY_CURRENT_LIMIT;
     hoodConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     hoodConfig.CurrentLimits.StatorCurrentLimit = HoodConstants.STATOR_CURRENT_LIMIT;
-    hoodConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    hoodConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
     hoodConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     hoodConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -203,7 +146,7 @@ public class ShooterIOReal implements ShooterIO {
     rotationConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
         RotationConstants.MAX_ROTATION_ANGLE.getRotations();
     rotationConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
-        RotationConstants.MIN_ROTATION_ANGLE.minus(Rotation2d.fromDegrees(2.0)).getRotations();
+        RotationConstants.MIN_ROTATION_ANGLE.getRotations();
 
     rotationConfig.Feedback.SensorToMechanismRatio = RotationConstants.GEAR_RATIO;
     rotationConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
@@ -229,12 +172,16 @@ public class ShooterIOReal implements ShooterIO {
     BaseStatusSignal.setUpdateFrequencyForAll(100, hoodAppliedVoltage, hoodAngle);
     BaseStatusSignal.setUpdateFrequencyForAll(50, hoodCurrent);
     BaseStatusSignal.setUpdateFrequencyForAll(1, hoodDeviceTemp);
+    BaseStatusSignal.setUpdateFrequencyForAll(50, wheelAppliedVoltage, wheelCurrent, wheelVelocity);
+    BaseStatusSignal.setUpdateFrequencyForAll(1, wheelDeviceTemp);
 
     hoodMotor.optimizeBusUtilization();
+    wheelMotor.optimizeBusUtilization();
+    rotationMotor.optimizeBusUtilization();
   }
 
   @Override
-  public void updateInputs(shooterInputs inputs) {
+  public void updateInputs(ShooterInputs inputs) {
     BaseStatusSignal.refreshAll(
         wheelAppliedVoltage,
         wheelCurrent,

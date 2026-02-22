@@ -65,7 +65,7 @@ public class IntakeIOReal implements IntakeIO {
     rollerConfig.Feedback.SensorToMechanismRatio = RollerConstants.ROLLER_GEARING;
     rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    
+
     rollerConfig.Voltage.SupplyVoltageTimeConstant = RollerConstants.SUPPLY_VOLTAGE_TIME;
 
     rollerMotor.getConfigurator().apply(rollerConfig);

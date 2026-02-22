@@ -24,7 +24,7 @@ public class ShooterIOSim implements ShooterIO {
       new TalonFXSim(
           DCMotor.getKrakenX60Foc(1), WheelConstants.WHEEL_GEARING, WheelConstants.WHEEL_MOI);
 
-  private TalonFXArmSim HoodSim =
+  private TalonFXArmSim hoodSim =
       new TalonFXArmSim(
           new SingleJointedArmSim(
               DCMotor.getFalcon500Foc(1),
@@ -36,7 +36,7 @@ public class ShooterIOSim implements ShooterIO {
               false,
               0));
 
-  private TalonFXArmSim RotationSim =
+  private TalonFXArmSim rotationSim =
       new TalonFXArmSim(
           new SingleJointedArmSim(
               DCMotor.getKrakenX60Foc(1),
@@ -60,19 +60,19 @@ public class ShooterIOSim implements ShooterIO {
   public ShooterIOSim() {}
 
   @Override
-  public void updateInputs(shooterInputs inputs) {
+  public void updateInputs(ShooterInputs inputs) {
     wheelMotor.update(Constants.kDefaultPeriod);
     inputs.wheelAppliedOutput = wheelMotor.getVoltage();
     inputs.wheelsVelocityRPM = wheelMotor.getVelocity().in(Units.RPM);
 
-    HoodSim.update(Constants.kDefaultPeriod);
-    inputs.hoodPosition = new Rotation2d(HoodSim.getPosition());
-    inputs.hoodAppliedOutput = HoodSim.getVoltage().in(Units.Volts);
-    inputs.hoodVelocity = HoodSim.getVelocity().in(Units.DegreesPerSecond);
-    RotationSim.update(Constants.kDefaultPeriod);
-    inputs.rotationPosition = new Rotation2d(RotationSim.getPosition());
-    inputs.rotationAppliedOutput = RotationSim.getVoltage().in(Units.Volts);
-    inputs.rotationVelocity = RotationSim.getVelocity().in(Units.DegreesPerSecond);
+    hoodSim.update(Constants.kDefaultPeriod);
+    inputs.hoodPosition = new Rotation2d(hoodSim.getPosition());
+    inputs.hoodAppliedOutput = hoodSim.getVoltage().in(Units.Volts);
+    inputs.hoodVelocity = hoodSim.getVelocity().in(Units.DegreesPerSecond);
+    rotationSim.update(Constants.kDefaultPeriod);
+    inputs.rotationPosition = new Rotation2d(rotationSim.getPosition());
+    inputs.rotationAppliedOutput = rotationSim.getVoltage().in(Units.Volts);
+    inputs.rotationVelocity = rotationSim.getVelocity().in(Units.DegreesPerSecond);
   }
 
   @Override
@@ -100,12 +100,12 @@ public class ShooterIOSim implements ShooterIO {
 
   @Override
   public void setHoodVoltage(double volts) {
-    HoodSim.setControl(hoodOpenLoopControl.withOutput(volts));
+    hoodSim.setControl(hoodOpenLoopControl.withOutput(volts));
   }
 
   @Override
   public void setHoodPos(Rotation2d angle) {
-    HoodSim.setControl(hoodClosedLoopControl.withPosition(angle.getRotations()));
+    hoodSim.setControl(hoodClosedLoopControl.withPosition(angle.getRotations()));
   }
 
   @Override
@@ -119,17 +119,17 @@ public class ShooterIOSim implements ShooterIO {
     config.Slot0 = slot0Configs;
     config.MotionMagic = mmConfigs;
 
-    HoodSim.setConfig(config);
+    hoodSim.setConfig(config);
   }
 
   @Override
   public void setRotationVoltage(double volts) {
-    RotationSim.setControl(rotationOpenLoopControl.withOutput(volts));
+    rotationSim.setControl(rotationOpenLoopControl.withOutput(volts));
   }
 
   @Override
   public void setRotationPos(Rotation2d angle) {
-    RotationSim.setControl(rotationClosedLoopControl.withPosition(angle.getRotations()));
+    rotationSim.setControl(rotationClosedLoopControl.withPosition(angle.getRotations()));
   }
 
   @Override
@@ -143,6 +143,6 @@ public class ShooterIOSim implements ShooterIO {
     config.Slot0 = slot0Configs;
     config.MotionMagic = mmConfigs;
 
-    RotationSim.setConfig(config);
+    rotationSim.setConfig(config);
   }
 }

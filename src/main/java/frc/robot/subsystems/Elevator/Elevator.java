@@ -1,13 +1,12 @@
 package frc.robot.subsystems.Elevator;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
-
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 
 public class Elevator extends SubsystemBase {
 
@@ -18,17 +17,17 @@ public class Elevator extends SubsystemBase {
   private static final LoggedTunableNumber eleKV = new LoggedTunableNumber("Elevator/kV");
   private static final LoggedTunableNumber elevatorTargetAccelerationConfig =
       new LoggedTunableNumber("Elevator/Acceleration");
-    private static final LoggedTunableNumber elevatorMaxVelocityConfig =
+  private static final LoggedTunableNumber elevatorMaxVelocityConfig =
       new LoggedTunableNumber("Elevator/MaxVelocity");
+
   static {
     if (Constants.currentMode == Mode.REAL) {
       eleKP.initDefault(0.8);
       eleKV.initDefault(0.15);
-      
+
       elevatorTargetAccelerationConfig.initDefault(300.0);
       elevatorMaxVelocityConfig.initDefault(1500.0);
-    }
-    else{
+    } else {
       eleKP.initDefault(1);
       eleKV.initDefault(1);
 
@@ -36,7 +35,7 @@ public class Elevator extends SubsystemBase {
       elevatorMaxVelocityConfig.initDefault(2000.0);
     }
   }
-  
+
   public Elevator(ElevatorIO ElevatorIO) {
     this.ElevatorIO = ElevatorIO;
     configElevator();
@@ -45,7 +44,7 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     Logger.processInputs("Elevator", inputs);
     int hc = hashCode();
-     if (eleKP.hasChanged(hc) 
+    if (eleKP.hasChanged(hc)
         || eleKV.hasChanged(hc)
         || elevatorMaxVelocityConfig.hasChanged(hc)
         || elevatorTargetAccelerationConfig.hasChanged(hc)) configElevator();
@@ -65,5 +64,5 @@ public class Elevator extends SubsystemBase {
     mmConfigs.MotionMagicAcceleration = elevatorTargetAccelerationConfig.get();
     mmConfigs.MotionMagicCruiseVelocity = elevatorMaxVelocityConfig.get();
     ElevatorIO.configElevator(eleKP.get(), eleKV.get(), elevatorMaxVelocityConfig.get());
-}
+  }
 }
