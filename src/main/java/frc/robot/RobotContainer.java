@@ -202,6 +202,7 @@ public class RobotContainer {
     controller
         .y()
         .toggleOnTrue(
+            // Set "tunablePos" to a better variable name. This is not clear.
             Commands.run(() -> intake.setExtenderPos(Rotation2d.fromDegrees(tunablePos.get()))))
         .toggleOnFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
 
