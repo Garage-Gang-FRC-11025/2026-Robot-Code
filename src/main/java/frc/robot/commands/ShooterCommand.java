@@ -5,11 +5,29 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.elevator.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ShooterCommand extends Command {
   /** Creates a new ShooterCommand. */
+
+  private final Shooter shooter;
+  private final Elevator elevator;
+
   public ShooterCommand() {
+
+    var shootCommand =
+        Commands.run(() -> {
+          shooter.setWheelVoltage(1);
+          elevator.setElevatorVoltage(1);
+        }, shooter, elevator);
+    var stopCommand
+        = Commands.run(() -> {
+          shooter.setWheelVoltage(0);
+          elevator.setElevatorVoltage(0);
+        }, shooter, elevator);
 
     // Use addRequirements() here to declare subsystem dependencies.
   }
