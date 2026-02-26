@@ -36,6 +36,7 @@ public final class Constants {
     public static final int SHOOTER_WHEEL_CAN_ID = 6;
     public static final int SHOOTER_HOOD_CAN_ID = 7;
     public static final int SHOOTER_ROTATION_CAN_ID = 8;
+    public static final int ELEVATOR_CAN_ID = 9;
   }
 
   public final class ShooterConstants {
@@ -76,6 +77,16 @@ public final class Constants {
     }
   }
 
+
+  public class ElevatorConstants {
+
+    public static final double SUPPLY_CURRENT_LIMIT = 30;
+    public static final double STATOR_CURRENT_LIMIT = 30;
+    public static final double SUPPLY_VOLTAGE_TIME = 0;
+    public static final double ELEVATOR_GEARING = 1;
+    public static final double ELEVATOR_MOI = 0.1;
+  }
   public static final double MAX_VOLTAGE = 12.0;
   public static final double kDefaultPeriod = 0.02;
+
 }
