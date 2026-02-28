@@ -217,9 +217,15 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
 
     controller
-        .rightTrigger()
+        .leftTrigger()
         .whileTrue(Commands.run(() -> shooter.sethoodPos(Rotation2d.fromDegrees(180))))
         .onFalse(Commands.runOnce(() -> shooter.sethoodPos(Rotation2d.fromDegrees(0))));
+    controller
+        .rightTrigger()
+        .whileTrue(Commands.run(() -> shooter.setWheelVoltage(1)))
+        .onFalse(Commands.runOnce(() -> shooter.setWheelVoltage(0)))
+        .whileTrue(Commands.run(() -> elevator.setElevatorVoltage(1)))
+        .onFalse(Commands.run(() -> elevator.setElevatorVoltage(0)));
   }
 
   /**
