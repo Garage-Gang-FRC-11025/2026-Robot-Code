@@ -7,9 +7,12 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.vision.VisionConstants.*;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,6 +20,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ShooterCommand;
+import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Elevator.ElevatorIO;
+import frc.robot.subsystems.Elevator.ElevatorIOReal;
+import frc.robot.subsystems.Elevator.ElevatorIOSim;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.IntakeIO;
+import frc.robot.subsystems.Intake.IntakeIOReal;
+import frc.robot.subsystems.Intake.IntakeIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -27,6 +39,11 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -38,10 +55,20 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Intake intake;
+  private final Elevator elevator;
 
   private final Shooter shooter;
+  private final Vision vision;
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+
+  // Tunable numbers
+  private static final LoggedTunableNumber rollerVelocityConfig =
+      new LoggedTunableNumber("Intake/Roller/Velocity");
+  private static final LoggedTunableNumber extenderVelocityConfig =
+      new LoggedTunableNumber("Intake/Extender/Velocity");
+  private static final LoggedTunableNumber tunablePos = new LoggedTunableNumber("tunablePos", 90);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -58,8 +85,15 @@ public class RobotContainer {
                 new ModuleIOSpark(1),
                 new ModuleIOSpark(2),
                 new ModuleIOSpark(3));
+        intake = new Intake(new IntakeIOReal());
+        elevator = new Elevator(new ElevatorIOReal());
         shooter = new Shooter(new ShooterIOReal());
 
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVision(camera0Name, robotToCamera0),
+                new VisionIOPhotonVision(camera1Name, robotToCamera1));
         break;
 
       case SIM:
@@ -71,7 +105,14 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
+        intake = new Intake(new IntakeIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
         shooter = new Shooter(new ShooterIOSim());
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
+                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
         break;
 
       default:
@@ -83,7 +124,10 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        intake = new Intake(new IntakeIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
         shooter = new Shooter(new ShooterIO() {});
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
     }
 
@@ -109,7 +153,9 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
   }
-
+  // intake pivot 2.25 volts hard limit, both direction. //elavator 11.5 volts, //intake roller 11.5
+  // volts, //turret angle rotater, 1 volt max
+  // shooter -11.5. volts. //hood +-1.5 volts. //Drivebase remains unchanged.
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -123,7 +169,7 @@ public class RobotContainer {
             drive,
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () -> controller.getRightX())); // Changed into a positive from a negitive
 
     // Lock to 0° when A button is held
     controller
@@ -134,6 +180,12 @@ public class RobotContainer {
                 () -> -controller.getLeftY(),
                 () -> -controller.getLeftX(),
                 () -> Rotation2d.kZero));
+    // Intake should move in and out when A button is held
+    var pos1 = Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(0)), intake);
+    var pos2 = Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(360)), intake);
+    Command alternatingCommand =
+        Commands.sequence(pos1, Commands.waitSeconds(1.0), pos2, Commands.waitSeconds(0.5))
+            .repeatedly();
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -148,12 +200,41 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
+
+    // extend the extender to out position when Y button is held
     controller
-        .rightTrigger()
+        .y()
+        .toggleOnTrue(
+            // Set "tunablePos" to a better variable name. This is not clear.
+            Commands.run(() -> intake.setExtenderPos(Rotation2d.fromDegrees(tunablePos.get()))))
+        .toggleOnFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
+
+    controller
+        .rightBumper()
+        .whileTrue(Commands.run(() -> intake.setRollerVoltage(1)))
+        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
+
+    controller
+        .leftBumper()
+        .whileTrue(Commands.run(() -> intake.setRollerVoltage(-1)))
+        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
+        
+    controller
+        .leftTrigger()
         .whileTrue(Commands.run(() -> shooter.sethoodPos(Rotation2d.fromDegrees(180))))
         .onFalse(Commands.runOnce(() -> shooter.sethoodPos(Rotation2d.fromDegrees(0))));
-    // Simulated wheel, rotation, hood
-  }
+    controller
+        .rightTrigger()
+        .whileTrue(Commands.run(() -> shooter.setWheelVoltage(1)))
+        .onFalse(Commands.runOnce(() -> shooter.setWheelVoltage(0)))
+        .whileTrue(Commands.run(() -> elevator.setElevatorVoltage(1)))
+        .onFalse(Commands.run(() -> elevator.setElevatorVoltage(0)));
+    controller
+        .povUp()
+        .whileTrue(new ShooterCommand(shooter));
+
+        
+    }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
