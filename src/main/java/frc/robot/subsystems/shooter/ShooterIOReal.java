@@ -189,6 +189,7 @@ public class ShooterIOReal implements ShooterIO {
   @Override
   public void setWheelVoltage(double volts) {
     wheelMotor.setControl(wheelOpenLoopControl.withOutput(volts));
+    setWheelVoltage(-11.5);
   }
 
   @Override
@@ -251,10 +252,12 @@ public class ShooterIOReal implements ShooterIO {
 
   public void setHoodVoltage(double volts) {
     hoodMotor.setControl(hoodOpenLoopControl.withOutput(volts));
+    setHoodVoltage(1.5);
   }
 
   public void setRotationVoltage(double volts) {
     rotationMotor.setControl(rotationOpenLoopControl.withOutput(volts));
+    setHoodVoltage(1);
   }
 
   public boolean setHoodNeutralMode(NeutralModeValue value) {

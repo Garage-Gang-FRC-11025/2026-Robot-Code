@@ -147,6 +147,7 @@ public class IntakeIOReal implements IntakeIO {
   @Override
   public void setRollerVoltage(double volts) {
     rollerMotor.setControl(rollerOpenLoopControl.withOutput(volts));
+    setRollerVoltage(11.5);
   }
 
   @Override

@@ -113,7 +113,7 @@ public final class Constants {
 
     public final class WheelConstants {
       public static final double WHEEL_RADIUS_METERS = 0.0762; // 3 inches
-      public static final double WHEEL_GEARING = 1.0;
+      public static final double WHEEL_GEARING = 0.88889;
       public static final double WHEEL_MOI = 0.1;
       public static final double SUPPLY_CURRENT_LIMIT = 40;
       public static final double STATOR_CURRENT_LIMIT = 40;
