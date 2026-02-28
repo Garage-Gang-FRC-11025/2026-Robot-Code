@@ -16,21 +16,12 @@ public class ShooterCommand extends Command {
   private final Shooter shooter;
   private final Elevator elevator;
 
-  public ShooterCommand() {
-
-    var shootCommand =
-        Commands.run(() -> {
-          shooter.setWheelVoltage(1);
-          elevator.setElevatorVoltage(1);
-        }, shooter, elevator);
-    var stopCommand
-        = Commands.run(() -> {
-          shooter.setWheelVoltage(0);
-          elevator.setElevatorVoltage(0);
-        }, shooter, elevator);
-
+  public ShooterCommand(Shooter shooter) {
+    this.shooter = shooter;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(shooter);
   }
+
 
   // Called when the command is initially scheduled.
   @Override
@@ -38,7 +29,9 @@ public class ShooterCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  if( && )
+  }
 
   // Called once the command ends or is interrupted.
   @Override
