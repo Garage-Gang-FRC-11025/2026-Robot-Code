@@ -125,7 +125,7 @@ public class Shooter extends SubsystemBase {
     shooterIO.setWheelVel(vel);
   }
 
-  public void sethoodPos(Rotation2d pos) {
+  public void setHoodPos(Rotation2d pos) {
     shooterIO.setHoodPos(pos);
   }
 
