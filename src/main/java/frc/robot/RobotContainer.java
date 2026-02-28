@@ -152,8 +152,9 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
   }
-    intake pivot 2.25 volts hard limit, both direction. elavator 11.5 volts, //intake roller 11.5 volts, //turret angle rotater, 1 volt max
-    //shooter -11.5. volts. //hood +-1.5 volts. //Drivebase remains unchanged.
+  // intake pivot 2.25 volts hard limit, both direction. //elavator 11.5 volts, //intake roller 11.5
+  // volts, //turret angle rotater, 1 volt max
+  // shooter -11.5. volts. //hood +-1.5 volts. //Drivebase remains unchanged.
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link

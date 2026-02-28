@@ -82,6 +82,7 @@ public class ElevatorIOReal implements ElevatorIO {
   @Override
   public void setElevatorVoltage(double volts) {
     elevatorMotor.setControl(elevatorOpenLoopControl.withOutput(volts));
+    setElevatorVoltage(11.5);
   }
 
   @Override
