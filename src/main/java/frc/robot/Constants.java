@@ -8,8 +8,11 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -54,6 +57,25 @@ public final class Constants {
       public static final double ROLLER_MOI = 0.1;
     }
   }
+   public class FieldConstants {
+
+      public static final Translation2d BLUE_HUB_POSITION = new Translation2d(4.624, 4.031);
+      public static final Translation2d RED_HUB_POSITION = new Translation2d(4.624, 4.031);
+      public static Translation2d OUR_HUB_POSITION()  {
+      if(DriverStation.getAlliance().equals(Alliance.Blue))  {
+
+
+
+      }
+      }
+      public static final double FIELD_LENGTH = 16.54048;
+
+
+   }
+
+
+
+
 
   public class ElevatorConstants {
 
