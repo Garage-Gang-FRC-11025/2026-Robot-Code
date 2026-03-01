@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -142,6 +143,17 @@ public class Shooter extends SubsystemBase {
   }
 
   public void zeroMotors() {
-    shooterIO.zeroMotors();
+    shooterIO.zeroMotors(); 
+  }
+  public Rotation2d getHoodPos() {
+    return inputs.hoodPosition;
+  }
+
+  public Rotation2d getRotationPos() {
+    return inputs.rotationPosition;
+  }
+
+  public AngularVelocity getWheelVel() {
+    return Units.RPM.of(inputs.wheelsVelocityRPM);
   }
 }
