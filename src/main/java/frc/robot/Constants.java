@@ -59,6 +59,25 @@ public final class Constants {
       public static final double ROLLER_MOI = 0.1;
     }
   }
+   public class FieldConstants {
+
+      public static final Translation2d BLUE_HUB_POSITION = new Translation2d(4.624, 4.031);
+      public static final Translation2d RED_HUB_POSITION = new Translation2d(4.624, 4.031);
+      public static Translation2d OUR_HUB_POSITION()  {
+      if(DriverStation.getAlliance().equals(Alliance.Blue))  {
+
+
+
+      }
+      }
+      public static final double FIELD_LENGTH = 16.54048;
+
+
+   }
+
+
+
+
 
   public class FieldConstants {
     // set the hub position translation2d, used that to translate the value and get

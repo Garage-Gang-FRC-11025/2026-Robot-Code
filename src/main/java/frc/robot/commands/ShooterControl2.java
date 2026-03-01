@@ -35,6 +35,7 @@ public class ShooterControl2 extends Command {
     this.elevator = elevator;
     this.drive = drive;
     addRequirements(shooter, elevator);
+  addRequirements(shooter, elevator);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -71,6 +72,28 @@ public class ShooterControl2 extends Command {
 
   private boolean withinTolerance(double targetState, double currentState, double tolerance) {
     return Math.abs(currentState - targetState) < tolerance;
+    
+    shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()));
+    shooter.setHoodPos(Rotation2d.fromDegrees(hoodPositionConfig.get()));
+    shooter.setRotationPos(Geometry.headingPosition(drive.getPose().getTranslation(), FieldConstants.HUB_POSITION));
+    
+
+
+
+
+
+
+
+  }
+
+
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+
+    elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
+
   }
 
   // Called once the command ends or is interrupted.
@@ -80,6 +103,7 @@ public class ShooterControl2 extends Command {
     shooter.setHoodPos(new Rotation2d(0));
     elevator.setElevatorVel(Units.RPM.of(0));
   }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
