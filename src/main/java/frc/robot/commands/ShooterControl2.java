@@ -17,9 +17,9 @@ import frc.robot.util.LoggedTunableNumber;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ShooterControl2 extends Command {
   /** Creates a new ShooterControl2. */
-
   private static final LoggedTunableNumber wheelVelocityConfig =
       new LoggedTunableNumber("Shooter/Wheel/Velocity", 3500);
+
   private static final LoggedTunableNumber elevatorVelocityConfig =
       new LoggedTunableNumber("Elevator/Elevator/Velocity", 400);
   private static final LoggedTunableNumber hoodPositionConfig =
@@ -33,35 +33,26 @@ public class ShooterControl2 extends Command {
     this.shooter = shooter;
     this.elevator = elevator;
     this.drive = drive;
-  addRequirements(shooter, elevator);
+    addRequirements(shooter, elevator);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+
     shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()));
     shooter.setHoodPos(Rotation2d.fromDegrees(hoodPositionConfig.get()));
-    shooter.setRotationPos(Geometry.headingPosition(drive.getPose().getTranslation(), FieldConstants.HUB_POSITION));
-    
-
-
-
-
-
-
-
+    shooter.setRotationPos(
+        Geometry.headingPosition(
+            drive.getPose().getTranslation(), FieldConstants.OUR_HUB_POSITION()));
   }
-
-
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
     elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
-
   }
 
   // Called once the command ends or is interrupted.
