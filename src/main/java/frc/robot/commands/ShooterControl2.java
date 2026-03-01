@@ -75,25 +75,16 @@ public class ShooterControl2 extends Command {
     
     shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()));
     shooter.setHoodPos(Rotation2d.fromDegrees(hoodPositionConfig.get()));
-    shooter.setRotationPos(Geometry.headingPosition(drive.getPose().getTranslation(), FieldConstants.HUB_POSITION));
-    
-
-
-
-
-
-
-
+    shooter.setRotationPos(
+        Geometry.headingPosition(
+            drive.getPose().getTranslation(), FieldConstants.OUR_HUB_POSITION()));
   }
-
-
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
     elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
-
   }
 
   // Called once the command ends or is interrupted.
