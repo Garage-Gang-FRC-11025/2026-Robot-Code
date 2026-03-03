@@ -132,7 +132,7 @@ public final class Constants {
     public static final int BACK_RIGHT_WHEEL_CAN_ID = 7;
     public static final int BACK_RIGHT_ANGLE_CAN_ID = 8;
     public static final int INTAKE_EXTENDER_CAN_ID = 16;
-    public static final int INTAKE_ROLLER_CAN_ID = 11;
+    public static final int INTAKE_ROLLER_CAN_ID = 10;
     public static final int ELEVATOR_ROLLER_CAN_ID = 11;
     public static final int ELEVATOR_CAN_ID = 12;
     public static final int SHOOTER_WHEEL_CAN_ID = 13;

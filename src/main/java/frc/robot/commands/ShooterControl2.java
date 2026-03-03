@@ -26,6 +26,9 @@ public class ShooterControl2 extends Command {
   private static final LoggedTunableNumber hoodPositionConfig =
       new LoggedTunableNumber("Shooter/Hood/Position", 60);
 
+  public double wheelVelocityRPM = 0.0;
+inputs.wheelVelocity = motor.getVelocity();
+
   private Shooter shooter;
   private Elevator elevator;
   private Drive drive;
@@ -88,13 +91,13 @@ public class ShooterControl2 extends Command {
     shooter.setRotationPos(targetRotationPos);
     boolean hoodInPosition = withinTolerance(hoodPositionConfig.get(), 0, 0);
     boolean rotataionInPostition = withinTolerance(targetRotationPos.getDegrees(), 0, 0);
-    boolean wheelInVelocity = withinTolerance(0, 0, 0);
-    if(shooter.getHoodpos())
+    boolean wheelInVelocity = withinTolerance(wheelVelocityConfig.get(), 0, 0);
+    // if(shooter.getHoodpos())
     elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
   }
+
   private boolean withinTolerance(double targetState, double currentState, double tolerance) {
     return Math.abs(currentState - targetState) < tolerance;
-
   }
   // Called once the command ends or is interrupted.
   @Override
