@@ -24,7 +24,8 @@ public class ShooterControl2 extends Command {
       new LoggedTunableNumber("Elevator/Elevator/Velocity", 400);
   private static final LoggedTunableNumber hoodPositionConfig =
       new LoggedTunableNumber("Shooter/Hood/Position");
-
+  private static final LoggedTunableNumber rotationPositionConfig =
+      new LoggedTunableNumber("Shooter/Rotation/Position");
   private Shooter shooter;
   private Elevator elevator;
   private Drive drive;
@@ -43,6 +44,7 @@ public class ShooterControl2 extends Command {
 
     shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()));
     shooter.setHoodPos(Rotation2d.fromDegrees(hoodPositionConfig.get()));
+    shooter.setRotationPos(Rotation2d.fromDegrees(rotationPositionConfig.get()));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -53,10 +55,10 @@ public class ShooterControl2 extends Command {
                 drive.getPose().getTranslation(), FieldConstants.OUR_HUB_POSITION())
             .minus(drive.getRotation());
     shooter.setRotationPos(targetRotationPos);
-    boolean hoodInPosiion = withinTolerance(hoodPositionConfig.get(), 0, 5);
-    boolean rotataionInPositition = withinTolerance(targetRotationPos.getDegrees(), 0, 5);
-    boolean wheelInVelocity = withinTolerance(wheelVelocityConfig.get(), 0, 10);
-    // if(shooter.getHoodpos())
+    boolean hoodInPosiion = withinTolerance(hoodPositionConfig.get(), hoodPositionConfig.get(), 5);
+    boolean rotataionInPositition = withinTolerance(targetRotationPos.getDegrees(), rotationPositionConfig.get(), 5);
+    boolean wheelInVelocity = withinTolerance(wheelVelocityConfig.get(), wheelVelocityConfig.get(), 10);
+  // if(shooter.getHoodpos())
     elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
   }
 
