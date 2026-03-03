@@ -48,6 +48,8 @@ public class ElevatorIOReal implements ElevatorIO {
     elevatorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     elevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
+    elevatorConfig.Feedback.SensorToMechanismRatio = ElevatorConstants.ELEVATOR_GEARING;
+
     elevatorConfig.Voltage.SupplyVoltageTimeConstant = ElevatorConstants.SUPPLY_VOLTAGE_TIME;
 
     elevatorMotor.getConfigurator().apply(elevatorConfig);
