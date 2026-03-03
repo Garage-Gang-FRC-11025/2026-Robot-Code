@@ -93,6 +93,22 @@ public class RobotContainer {
         // new ModuleIOSim(),
         // new ModuleIOSim(),
         // new ModuleIOSim());
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
+                new ModuleIO() {};
+                new ModuleIO() {};
+                new ModuleIO() {};
+                new ModuleIO() {};
+        // drive =
+        //     new Drive(
+        //         new GyroIOPigeon2(),
+        //         new ModuleIOSpark(0),
+        //         new ModuleIOSpark(1),
+        //         new ModuleIOSpark(2),
+        //         new ModuleIOSpark(3));
         intake = new Intake(new IntakeIOReal());
         elevator = new Elevator(new ElevatorIOReal());
         shooter = new Shooter(new ShooterIOReal());
