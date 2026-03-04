@@ -89,9 +89,11 @@ public class ShooterControl2 extends Command {
             drive.getPose().getTranslation(), FieldConstants.OUR_HUB_POSITION()).minus(drive.getRotation());
     shooter.setRotationPos(targetRotationPos);
     boolean hoodInPosiion = withinTolerance(hoodPositionConfig.get(), hoodPositionConfig.get(), 5);
-    boolean rotataionInPositition = withinTolerance(targetRotationPos.getDegrees(), rotationPositionConfig.get(), 5);
-    boolean wheelInVelocity = withinTolerance(wheelVelocityConfig.get(), wheelVelocityConfig.get(), 10);
-  // if(shooter.getHoodpos())
+    boolean rotataionInPositition =
+        withinTolerance(targetRotationPos.getDegrees(), rotationPositionConfig.get(), 5);
+    boolean wheelInVelocity =
+        withinTolerance(wheelVelocityConfig.get(), wheelVelocityConfig.get(), 10);
+    // if(shooter.getHoodpos())
     elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
   }
 
