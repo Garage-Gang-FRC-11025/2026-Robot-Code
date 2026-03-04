@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.IntakeConstants.ExtenderConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
@@ -205,19 +206,20 @@ public class RobotContainer {
         .y()
         .toggleOnTrue(
             // Set "tunablePos" to a better variable name. This is not clear.
-            Commands.run(() -> intake.setExtenderPos(Rotation2d.fromDegrees(tunablePos.get()))))
+            Commands.run(
+                () ->
+                    intake.setExtenderPos(
+                        Rotation2d.fromDegrees(ExtenderConstants.MAX_EXTENDER_ANGLE.getDegrees()))))
         .toggleOnFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
 
     controller
         .rightBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVoltage(1)))
+        .whileTrue(Commands.run(() -> intake.setRollerVoltage(11.5)))
         .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
-
     controller
         .leftBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVoltage(-1)))
+        .whileTrue(Commands.run(() -> intake.setRollerVoltage(-11.5)))
         .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
-
     controller
         .leftTrigger()
         .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(180))))
@@ -225,12 +227,10 @@ public class RobotContainer {
     controller
         .rightTrigger()
         .whileTrue(Commands.run(() -> shooter.setWheelVoltage(1)))
-        .onFalse(Commands.runOnce(() -> shooter.setWheelVoltage(0)))
-        .whileTrue(Commands.run(() -> elevator.setElevatorVoltage(1)))
-        .onFalse(Commands.run(() -> elevator.setElevatorVoltage(0)));
+        .onFalse(Commands.runOnce(() -> shooter.setWheelVoltage(0)));
     controller
         .povLeft()
-        .whileTrue(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(181))))
+        .whileTrue(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(180))))
         .onFalse(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(0))));
     controller
         .povRight()
