@@ -16,8 +16,12 @@ public class Intake extends SubsystemBase {
 
   private static final LoggedTunableNumber rKP = new LoggedTunableNumber("Intake/Roller/kP");
   private static final LoggedTunableNumber rKV = new LoggedTunableNumber("Intake/Roller/kV");
+  private static final LoggedTunableNumber rPID =
+      new LoggedTunableNumber("Intake/Roller/PID Tuner");
   private static final LoggedTunableNumber eKP = new LoggedTunableNumber("Intake/Extender/kP");
   private static final LoggedTunableNumber eKD = new LoggedTunableNumber("Intake/Extender/kD");
+    private static final LoggedTunableNumber ePID =
+      new LoggedTunableNumber("Intake/Extender/PID Tuner");
   private static final LoggedTunableNumber rollerTargetAccelerationConfig =
       new LoggedTunableNumber("Intake/Roller/Acceleration");
   private static final LoggedTunableNumber extenderMaxVelocityConfig =
@@ -30,19 +34,23 @@ public class Intake extends SubsystemBase {
       rKP.initDefault(0.8);
       rKV.initDefault(0.15);
       rollerTargetAccelerationConfig.initDefault(300.0);
+      rPID.initDefault(1);
 
       eKP.initDefault(70.0);
       eKD.initDefault(1.6);
+      ePID.initDefault(2);
 
       extenderMaxVelocityConfig.initDefault(10);
       extenderTargetAccelerationConfig.initDefault(10);
     } else {
       rKP.initDefault(0.00006);
       rKV.initDefault(0.0002);
-      rollerTargetAccelerationConfig.initDefault(0.0);
+      rollerTargetAccelerationConfig.initDefault(300.0);
+      rPID.initDefault(1);
 
       eKP.initDefault(2);
       eKD.initDefault(0);
+      ePID.initDefault(2);
 
       extenderMaxVelocityConfig.initDefault(40);
       extenderTargetAccelerationConfig.initDefault(80);

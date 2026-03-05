@@ -214,12 +214,12 @@ public class RobotContainer {
 
     controller
         .rightBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVoltage(11.5)))
-        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
+        .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(1000))))
+        .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
     controller
         .leftBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVoltage(-11.5)))
-        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
+        .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(-1000))))
+        .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
     controller
         .leftTrigger()
         .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(180))))
