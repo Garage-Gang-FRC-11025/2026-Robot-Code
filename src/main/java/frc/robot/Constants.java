@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -195,6 +196,15 @@ public final class Constants {
       HOOD_DISTANCE_ANGLE_TABLE.put(1.0, 10.0);
       HOOD_DISTANCE_ANGLE_TABLE.put(2.0, 30.0);
     }
+
+      InterpolatingDoubleTreeMap table = new InterpolatingDoubleTreeMap();
+      table.put(0.0, 0.0);
+      table.put(1.0, 10.0);
+      table.put(2.0, 30.0);
+      //...
+      double result = table.get(1.5);
+
+    
   }
 
   public static final double MAX_VOLTAGE = 12.0;
