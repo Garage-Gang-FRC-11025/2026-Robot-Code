@@ -146,7 +146,8 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    System.out.println("Test print statement");
+    // If needed use. Otherwise this floods the log.
+    // System.out.println("Test print statement");
   }
 
   /** This function is called once when test mode is enabled. */
