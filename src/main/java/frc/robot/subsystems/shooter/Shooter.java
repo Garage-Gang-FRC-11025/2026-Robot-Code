@@ -35,18 +35,18 @@ public class Shooter extends SubsystemBase {
 
   static {
     if (Constants.currentMode == Mode.REAL) {
-      wKP.initDefault(0.8);
+      wKP.initDefault(0.0025);
       wKV.initDefault(0.15);
       wheelTargetAccelerationConfig.initDefault(300.0);
 
-      hKP.initDefault(70.0);
-      hKD.initDefault(1.6);
+      hKP.initDefault(0.25);
+      hKD.initDefault(0.05);
 
       hoodMaxVelocityConfig.initDefault(10);
       hoodTargetAccelerationConfig.initDefault(10);
 
-      rKP.initDefault(70.0);
-      rKD.initDefault(1.6);
+      rKP.initDefault(0.08);
+      rKD.initDefault(0.007);
 
       rotationMaxVelocityConfig.initDefault(10);
       rotationTargetAccelerationConfig.initDefault(10);
