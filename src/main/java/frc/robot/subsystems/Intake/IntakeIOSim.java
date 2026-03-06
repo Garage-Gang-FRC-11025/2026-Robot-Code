@@ -67,12 +67,12 @@ public class IntakeIOSim implements IntakeIO {
   }
 
   @Override
-  public void configRollers(double kV, double kP, double maxAcceleration) {
+  public void configRoller(double kD, double kP, double maxAcceleration) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     Slot0Configs slot0Configs = new Slot0Configs();
 
     slot0Configs.kP = kP;
-    slot0Configs.kV = kV;
+    slot0Configs.kD = kD;
 
     config.Slot0 = slot0Configs;
 

@@ -156,7 +156,7 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
-  public void configRollers(double kV, double kP, double maxAcceleration) {
+  public void configRoller(double kD, double kP, double maxAcceleration) {
     Slot0Configs pidConfig = new Slot0Configs();
     MotionMagicConfigs mmConfig = new MotionMagicConfigs();
 
@@ -166,7 +166,7 @@ public class IntakeIOReal implements IntakeIO {
     rollerConfig.refresh(mmConfig);
 
     pidConfig.kP = kP;
-    pidConfig.kV = kV;
+    pidConfig.kD = kD;
 
     mmConfig.MotionMagicAcceleration = maxAcceleration;
 

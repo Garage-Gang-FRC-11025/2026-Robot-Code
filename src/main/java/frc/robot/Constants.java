@@ -47,11 +47,11 @@ public final class Constants {
 
     public class RollerConstants {
 
-      public static final double SUPPLY_CURRENT_LIMIT = 0;
-      public static final double STATOR_CURRENT_LIMIT = 0;
+      public static final double SUPPLY_CURRENT_LIMIT = 1;
+      public static final double STATOR_CURRENT_LIMIT = 1;
       public static final double ROLLER_GEARING = 3;
-      public static final double SUPPLY_VOLTAGE_TIME = 0;
-      public static final double ROLLER_MOI = 0.1;
+      public static final double SUPPLY_VOLTAGE_TIME = 1;
+      public static final double ROLLER_MOI = 1;
     }
   }
 
