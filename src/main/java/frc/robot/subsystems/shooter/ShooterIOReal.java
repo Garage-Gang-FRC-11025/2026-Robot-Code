@@ -198,7 +198,7 @@ public class ShooterIOReal implements ShooterIO {
   }
 
   @Override
-  public void configWheel(double kV, double kP, double maxAcceleration) {
+  public void configWheel(double kV, double kP, double kI, double maxAcceleration) {
     Slot0Configs pidConfig = new Slot0Configs();
     MotionMagicConfigs mmConfig = new MotionMagicConfigs();
 
@@ -208,6 +208,7 @@ public class ShooterIOReal implements ShooterIO {
     wheelConfig.refresh(mmConfig);
 
     pidConfig.kP = kP;
+    pidConfig.kI = kI;
     pidConfig.kV = kV;
 
     mmConfig.MotionMagicAcceleration = maxAcceleration;
@@ -226,12 +227,13 @@ public class ShooterIOReal implements ShooterIO {
     rotationMotor.setControl(rotationClosedLoopControl);
   }
 
-  public void configHood(double kP, double kD, MotionMagicConfigs mmConfigs) {
+  public void configHood(double kP, double kI, double kD, MotionMagicConfigs mmConfigs) {
     var slot0Configs = new Slot0Configs();
 
     hoodMotor.getConfigurator().refresh(slot0Configs);
 
     slot0Configs.kP = kP;
+    slot0Configs.kI = kI;
     slot0Configs.kD = kD;
 
     hoodMotor.getConfigurator().apply(slot0Configs);

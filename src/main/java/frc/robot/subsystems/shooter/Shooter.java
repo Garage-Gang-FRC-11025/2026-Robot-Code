@@ -15,8 +15,10 @@ public class Shooter extends SubsystemBase {
   private final ShooterInputsAutoLogged inputs = new ShooterInputsAutoLogged();
 
   private static final LoggedTunableNumber wKP = new LoggedTunableNumber("shooter/Wheel/kP");
+  private static final LoggedTunableNumber wKI = new LoggedTunableNumber("shooter/Wheel/kI");
   private static final LoggedTunableNumber wKV = new LoggedTunableNumber("shooter/Wheel/kV");
   private static final LoggedTunableNumber hKP = new LoggedTunableNumber("shooter/Hood/kP");
+  private static final LoggedTunableNumber hKI = new LoggedTunableNumber("shooter/Hood/kI");
   private static final LoggedTunableNumber hKD = new LoggedTunableNumber("shooter/Hood/kD");
   private static final LoggedTunableNumber rKP = new LoggedTunableNumber("shooter/rotation/kP");
   private static final LoggedTunableNumber rKD = new LoggedTunableNumber("shooter/rotation/kD");
@@ -34,34 +36,38 @@ public class Shooter extends SubsystemBase {
 
   static {
     if (Constants.currentMode == Mode.REAL) {
-      wKP.initDefault(0.8);
+      wKP.initDefault(0.0025);
+      wKI.initDefault(.15);
       wKV.initDefault(0.15);
       wheelTargetAccelerationConfig.initDefault(300.0);
 
-      hKP.initDefault(70.0);
-      hKD.initDefault(1.6);
+      hKP.initDefault(0.25);
+      hKI.initDefault(0.05);
+      hKD.initDefault(0.05);
 
       hoodMaxVelocityConfig.initDefault(10);
       hoodTargetAccelerationConfig.initDefault(10);
 
-      rKP.initDefault(70.0);
-      rKD.initDefault(1.6);
+      rKP.initDefault(0.08);
+      rKD.initDefault(0.007);
 
       rotationMaxVelocityConfig.initDefault(10);
       rotationTargetAccelerationConfig.initDefault(10);
     } else {
-      wKP.initDefault(0.0);
-      wKV.initDefault(0.120);
-      wheelTargetAccelerationConfig.initDefault(0.0);
+      wKP.initDefault(0.0025);
+      wKI.initDefault(.15);
+      wKV.initDefault(0.15);
+      wheelTargetAccelerationConfig.initDefault(300.0);
 
-      hKP.initDefault(2);
-      hKD.initDefault(0);
+      hKP.initDefault(0.25);
+      hKI.initDefault(0.05);
+      hKD.initDefault(0.05);
 
-      hoodMaxVelocityConfig.initDefault(40);
-      hoodTargetAccelerationConfig.initDefault(80);
+      hoodMaxVelocityConfig.initDefault(10);
+      hoodTargetAccelerationConfig.initDefault(10);
 
-      rKP.initDefault(70.0);
-      rKD.initDefault(1.6);
+      rKP.initDefault(0.08);
+      rKD.initDefault(0.007);
 
       rotationMaxVelocityConfig.initDefault(10);
       rotationTargetAccelerationConfig.initDefault(10);
@@ -95,7 +101,7 @@ public class Shooter extends SubsystemBase {
     MotionMagicConfigs mmConfigs = new MotionMagicConfigs();
     mmConfigs.MotionMagicAcceleration = hoodTargetAccelerationConfig.get();
     mmConfigs.MotionMagicCruiseVelocity = hoodMaxVelocityConfig.get();
-    shooterIO.configHood(hKP.get(), hKD.get(), mmConfigs);
+    shooterIO.configHood(hKP.get(), hKI.get(), hKD.get(), mmConfigs);
   }
 
   private void configRotation() {
@@ -106,7 +112,7 @@ public class Shooter extends SubsystemBase {
   }
 
   private void configWheel() {
-    shooterIO.configWheel(wKV.get(), wKP.get(), wheelTargetAccelerationConfig.get());
+    shooterIO.configWheel(wKV.get(), wKP.get(), wKI.get(), wheelTargetAccelerationConfig.get());
   }
 
   public void setWheelVoltage(double volts) {
