@@ -187,7 +187,7 @@ public class RobotContainer {
                 () -> Rotation2d.kZero));
     // Intake should move in and out when A button is held
     var pos1 = Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(0)), intake);
-    var pos2 = Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(360)), intake);
+    var pos2 = Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(130)), intake);
     Command alternatingCommand =
         Commands.sequence(pos1, Commands.waitSeconds(1.0), pos2, Commands.waitSeconds(0.5))
             .repeatedly();
@@ -210,7 +210,6 @@ public class RobotContainer {
     controller
         .y()
         .toggleOnTrue(
-            // Set "tunablePos" to a better variable name. This is not clear.
             Commands.run(
                 () ->
                     intake.setExtenderPos(
