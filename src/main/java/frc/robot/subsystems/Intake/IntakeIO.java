@@ -30,7 +30,8 @@ public interface IntakeIO {
 
   public default void setExtenderPos(Rotation2d pos) {}
 
-  public default void configRoller(double kD, double kP, double kV, double maxAcceleration) {}
+  public default void configRoller(
+      double kD, double kP, double kI, double kV, double maxAcceleration) {}
 
   public default void configExtender(double kP, double kD, MotionMagicConfigs mmConfigs) {}
 
