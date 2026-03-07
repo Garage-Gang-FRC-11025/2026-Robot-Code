@@ -20,6 +20,8 @@ public class Intake extends SubsystemBase {
   private static final LoggedTunableNumber rKV = new LoggedTunableNumber("Intake/Roller/kV");
   private static final LoggedTunableNumber eKP = new LoggedTunableNumber("Intake/Extender/kP");
   private static final LoggedTunableNumber eKD = new LoggedTunableNumber("Intake/Extender/kD");
+  private static final LoggedTunableNumber ePID =
+      new LoggedTunableNumber("Intake/Extender/PID Tuner");
   private static final LoggedTunableNumber rollerTargetAccelerationConfig =
       new LoggedTunableNumber("Intake/Roller/Acceleration");
   private static final LoggedTunableNumber extenderMaxVelocityConfig =
