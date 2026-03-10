@@ -64,12 +64,13 @@ public class Shooter extends SubsystemBase {
       hKI.initDefault(0.05);
       hKD.initDefault(0.05);
 
+
       hoodMaxVelocityConfig.initDefault(10);
       hoodTargetAccelerationConfig.initDefault(10);
 
-      rKP.initDefault(0.08);
-      rKD.initDefault(0.007);
-
+    
+      rKP.initDefault(12.0);
+      rKD.initDefault(1.6);
 
       rotationMaxVelocityConfig.initDefault(10);
       rotationTargetAccelerationConfig.initDefault(10);

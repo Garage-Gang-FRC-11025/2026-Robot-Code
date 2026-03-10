@@ -32,8 +32,10 @@ import frc.robot.subsystems.Intake.IntakeIOReal;
 import frc.robot.subsystems.Intake.IntakeIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
@@ -116,11 +118,18 @@ public class RobotContainer {
                 new ModuleIO() {});
         // drive =
         //     new Drive(
-        //         new GyroIOPigeon2(),
-        //         new ModuleIOSpark(0),
-        //         new ModuleIOSpark(1),
-        //         new ModuleIOSpark(2),
-        //         new ModuleIOSpark(3));
+        //         new GyroIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {});
+        drive =
+            new Drive(
+                new GyroIOPigeon2(),
+                new ModuleIOSpark(0),
+                new ModuleIOSpark(1),
+                new ModuleIOSpark(2),
+                new ModuleIOSpark(3));
         intake = new Intake(new IntakeIOReal());
         elevator = new Elevator(new ElevatorIOReal());
         shooter = new Shooter(new ShooterIOReal());
@@ -275,6 +284,13 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> shooter.setWheelVel(Units.RPM.of(0))));
         .whileTrue(Commands.run(() -> shooter.setWheelVoltage(1)))
         .onFalse(Commands.runOnce(() -> shooter.setWheelVoltage(0)));
+        .onTrue(
+            // Set "tunablePos" to a better variable name. This is not clear.
+            Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(tunablePos.get()))))
+        .onFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
+
+    controller
+        .rightBumper()
         .onTrue(
             // Set "tunablePos" to a better variable name. This is not clear.
             Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(tunablePos.get()))))

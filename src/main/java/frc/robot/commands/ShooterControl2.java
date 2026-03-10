@@ -27,6 +27,7 @@ public class ShooterControl2 extends Command {
       new LoggedTunableNumber("Shooter/Hood/Position", 60);
   private static final LoggedTunableNumber rotationPositionConfig =
       new LoggedTunableNumber("Shooter/Rotation/Position");
+
   private Shooter shooter;
   private Elevator elevator;
   private Drive drive;
@@ -46,7 +47,6 @@ public class ShooterControl2 extends Command {
 
     shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()));
     shooter.setHoodPos(Rotation2d.fromDegrees(hoodPositionConfig.get()));
-    shooter.setRotationPos(Rotation2d.fromDegrees(rotationPositionConfig.get()));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -88,18 +88,25 @@ public class ShooterControl2 extends Command {
     Rotation2d targetRotationPos = Geometry.headingPosition(
             drive.getPose().getTranslation(), FieldConstants.OUR_HUB_POSITION()).minus(drive.getRotation());
     shooter.setRotationPos(targetRotationPos);
-    boolean hoodInPosiion = withinTolerance(hoodPositionConfig.get(), hoodPositionConfig.get(), 5);
-    boolean rotataionInPositition =
-        withinTolerance(targetRotationPos.getDegrees(), rotationPositionConfig.get(), 5);
-    boolean wheelInVelocity =
-        withinTolerance(wheelVelocityConfig.get(), wheelVelocityConfig.get(), 10);
-    // if(shooter.getHoodpos())
-    elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
+    boolean hoodInPosition =
+        withinTolerance(hoodPositionConfig.get(), shooter.getHoodPos().getDegrees(), 5);
+    boolean rotationInPosition =
+        withinTolerance(targetRotationPos.getDegrees(), shooter.getRotationPos().getDegrees(), 5);
+    boolean wheelAtVelocity =
+        withinTolerance(wheelVelocityConfig.get(), shooter.getWheelVel().in(Units.RPM), 10);
+
+    if (hoodInPosition && rotationInPosition && wheelAtVelocity)
+      elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
+
+    Logger.recordOutput("ShooterControl2/hoodInPosition", hoodInPosition);
+    Logger.recordOutput("ShooterControl2/rotationInPosition", rotationInPosition);
+    Logger.recordOutput("ShooterControl2/wheelAtPosition", wheelAtVelocity);
   }
 
   private boolean withinTolerance(double targetState, double currentState, double tolerance) {
     return Math.abs(currentState - targetState) < tolerance;
   }
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
