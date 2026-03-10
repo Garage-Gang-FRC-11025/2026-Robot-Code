@@ -73,7 +73,7 @@ public class ShooterIOReal implements ShooterIO {
     wheelConfig.CurrentLimits = wheelCurrentLimitConfig;
 
     wheelConfig.Feedback.SensorToMechanismRatio = WheelConstants.WHEEL_GEARING;
-    wheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    wheelConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     wheelConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     wheelConfig.Voltage.SupplyVoltageTimeConstant = WheelConstants.SUPPLY_VOLTAGE_TIME;

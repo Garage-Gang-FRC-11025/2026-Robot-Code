@@ -60,7 +60,6 @@ public final class Constants {
     }
   }
 
-
   public class FieldConstants {
     // set the hub position translation2d, used that to translate the value and get
     // our hub position
@@ -182,10 +181,6 @@ public final class Constants {
       FLYWHEEL_DISTANCE_SPEED_TABLE.put(1.0, 10.0);
       FLYWHEEL_DISTANCE_SPEED_TABLE.put(2.0, 30.0);
     }
-
-
-
-
   }
 
   public static final double MAX_VOLTAGE = 12.0;
