@@ -70,6 +70,7 @@ public class Shooter extends SubsystemBase {
       rKP.initDefault(0.08);
       rKD.initDefault(0.007);
 
+
       rotationMaxVelocityConfig.initDefault(10);
       rotationTargetAccelerationConfig.initDefault(10);
     }
@@ -90,6 +91,7 @@ public class Shooter extends SubsystemBase {
         || wKI.hasChanged(hc)
         || wheelTargetAccelerationConfig.hasChanged(hc)) configWheel();
     if (hKP.hasChanged(hc)
+        || hKI.hasChanged(hc)
         || hKD.hasChanged(hc)
         || hoodMaxVelocityConfig.hasChanged(hc)
         || hoodTargetAccelerationConfig.hasChanged(hc)) configHood();

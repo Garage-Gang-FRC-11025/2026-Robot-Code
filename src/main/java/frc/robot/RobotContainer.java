@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeConstants.ExtenderConstants;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ShooterControl2;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.ElevatorIOReal;
@@ -104,11 +105,18 @@ public class RobotContainer {
                 new ModuleIO() {};
         // drive =
         //     new Drive(
-        //         new GyroIOPigeon2(),
-        //         new ModuleIOSpark(0),
-        //         new ModuleIOSpark(1),
-        //         new ModuleIOSpark(2),
-        //         new ModuleIOSpark(3));
+        //         new GyroIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {},
+        //         new ModuleIO() {});
+        drive =
+            new Drive(
+                new GyroIOPigeon2(),
+                new ModuleIOSpark(0),
+                new ModuleIOSpark(1),
+                new ModuleIOSpark(2),
+                new ModuleIOSpark(3));
         intake = new Intake(new IntakeIOReal());
         elevator = new Elevator(new ElevatorIOReal());
         shooter = new Shooter(new ShooterIOReal());
@@ -265,6 +273,35 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(Commands.run(() -> shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()))))
         .onFalse(Commands.runOnce(() -> shooter.setWheelVel(Units.RPM.of(0))));
+        .whileTrue(Commands.run(() -> shooter.setWheelVoltage(1)))
+        .onFalse(Commands.runOnce(() -> shooter.setWheelVoltage(0)));
+        .onTrue(
+            // Set "tunablePos" to a better variable name. This is not clear.
+            Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(tunablePos.get()))))
+        .onFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
+
+    controller
+        .rightBumper()
+        .whileTrue(Commands.run(() -> intake.setRollerVoltage(5)))
+        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
+
+    controller
+        .leftBumper()
+        .whileTrue(Commands.run(() -> intake.setRollerVoltage(-11)))
+        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
+
+    controller.rightTrigger().whileTrue(new ShooterControl2(shooter, elevator, drive));
+
+    controller
+        .leftTrigger()
+        .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(60))));
+    // .onFalse(Commands.runOnce(() -> shooter.setHoodPos(Rotation2d.fromDegrees(0))));
+    // controller
+    // .rightTrigger()
+    // .whileTrue(Commands.run(() -> shooter.setWheelVoltage(6.5)))
+    // .onFalse(Commands.runOnce(() -> shooter.setWheelVoltage(0)))
+    // .whileTrue(Commands.run(() -> elevator.setElevatorVoltage(5)))
+    // .onFalse(Commands.runOnce(() -> elevator.setElevatorVoltage(0)));
     controller
         .povLeft()
         .whileTrue(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(180))))

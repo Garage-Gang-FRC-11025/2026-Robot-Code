@@ -84,7 +84,6 @@ public class ElevatorIOReal implements ElevatorIO {
   @Override
   public void setElevatorVoltage(double volts) {
     elevatorMotor.setControl(elevatorOpenLoopControl.withOutput(volts));
-    setElevatorVoltage(11.5);
   }
 
   @Override
@@ -93,7 +92,8 @@ public class ElevatorIOReal implements ElevatorIO {
         elevatorClosedLoopControl.withVelocity(vel.in(Units.RotationsPerSecond)));
   }
 
-  public void configElevators(double kV, double kP, double maxAcceleration) {
+  @Override
+  public void configElevator(double kP, double kV, double maxAcceleration) {
     Slot0Configs pidConfig = new Slot0Configs();
     MotionMagicConfigs mmConfig = new MotionMagicConfigs();
 
