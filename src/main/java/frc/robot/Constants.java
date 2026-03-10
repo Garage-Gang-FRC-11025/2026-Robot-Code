@@ -60,38 +60,6 @@ public final class Constants {
     }
   }
 
-  public class FieldConstants {
-    // set the hub position translation2d, used that to translate the value and get
-    // our hub position
-    // depending on aliance color.
-
-    public static final Translation2d BLUE_HUB_POSITION = new Translation2d(4.624, 4.031);
-    public static final Translation2d RED_HUB_POSITION = new Translation2d(4.624, 4.031);
-    public static final Set<Integer> BLUE_HUB_APRIL_TAGS = Set.of(24, 25, 26, 27);
-    public static final Set<Integer> RED_HUB_APRIL_TAGS = Set.of(8, 9, 10, 11);
-
-    public static final double FIELD_LENGTH = 16.54048;
-
-    public static Translation2d ourHubPosition() {
-      Translation2d hubP = new Translation2d();
-      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
-        hubP = BLUE_HUB_POSITION;
-      } else if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
-        hubP = RED_HUB_POSITION;
-      }
-      return hubP;
-    }
-
-    public static Set<Integer> hubAprilTags() {
-      Set<Integer> hubAprilTags = Set.of();
-      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
-        hubAprilTags = BLUE_HUB_APRIL_TAGS;
-      } else if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
-        hubAprilTags = RED_HUB_APRIL_TAGS;
-      }
-      return hubAprilTags;
-    }
-  }
 
   public class FieldConstants {
     // set the hub position translation2d, used that to translate the value and get
@@ -215,14 +183,9 @@ public final class Constants {
       FLYWHEEL_DISTANCE_SPEED_TABLE.put(2.0, 30.0);
     }
 
-    public static final InterpolatingDoubleTreeMap HOOD_DISTANCE_ANGLE_TABLE =
-        new InterpolatingDoubleTreeMap();
 
-    static {
-      HOOD_DISTANCE_ANGLE_TABLE.put(0.0, 0.0);
-      HOOD_DISTANCE_ANGLE_TABLE.put(1.0, 10.0);
-      HOOD_DISTANCE_ANGLE_TABLE.put(2.0, 30.0);
-    }
+
+
   }
 
   public static final double MAX_VOLTAGE = 12.0;

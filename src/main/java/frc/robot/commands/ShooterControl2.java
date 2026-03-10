@@ -37,7 +37,6 @@ public class ShooterControl2 extends Command {
     this.elevator = elevator;
     this.drive = drive;
     addRequirements(shooter, elevator);
-  addRequirements(shooter, elevator);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -49,44 +48,12 @@ public class ShooterControl2 extends Command {
     shooter.setHoodPos(Rotation2d.fromDegrees(hoodPositionConfig.get()));
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    Rotation2d targetRotationPos =
-        Geometry.headingPosition(drive.getPose().getTranslation(), FieldConstants.ourHubPosition())
-            .minus(drive.getRotation());
-    Logger.recordOutput("ShooterControl2/targetRotation", targetRotationPos);
-    shooter.setRotationPos(targetRotationPos);
-    boolean hoodInPosition =
-        withinTolerance(hoodPositionConfig.get(), shooter.getHoodPos().getDegrees(), 5);
-    boolean rotationInPosition =
-        withinTolerance(targetRotationPos.getDegrees(), shooter.getRotationPos().getDegrees(), 5);
-    boolean wheelAtVelocity =
-        withinTolerance(wheelVelocityConfig.get(), shooter.getWheelVel().in(Units.RPM), 10);
-
-    if (hoodInPosition && rotationInPosition && wheelAtVelocity)
-      elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
-
-    Logger.recordOutput("ShooterControl2/hoodInPosition", hoodInPosition);
-    Logger.recordOutput("ShooterControl2/rotationInPosition", rotationInPosition);
-    Logger.recordOutput("ShooterControl2/wheelAtPosition", wheelAtVelocity);
-  }
-
-  private boolean withinTolerance(double targetState, double currentState, double tolerance) {
-    return Math.abs(currentState - targetState) < tolerance;
-    
-    shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()));
-    shooter.setHoodPos(Rotation2d.fromDegrees(hoodPositionConfig.get()));
-    shooter.setRotationPos(
-        Geometry.headingPosition(
-            drive.getPose().getTranslation(), FieldConstants.OUR_HUB_POSITION()));
-  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     Rotation2d targetRotationPos = Geometry.headingPosition(
-            drive.getPose().getTranslation(), FieldConstants.OUR_HUB_POSITION()).minus(drive.getRotation());
+            drive.getPose().getTranslation(), FieldConstants.ourHubPosition()).minus(drive.getRotation());
     shooter.setRotationPos(targetRotationPos);
     boolean hoodInPosition =
         withinTolerance(hoodPositionConfig.get(), shooter.getHoodPos().getDegrees(), 5);
@@ -114,7 +81,7 @@ public class ShooterControl2 extends Command {
     shooter.setHoodPos(new Rotation2d(0));
     elevator.setElevatorVel(Units.RPM.of(0));
   }
-  public void end(boolean interrupted) {}
+  
 
   // Returns true when the command should end.
   @Override
