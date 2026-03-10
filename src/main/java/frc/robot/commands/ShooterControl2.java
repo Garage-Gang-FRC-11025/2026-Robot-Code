@@ -13,6 +13,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.Geometry;
 import frc.robot.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ShooterControl2 extends Command {
@@ -23,9 +24,8 @@ public class ShooterControl2 extends Command {
   private static final LoggedTunableNumber elevatorVelocityConfig =
       new LoggedTunableNumber("Elevator/Elevator/Velocity", 400);
   private static final LoggedTunableNumber hoodPositionConfig =
-      new LoggedTunableNumber("Shooter/Hood/Position");
-  private static final LoggedTunableNumber rotationPositionConfig =
-      new LoggedTunableNumber("Shooter/Rotation/Position");
+      new LoggedTunableNumber("Shooter/Hood/Position", 60);
+
   private Shooter shooter;
   private Elevator elevator;
   private Drive drive;
@@ -44,32 +44,42 @@ public class ShooterControl2 extends Command {
 
     shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()));
     shooter.setHoodPos(Rotation2d.fromDegrees(hoodPositionConfig.get()));
-    shooter.setRotationPos(Rotation2d.fromDegrees(rotationPositionConfig.get()));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     Rotation2d targetRotationPos =
-        Geometry.headingPosition(
-                drive.getPose().getTranslation(), FieldConstants.OUR_HUB_POSITION())
+        Geometry.headingPosition(drive.getPose().getTranslation(), FieldConstants.ourHubPosition())
             .minus(drive.getRotation());
+    Logger.recordOutput("ShooterControl2/targetRotation", targetRotationPos);
     shooter.setRotationPos(targetRotationPos);
-    boolean hoodInPosiion = withinTolerance(hoodPositionConfig.get(), hoodPositionConfig.get(), 5);
-    boolean rotataionInPositition =
-        withinTolerance(targetRotationPos.getDegrees(), rotationPositionConfig.get(), 5);
-    boolean wheelInVelocity =
-        withinTolerance(wheelVelocityConfig.get(), wheelVelocityConfig.get(), 10);
-    // if(shooter.getHoodpos())
-    elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
+    boolean hoodInPosition =
+        withinTolerance(hoodPositionConfig.get(), shooter.getHoodPos().getDegrees(), 5);
+    boolean rotationInPosition =
+        withinTolerance(targetRotationPos.getDegrees(), shooter.getRotationPos().getDegrees(), 5);
+    boolean wheelAtVelocity =
+        withinTolerance(wheelVelocityConfig.get(), shooter.getWheelVel().in(Units.RPM), 10);
+
+    if (hoodInPosition && rotationInPosition && wheelAtVelocity)
+      elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
+
+    Logger.recordOutput("ShooterControl2/hoodInPosition", hoodInPosition);
+    Logger.recordOutput("ShooterControl2/rotationInPosition", rotationInPosition);
+    Logger.recordOutput("ShooterControl2/wheelAtPosition", wheelAtVelocity);
   }
 
   private boolean withinTolerance(double targetState, double currentState, double tolerance) {
     return Math.abs(currentState - targetState) < tolerance;
   }
+
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    shooter.setWheelVel((Units.RPM.of(0)));
+    shooter.setHoodPos(new Rotation2d(0));
+    elevator.setElevatorVel(Units.RPM.of(0));
+  }
 
   // Returns true when the command should end.
   @Override

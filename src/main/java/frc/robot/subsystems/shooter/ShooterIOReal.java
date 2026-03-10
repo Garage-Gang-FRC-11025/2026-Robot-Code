@@ -189,7 +189,6 @@ public class ShooterIOReal implements ShooterIO {
   @Override
   public void setWheelVoltage(double volts) {
     wheelMotor.setControl(wheelOpenLoopControl.withOutput(volts));
-    setWheelVoltage(-11.5);
   }
 
   @Override
@@ -217,16 +216,19 @@ public class ShooterIOReal implements ShooterIO {
     wheelConfig.apply(mmConfig);
   }
 
+  @Override
   public void setHoodPos(Rotation2d pos) {
     hoodClosedLoopControl.withPosition(pos.getRotations());
     hoodMotor.setControl(hoodClosedLoopControl);
   }
 
+  @Override
   public void setRotationPos(Rotation2d pos) {
     rotationClosedLoopControl.withPosition(pos.getRotations());
     rotationMotor.setControl(rotationClosedLoopControl);
   }
 
+  @Override
   public void configHood(double kP, double kI, double kD, MotionMagicConfigs mmConfigs) {
     var slot0Configs = new Slot0Configs();
 
@@ -240,6 +242,7 @@ public class ShooterIOReal implements ShooterIO {
     hoodMotor.getConfigurator().apply(mmConfigs);
   }
 
+  @Override
   public void configRotation(double kP, double kD, MotionMagicConfigs mmConfigs) {
     var slot0Configs = new Slot0Configs();
 
@@ -252,16 +255,17 @@ public class ShooterIOReal implements ShooterIO {
     rotationMotor.getConfigurator().apply(mmConfigs);
   }
 
+  @Override
   public void setHoodVoltage(double volts) {
     hoodMotor.setControl(hoodOpenLoopControl.withOutput(volts));
-    setHoodVoltage(1.5);
   }
 
+  @Override
   public void setRotationVoltage(double volts) {
     rotationMotor.setControl(rotationOpenLoopControl.withOutput(volts));
-    setHoodVoltage(1);
   }
 
+  @Override
   public boolean setHoodNeutralMode(NeutralModeValue value) {
     var config = new MotorOutputConfigs();
 
@@ -275,6 +279,7 @@ public class ShooterIOReal implements ShooterIO {
     return true;
   }
 
+  @Override
   public boolean setRotationNeutralMode(NeutralModeValue value) {
 
     var config = new MotorOutputConfigs();

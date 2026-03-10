@@ -147,7 +147,6 @@ public class IntakeIOReal implements IntakeIO {
   @Override
   public void setRollerVoltage(double volts) {
     rollerMotor.setControl(rollerOpenLoopControl.withOutput(volts));
-    setRollerVoltage(11.5);
   }
 
   @Override
@@ -177,6 +176,7 @@ public class IntakeIOReal implements IntakeIO {
   public void setExtenderPos(Rotation2d pos) {
     extenderClosedLoopControl.withPosition(pos.getRotations());
     extenderMotor.setControl(extenderClosedLoopControl);
+    System.out.println("extending");
   }
 
   @Override
@@ -195,7 +195,6 @@ public class IntakeIOReal implements IntakeIO {
   @Override
   public void setExtenderVoltage(double volts) {
     extenderMotor.setControl(extenderOpenLoopControl.withOutput(volts));
-    setExtenderVoltage(2.25);
   }
 
   @Override

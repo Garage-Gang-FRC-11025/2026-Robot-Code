@@ -34,8 +34,8 @@ public class Intake extends SubsystemBase {
       rKV.initDefault(0.15);
       rollerTargetAccelerationConfig.initDefault(300.0);
 
-      eKP.initDefault(70.0);
-      eKD.initDefault(1.6);
+      eKP.initDefault(0.5);
+      eKD.initDefault(0);
 
       extenderMaxVelocityConfig.initDefault(10);
       extenderTargetAccelerationConfig.initDefault(10);
@@ -88,6 +88,7 @@ public class Intake extends SubsystemBase {
 
   public void setRollerVoltage(double volts) {
     intakeIO.setRollerVoltage(volts);
+    System.out.println("something1");
   }
 
   public void setExtenderVoltage(double volts) {
