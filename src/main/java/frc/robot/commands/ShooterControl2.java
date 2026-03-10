@@ -48,12 +48,12 @@ public class ShooterControl2 extends Command {
     shooter.setHoodPos(Rotation2d.fromDegrees(hoodPositionConfig.get()));
   }
 
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Rotation2d targetRotationPos = Geometry.headingPosition(
-            drive.getPose().getTranslation(), FieldConstants.ourHubPosition()).minus(drive.getRotation());
+    Rotation2d targetRotationPos =
+        Geometry.headingPosition(drive.getPose().getTranslation(), FieldConstants.ourHubPosition())
+            .minus(drive.getRotation());
     shooter.setRotationPos(targetRotationPos);
     boolean hoodInPosition =
         withinTolerance(hoodPositionConfig.get(), shooter.getHoodPos().getDegrees(), 5);
@@ -81,7 +81,6 @@ public class ShooterControl2 extends Command {
     shooter.setHoodPos(new Rotation2d(0));
     elevator.setElevatorVel(Units.RPM.of(0));
   }
-  
 
   // Returns true when the command should end.
   @Override

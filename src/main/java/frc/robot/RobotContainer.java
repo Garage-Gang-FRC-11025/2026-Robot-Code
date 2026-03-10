@@ -86,7 +86,7 @@ public class RobotContainer {
                 new ModuleIOSpark(1),
                 new ModuleIOSpark(2),
                 new ModuleIOSpark(3));
-        
+
         intake = new Intake(new IntakeIOReal());
         elevator = new Elevator(new ElevatorIOReal());
         shooter = new Shooter(new ShooterIOReal());
@@ -235,7 +235,7 @@ public class RobotContainer {
                   elevator.setElevatorVel(Units.RPM.of(0));
                   shooter.setWheelVel(Units.RPM.of(0));
                 }));
-    
+
     controller
         .rightBumper()
         .onTrue(
