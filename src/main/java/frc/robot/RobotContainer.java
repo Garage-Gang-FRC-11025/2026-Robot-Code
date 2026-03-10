@@ -228,8 +228,18 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
     controller
         .leftTrigger()
-        .whileTrue(Commands.run(() -> elevator.setElevatorVel(Units.RPM.of(300))))
-        .onFalse(Commands.runOnce(() -> elevator.setElevatorVel(Units.RPM.of(0))));
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  elevator.setElevatorVel(Units.RPM.of(300));
+                  shooter.setWheelVel(Units.RPM.of(300));
+                }))
+        .onFalse(
+            Commands.runOnce(
+                () -> {
+                  elevator.setElevatorVel(Units.RPM.of(0));
+                  shooter.setWheelVel(Units.RPM.of(0));
+                }));
     controller
         .rightTrigger()
         .whileTrue(Commands.run(() -> shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()))))

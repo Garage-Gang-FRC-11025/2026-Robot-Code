@@ -54,10 +54,10 @@ public class Shooter extends SubsystemBase {
       rotationMaxVelocityConfig.initDefault(10);
       rotationTargetAccelerationConfig.initDefault(10);
     } else {
-      wKP.initDefault(0.0025);
+      wKP.initDefault(0.001);
       wKI.initDefault(.15);
       wKV.initDefault(0.15);
-      wheelTargetAccelerationConfig.initDefault(300.0);
+      wheelTargetAccelerationConfig.initDefault(1000);
 
       hKP.initDefault(0.25);
       hKI.initDefault(0.05);
@@ -84,8 +84,10 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     Logger.processInputs("shooter", inputs);
     int hc = hashCode();
-    if (wKV.hasChanged(hc) || wKP.hasChanged(hc) || wheelTargetAccelerationConfig.hasChanged(hc))
-      configWheel();
+    if (wKV.hasChanged(hc)
+        || wKP.hasChanged(hc)
+        || wKI.hasChanged(hc)
+        || wheelTargetAccelerationConfig.hasChanged(hc)) configWheel();
     if (hKP.hasChanged(hc)
         || hKD.hasChanged(hc)
         || hoodMaxVelocityConfig.hasChanged(hc)
