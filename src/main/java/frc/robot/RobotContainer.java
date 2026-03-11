@@ -206,12 +206,12 @@ public class RobotContainer {
     // extend the extender to out position when Y button is held
     controller
         .y()
-        .toggleOnTrue(
+        .onTrue(
             Commands.run(
                 () ->
                     intake.setExtenderPos(
                         Rotation2d.fromDegrees(ExtenderConstants.MAX_EXTENDER_ANGLE.getDegrees()))))
-        .toggleOnFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
+        .onFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
 
     controller
         .rightBumper()
