@@ -5,8 +5,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.drive.Drive;
@@ -51,8 +53,13 @@ public class ShooterControl2 extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    Rotation2d targetHoodAngle =
+        Rotation2d.fromDegrees(
+            Constants.ShooterConstants.HOOD_DISTANCE_ANGLE_TABLE.get(turretHubDistance()));
+    double targetFlywheelSpeed =
+        Constants.ShooterConstants.FLYWHEEL_DISTANCE_SPEED_TABLE.get(turretHubDistance());
     Rotation2d targetRotationPos =
-        Geometry.headingPosition(drive.getPose().getTranslation(), FieldConstants.ourHubPosition())
+        Geometry.headingPosition(turretFieldPosition(), FieldConstants.ourHubPosition())
             .minus(drive.getRotation());
     shooter.setRotationPos(targetRotationPos);
     boolean hoodInPosition =
@@ -86,5 +93,19 @@ public class ShooterControl2 extends Command {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  private Translation2d turretFieldPosition() {
+    Translation2d turretTranslation2d =
+        Constants.ShooterConstants.TURRET_TRANSLATION.rotateBy(drive.getRotation());
+    Translation2d turretFieldPosition = turretTranslation2d.plus(drive.getPose().getTranslation());
+    return turretFieldPosition;
+  }
+
+  private double turretHubDistance() {
+    double turretHubDistance =
+        Constants.FieldConstants.ourHubPosition().getDistance(turretFieldPosition());
+    Logger.recordOutput("ShooterControl2/HubDistance", turretHubDistance);
+    return turretHubDistance;
   }
 }
