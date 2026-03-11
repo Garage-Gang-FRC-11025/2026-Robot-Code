@@ -15,7 +15,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
-import java.util.Set;
+import frc.robot.subsystems.vision.VisionConstants;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -65,10 +65,14 @@ public final class Constants {
     // our hub position
     // depending on aliance color.
 
-    public static final Translation2d BLUE_HUB_POSITION = new Translation2d(4.624, 4.031);
-    public static final Translation2d RED_HUB_POSITION = new Translation2d(4.624, 4.031);
-    public static final Set<Integer> BLUE_HUB_APRIL_TAGS = Set.of(24, 25, 26, 27);
-    public static final Set<Integer> RED_HUB_APRIL_TAGS = Set.of(8, 9, 10, 11);
+    public static final Translation2d BLUE_HUB_POSITION =
+        new Translation2d(
+            VisionConstants.aprilTagLayout.getTagPose(18).get().getX(),
+            VisionConstants.aprilTagLayout.getTagPose(26).get().getY());
+    public static final Translation2d RED_HUB_POSITION =
+        new Translation2d(
+            VisionConstants.aprilTagLayout.getTagPose(2).get().getX(),
+            VisionConstants.aprilTagLayout.getTagPose(10).get().getY());
 
     public static final double FIELD_LENGTH = 16.54048;
 
@@ -80,16 +84,6 @@ public final class Constants {
         hubP = RED_HUB_POSITION;
       }
       return hubP;
-    }
-
-    public static Set<Integer> hubAprilTags() {
-      Set<Integer> hubAprilTags = Set.of();
-      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
-        hubAprilTags = BLUE_HUB_APRIL_TAGS;
-      } else if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
-        hubAprilTags = RED_HUB_APRIL_TAGS;
-      }
-      return hubAprilTags;
     }
   }
 
@@ -121,6 +115,7 @@ public final class Constants {
   }
 
   public final class ShooterConstants {
+    public static final Translation2d TURRET_TRANSLATION = new Translation2d(-0.0, -0.0);
 
     public final class HoodConstants {
       public static final Rotation2d MIN_HOOD_ANGLE = Rotation2d.fromDegrees(0);
@@ -174,12 +169,6 @@ public final class Constants {
       HOOD_DISTANCE_ANGLE_TABLE.put(0.0, 0.0);
       HOOD_DISTANCE_ANGLE_TABLE.put(1.0, 10.0);
       HOOD_DISTANCE_ANGLE_TABLE.put(2.0, 30.0);
-    }
-
-    static {
-      FLYWHEEL_DISTANCE_SPEED_TABLE.put(0.0, 0.0);
-      FLYWHEEL_DISTANCE_SPEED_TABLE.put(1.0, 10.0);
-      FLYWHEEL_DISTANCE_SPEED_TABLE.put(2.0, 30.0);
     }
   }
 
