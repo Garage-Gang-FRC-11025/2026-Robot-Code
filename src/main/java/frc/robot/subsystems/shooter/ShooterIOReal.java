@@ -198,6 +198,12 @@ public class ShooterIOReal implements ShooterIO {
   }
 
   @Override
+  public void zeroMotors() {
+    rotationMotor.setPosition(0);
+    hoodMotor.setPosition(0);
+  }
+
+  @Override
   public void configWheel(double kV, double kP, double kI, double maxAcceleration) {
     Slot0Configs pidConfig = new Slot0Configs();
     MotionMagicConfigs mmConfig = new MotionMagicConfigs();

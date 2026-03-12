@@ -86,6 +86,12 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   @Override
+  public void zeroMotors() {
+    rotationSim.setState(0, 0);
+    hoodSim.setState(0, 0);
+  }
+
+  @Override
   public void configWheel(double kV, double kP, double kI, double maxAcceleration) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     Slot0Configs slot0Configs = new Slot0Configs();

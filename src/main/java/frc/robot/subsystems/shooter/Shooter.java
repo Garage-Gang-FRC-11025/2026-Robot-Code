@@ -140,4 +140,8 @@ public class Shooter extends SubsystemBase {
   public void setRotationPos(Rotation2d pos) {
     shooterIO.setRotationPos(pos);
   }
+
+  public void zeroMotors() {
+    shooterIO.zeroMotors();
+  }
 }

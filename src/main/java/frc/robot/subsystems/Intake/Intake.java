@@ -101,4 +101,8 @@ public class Intake extends SubsystemBase {
   public void setExtenderPos(Rotation2d pos) {
     intakeIO.setExtenderPos(pos);
   }
+
+  public void zeroMotors() {
+    intakeIO.zeroMotors();
+  }
 }

@@ -193,6 +193,11 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   @Override
+  public void zeroMotors() {
+    extenderMotor.setPosition(0);
+  }
+
+  @Override
   public void setExtenderVoltage(double volts) {
     extenderMotor.setControl(extenderOpenLoopControl.withOutput(volts));
     setExtenderVoltage(2.25);
