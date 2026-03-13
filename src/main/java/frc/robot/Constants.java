@@ -41,10 +41,10 @@ public final class Constants {
     public class ExtenderConstants {
 
       public static final double GEAR_RATIO = 45; // will need to be changed ALOT
-      public static final Rotation2d MAX_EXTENDER_ANGLE = Rotation2d.fromDegrees(130);
+      public static final Rotation2d MAX_EXTENDER_ANGLE = Rotation2d.fromDegrees(123);
       public static final Rotation2d MIN_EXTENDER_ANGLE = Rotation2d.fromDegrees(0);
-      public static final double SUPPLY_CURRENT_LIMIT = 30;
-      public static final double STATOR_CURRENT_LIMIT = 30;
+      public static final double SUPPLY_CURRENT_LIMIT = 40;
+      public static final double STATOR_CURRENT_LIMIT = 40;
       public static final double SUPPLY_VOLTAGE_TIME = 0.02;
       public static final double EXTENDER_MOI = 0.1;
       public static final Distance EXTENDER_LENGTH = Units.Inches.of(12.5);
