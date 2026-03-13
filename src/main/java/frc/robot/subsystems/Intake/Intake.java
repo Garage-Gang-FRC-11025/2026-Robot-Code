@@ -34,7 +34,7 @@ public class Intake extends SubsystemBase {
       rKV.initDefault(0.15);
       rollerTargetAccelerationConfig.initDefault(300.0);
 
-      eKP.initDefault(0.5);
+      eKP.initDefault(100);
       eKD.initDefault(0);
 
       extenderMaxVelocityConfig.initDefault(10);
