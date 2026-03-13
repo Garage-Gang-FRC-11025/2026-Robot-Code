@@ -142,6 +142,11 @@ public class IntakeIOReal implements IntakeIO {
     inputs.rollersTempCelsius = rollerDeviceTemp.getValue().in(Units.Celsius);
     inputs.rollersAppliedOutput = rollerAppliedVoltage.getValue().in(Units.Volts);
     inputs.rollersVelocityRPM = rollerVelocity.getValue().in(Units.RPM);
+
+    inputs.extenderPosition = Rotation2d.fromDegrees(extenderAngle.getValue().in(Units.Degrees));
+    inputs.extenderCurrentAmps = extenderCurrent.getValue().in(Units.Amps);
+    inputs.extenderAppliedOutput = extenderAppliedVoltage.getValue().in(Units.Volts);
+    inputs.extenderTempCelsius = extenderDeviceTemp.getValue().in(Units.Celsius);
   }
 
   @Override
