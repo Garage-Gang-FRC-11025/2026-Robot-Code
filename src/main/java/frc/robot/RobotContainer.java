@@ -31,8 +31,10 @@ import frc.robot.subsystems.Intake.IntakeIOReal;
 import frc.robot.subsystems.Intake.IntakeIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
@@ -62,8 +64,8 @@ public class RobotContainer {
   private final CommandXboxController controller = new CommandXboxController(0);
 
   // Tunable numbers
-  private static final LoggedTunableNumber rollerVelocityConfig =
-      new LoggedTunableNumber("Intake/Roller/Velocity");
+  private static final LoggedTunableNumber wheelVelocityConfig =
+      new LoggedTunableNumber("Shooter/Wheel/Velocity", 300);
   private static final LoggedTunableNumber extenderVelocityConfig =
       new LoggedTunableNumber("Intake/Extender/Velocity");
   private static final LoggedTunableNumber tunablePos = new LoggedTunableNumber("tunablePos", 90);
@@ -76,20 +78,20 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        // drive =
-        //     new Drive(
-        //         new GyroIOPigeon2(),
-        //         new ModuleIOSpark(0),
-        //         new ModuleIOSpark(1),
-        //         new ModuleIOSpark(2),
-        //         new ModuleIOSpark(3));
         drive =
             new Drive(
-                new GyroIO() {},
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim());
+                new GyroIOPigeon2(),
+                new ModuleIOSpark(0),
+                new ModuleIOSpark(1),
+                new ModuleIOSpark(2),
+                new ModuleIOSpark(3));
+        // drive =
+        // new Drive(
+        // new GyroIO() {},
+        // new ModuleIOSim(),
+        // new ModuleIOSim(),
+        // new ModuleIOSim(),
+        // new ModuleIOSim());
         intake = new Intake(new IntakeIOReal());
         elevator = new Elevator(new ElevatorIOReal());
         shooter = new Shooter(new ShooterIOReal());
@@ -218,28 +220,38 @@ public class RobotContainer {
 
     controller
         .rightBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(1000))))
+        .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(300))))
         .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
     controller
         .leftBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(-1000))))
+        .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(-300))))
         .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
     controller
         .leftTrigger()
-        .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(180))))
-        .onFalse(Commands.runOnce(() -> shooter.setHoodPos(Rotation2d.fromDegrees(0))));
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  elevator.setElevatorVel(Units.RPM.of(300));
+                  shooter.setWheelVel(Units.RPM.of(300));
+                }))
+        .onFalse(
+            Commands.runOnce(
+                () -> {
+                  elevator.setElevatorVel(Units.RPM.of(0));
+                  shooter.setWheelVel(Units.RPM.of(0));
+                }));
     controller
         .rightTrigger()
-        .whileTrue(Commands.run(() -> shooter.setWheelVoltage(1)))
-        .onFalse(Commands.runOnce(() -> shooter.setWheelVoltage(0)));
+        .whileTrue(Commands.run(() -> shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()))))
+        .onFalse(Commands.runOnce(() -> shooter.setWheelVel(Units.RPM.of(0))));
     controller
         .povLeft()
         .whileTrue(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(180))))
         .onFalse(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(0))));
     controller
         .povRight()
-        .whileTrue(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(180))))
-        .onFalse(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(0))));
+        .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(180))))
+        .onFalse(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(0))));
   }
 
   /**

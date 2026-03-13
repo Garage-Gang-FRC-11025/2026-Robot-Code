@@ -15,12 +15,11 @@ public class Intake extends SubsystemBase {
   private final IntakeInputsAutoLogged inputs = new IntakeInputsAutoLogged();
 
   private static final LoggedTunableNumber rKP = new LoggedTunableNumber("Intake/Roller/kP");
+  private static final LoggedTunableNumber rKI = new LoggedTunableNumber("Intake/Roller/kI");
   private static final LoggedTunableNumber rKD = new LoggedTunableNumber("Intake/Roller/kD");
   private static final LoggedTunableNumber rKV = new LoggedTunableNumber("Intake/Roller/kV");
   private static final LoggedTunableNumber eKP = new LoggedTunableNumber("Intake/Extender/kP");
   private static final LoggedTunableNumber eKD = new LoggedTunableNumber("Intake/Extender/kD");
-  private static final LoggedTunableNumber ePID =
-      new LoggedTunableNumber("Intake/Extender/PID Tuner");
   private static final LoggedTunableNumber rollerTargetAccelerationConfig =
       new LoggedTunableNumber("Intake/Roller/Acceleration");
   private static final LoggedTunableNumber extenderMaxVelocityConfig =
@@ -30,8 +29,8 @@ public class Intake extends SubsystemBase {
 
   static {
     if (Constants.currentMode == Mode.REAL) {
-      rKP.initDefault(0.8);
-      rKD.initDefault(0.12);
+      rKP.initDefault(0.0025);
+      rKI.initDefault(0.15);
       rKV.initDefault(0.15);
       rollerTargetAccelerationConfig.initDefault(300.0);
 
@@ -41,8 +40,8 @@ public class Intake extends SubsystemBase {
       extenderMaxVelocityConfig.initDefault(10);
       extenderTargetAccelerationConfig.initDefault(10);
     } else {
-      rKP.initDefault(0.8);
-      rKD.initDefault(0.15);
+      rKP.initDefault(0.0025);
+      rKI.initDefault(0.15);
       rKV.initDefault(0.15);
       rollerTargetAccelerationConfig.initDefault(1000.0);
 
@@ -84,7 +83,7 @@ public class Intake extends SubsystemBase {
   private void configRoller() {
     MotionMagicConfigs rollermmConfigs = new MotionMagicConfigs();
     rollermmConfigs.MotionMagicAcceleration = rollerTargetAccelerationConfig.get();
-    intakeIO.configRoller(rKD.get(), rKP.get(), rKV.get(), rollerTargetAccelerationConfig.get());
+    intakeIO.configRoller(rKP.get(), rKI.get(), rKV.get(), rollerTargetAccelerationConfig.get());
   }
 
   public void setRollerVoltage(double volts) {

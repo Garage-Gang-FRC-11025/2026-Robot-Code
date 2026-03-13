@@ -67,15 +67,18 @@ public class IntakeIOSim implements IntakeIO {
   }
 
   @Override
-  public void configRoller(double kD, double kP, double kV, double maxAcceleration) {
+  public void configRoller(double kP, double kI, double kV, double maxAcceleration) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     Slot0Configs slot0Configs = new Slot0Configs();
+    MotionMagicConfigs mmConfig = new MotionMagicConfigs();
 
     slot0Configs.kP = kP;
-    slot0Configs.kD = kD;
+    slot0Configs.kI = kI;
     slot0Configs.kV = kV;
 
     config.Slot0 = slot0Configs;
+
+    mmConfig.MotionMagicAcceleration = 1000;
 
     rollerMotor.setConfig(config);
   }

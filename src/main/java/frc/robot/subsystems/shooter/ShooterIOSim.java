@@ -86,11 +86,12 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   @Override
-  public void configWheel(double kV, double kP, double maxAcceleration) {
+  public void configWheel(double kV, double kP, double kI, double maxAcceleration) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     Slot0Configs slot0Configs = new Slot0Configs();
 
     slot0Configs.kP = kP;
+    slot0Configs.kI = kI;
     slot0Configs.kV = kV;
 
     config.Slot0 = slot0Configs;
@@ -109,11 +110,12 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   @Override
-  public void configHood(double kP, double kD, MotionMagicConfigs mmConfigs) {
+  public void configHood(double kP, double kI, double kD, MotionMagicConfigs mmConfigs) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     Slot0Configs slot0Configs = new Slot0Configs();
 
     slot0Configs.kP = kP;
+    slot0Configs.kI = kI;
     slot0Configs.kD = kD;
 
     config.Slot0 = slot0Configs;

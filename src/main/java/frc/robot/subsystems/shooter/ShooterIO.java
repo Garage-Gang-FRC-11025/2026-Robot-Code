@@ -43,9 +43,9 @@ public interface ShooterIO {
 
   public default void setRotationVel(AngularVelocity vel) {}
 
-  public default void configWheel(double kV, double kP, double maxAcceleration) {}
+  public default void configWheel(double kV, double kP, double kI, double maxAcceleration) {}
 
-  public default void configHood(double kP, double kD, MotionMagicConfigs mmConfigs) {}
+  public default void configHood(double kP, double kI, double kD, MotionMagicConfigs mmConfigs) {}
 
   public default void configRotation(double kP, double kD, MotionMagicConfigs mmConfigs) {}
 
