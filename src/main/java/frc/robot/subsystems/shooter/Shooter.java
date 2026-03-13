@@ -144,8 +144,9 @@ public class Shooter extends SubsystemBase {
   }
 
   public void zeroMotors() {
-    shooterIO.zeroMotors(); 
+    shooterIO.zeroMotors();
   }
+
   public Rotation2d getHoodPos() {
     return inputs.hoodPosition;
   }

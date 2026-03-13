@@ -146,10 +146,10 @@ public class ShooterIOReal implements ShooterIO {
     hoodCurrent = hoodMotor.getStatorCurrent();
     hoodDeviceTemp = hoodMotor.getDeviceTemp();
 
-    rotationAppliedVoltage = hoodMotor.getMotorVoltage();
-    rotationAngle = hoodMotor.getPosition();
-    rotationCurrent = hoodMotor.getStatorCurrent();
-    rotationDeviceTemp = hoodMotor.getDeviceTemp();
+    rotationAppliedVoltage = rotationMotor.getMotorVoltage();
+    rotationAngle = rotationMotor.getPosition();
+    rotationCurrent = rotationMotor.getStatorCurrent();
+    rotationDeviceTemp = rotationMotor.getDeviceTemp();
 
     // Update status signals
 
@@ -158,6 +158,9 @@ public class ShooterIOReal implements ShooterIO {
     BaseStatusSignal.setUpdateFrequencyForAll(1, hoodDeviceTemp);
     BaseStatusSignal.setUpdateFrequencyForAll(50, wheelAppliedVoltage, wheelCurrent, wheelVelocity);
     BaseStatusSignal.setUpdateFrequencyForAll(1, wheelDeviceTemp);
+    BaseStatusSignal.setUpdateFrequencyForAll(100, rotationAppliedVoltage, rotationAngle);
+    BaseStatusSignal.setUpdateFrequencyForAll(50, rotationCurrent);
+    BaseStatusSignal.setUpdateFrequencyForAll(1, rotationDeviceTemp);
 
     hoodMotor.optimizeBusUtilization();
     wheelMotor.optimizeBusUtilization();
@@ -184,6 +187,16 @@ public class ShooterIOReal implements ShooterIO {
     inputs.wheelTempCelsius = wheelDeviceTemp.getValue().in(Units.Celsius);
     inputs.wheelAppliedOutput = wheelAppliedVoltage.getValue().in(Units.Volts);
     inputs.wheelsVelocityRPM = wheelVelocity.getValue().in(Units.RPM);
+
+    inputs.rotationPosition = Rotation2d.fromDegrees(rotationAngle.getValue().in(Units.Degrees));
+    inputs.rotationCurrentAmps = rotationCurrent.getValue().in(Units.Amps);
+    inputs.rotationAppliedOutput = rotationAppliedVoltage.getValue().in(Units.Volts);
+    inputs.rotationTempCelsius = rotationDeviceTemp.getValue().in(Units.Celsius);
+
+    inputs.hoodPosition = Rotation2d.fromDegrees(hoodAngle.getValue().in(Units.Degrees));
+    inputs.hoodCurrentAmps = hoodCurrent.getValue().in(Units.Amps);
+    inputs.hoodAppliedOutput = hoodAppliedVoltage.getValue().in(Units.Volts);
+    inputs.hoodTempCelsius = hoodDeviceTemp.getValue().in(Units.Celsius);
   }
 
   @Override
