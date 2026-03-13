@@ -106,4 +106,9 @@ public class IntakeIOSim implements IntakeIO {
 
     extenderSim.setConfig(config);
   }
+
+  @Override
+  public void zeroMotors() {
+    extenderSim.setState(0, 0);
+  }
 }

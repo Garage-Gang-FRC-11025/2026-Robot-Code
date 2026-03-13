@@ -49,6 +49,8 @@ public interface ShooterIO {
 
   public default void configRotation(double kP, double kD, MotionMagicConfigs mmConfigs) {}
 
+  public default void zeroMotors() {}
+
   public default boolean setHoodNeutralMode(NeutralModeValue value) {
     return false;
   }

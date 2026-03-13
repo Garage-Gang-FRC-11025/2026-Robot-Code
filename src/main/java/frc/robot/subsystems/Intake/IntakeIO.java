@@ -34,6 +34,8 @@ public interface IntakeIO {
 
   public default void configExtender(double kP, double kD, MotionMagicConfigs mmConfigs) {}
 
+  public default void zeroMotors() {}
+
   public default boolean setExtenderNeutralMode(NeutralModeValue value) {
     return false;
   }

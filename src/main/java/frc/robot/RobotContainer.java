@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -187,15 +188,19 @@ public class RobotContainer {
                 () -> -controller.getLeftY(),
                 () -> -controller.getLeftX(),
                 () -> Rotation2d.kZero));
-    // Intake should move in and out when A button is held
-    var pos1 = Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(0)), intake);
-    var pos2 = Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(130)), intake);
-    Command alternatingCommand =
-        Commands.sequence(pos1, Commands.waitSeconds(1.0), pos2, Commands.waitSeconds(0.5))
-            .repeatedly();
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+
+    // change rotation on motors to 0° when button on dash is pressed
+    SmartDashboard.putData(
+        "Zero Robot",
+        Commands.runOnce(
+                () -> {
+                  shooter.zeroMotors();
+                  intake.zeroMotors();
+                })
+            .ignoringDisable(true));
 
     // Reset gyro to 0° when B button is pressed
     controller
