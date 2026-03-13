@@ -124,7 +124,7 @@ public final class Constants {
       public static final double SUPPLY_CURRENT_LIMIT = 20;
       public static final double MAX_VELOCITY = 10;
       public static final double TARGET_ACCELERATION = 10;
-      public static final double GEAR_RATIO = 0.017647;
+      public static final double GEAR_RATIO = 11.3333333333;
       public static final double SUPPLY_VOLTAGE_TIME = 0.5;
       public static final double MAX_VOLTAGE = 12.0;
       public static final double kDefaultPeriod = 0.02;
