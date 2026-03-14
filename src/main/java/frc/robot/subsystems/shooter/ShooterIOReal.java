@@ -137,7 +137,7 @@ public class ShooterIOReal implements ShooterIO {
 
     rotationConfig.Voltage.SupplyVoltageTimeConstant = HoodConstants.SUPPLY_VOLTAGE_TIME;
 
-    rotationMotor.getConfigurator().apply(hoodConfig);
+    rotationMotor.getConfigurator().apply(rotationConfig);
 
     // Status signals
 
@@ -243,7 +243,9 @@ public class ShooterIOReal implements ShooterIO {
 
   @Override
   public void setRotationPos(Rotation2d pos) {
-    rotationClosedLoopControl.withPosition(pos.getRotations());
+    double posRotations = pos.getRotations();
+    if (posRotations < 0) posRotations += 1;
+    rotationClosedLoopControl.withPosition(posRotations);
     rotationMotor.setControl(rotationClosedLoopControl);
   }
 
