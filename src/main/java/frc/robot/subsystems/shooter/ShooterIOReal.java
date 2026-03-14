@@ -122,7 +122,7 @@ public class ShooterIOReal implements ShooterIO {
     rotationConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
     rotationConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    rotationConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    rotationConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     rotationConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     rotationConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
@@ -211,7 +211,7 @@ public class ShooterIOReal implements ShooterIO {
 
   @Override
   public void zeroMotors() {
-    rotationMotor.setPosition(0);
+    rotationMotor.setPosition(0.5);
     hoodMotor.setPosition(0);
   }
 
