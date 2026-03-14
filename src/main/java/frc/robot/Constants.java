@@ -133,15 +133,14 @@ public final class Constants {
     }
 
     public final class RotationConstants {
-      public static final Rotation2d MIN_ROTATION_ANGLE = Rotation2d.fromDegrees(-90);
-      public static final Rotation2d MAX_ROTATION_ANGLE = Rotation2d.fromDegrees(180);
+      public static final Rotation2d MIN_ROTATION_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d MAX_ROTATION_ANGLE = Rotation2d.fromDegrees(270);
       public static final double ROTATION_MOI = 0.1;
       public static final double STATOR_CURRENT_LIMIT = 20;
       public static final double SUPPLY_CURRENT_LIMIT = 20;
       public static final double MAX_VELOCITY = 10;
       public static final double TARGET_ACCELERATION = 10;
-      public static final double GEAR_RATIO =
-          13.33333333333333333333333333333333333333333; // I'll add as many as I want.
+      public static final double GEAR_RATIO = 13.333333;
       public static final double SUPPLY_VOLTAGE_TIME = 0.02;
     }
 
