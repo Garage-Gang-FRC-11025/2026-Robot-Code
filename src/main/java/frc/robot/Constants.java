@@ -59,7 +59,6 @@ public final class Constants {
       public static final double SUPPLY_VOLTAGE_TIME = 0.02;
       public static final double ROLLER_MOI = 0.1;
     }
-
   }
 
   public class FieldConstants {
@@ -141,7 +140,8 @@ public final class Constants {
       public static final double SUPPLY_CURRENT_LIMIT = 20;
       public static final double MAX_VELOCITY = 10;
       public static final double TARGET_ACCELERATION = 10;
-      public static final double GEAR_RATIO = 13.33333333333333333333333333333333333333333; // I'll add as many as I want.
+      public static final double GEAR_RATIO =
+          13.33333333333333333333333333333333333333333; // I'll add as many as I want.
       public static final double SUPPLY_VOLTAGE_TIME = 0.02;
     }
 
