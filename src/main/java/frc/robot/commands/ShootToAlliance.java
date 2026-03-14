@@ -18,8 +18,8 @@ import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ShooterControl2 extends Command {
-  /** Creates a new ShooterControl2. */
+public class ShootToAlliance extends Command {
+  /** Creates a new ShootToalliance. */
   private static final LoggedTunableNumber wheelVelocityConfig =
       new LoggedTunableNumber("Shooter/Wheel/Velocity", 3500);
 
@@ -34,7 +34,7 @@ public class ShooterControl2 extends Command {
   private Elevator elevator;
   private Drive drive;
 
-  public ShooterControl2(Shooter shooter, Elevator elevator, Drive drive) {
+  public ShootToAlliance(Shooter shooter, Elevator elevator, Drive drive) {
     this.shooter = shooter;
     this.elevator = elevator;
     this.drive = drive;
@@ -55,9 +55,9 @@ public class ShooterControl2 extends Command {
   public void execute() {
     Rotation2d targetHoodAngle =
         Rotation2d.fromDegrees(
-            Constants.ShooterConstants.HOOD_HUB_DISTANCE_ANGLE_TABLE.get(turretHubDistance()));
+            Constants.ShooterConstants.HOOD_ALLIANCE_DISTANCE_ANGLE_TABLE.get(turretAllianceDistance()));
     double targetFlywheelSpeed =
-        Constants.ShooterConstants.FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.get(turretHubDistance());
+        Constants.ShooterConstants.FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE.get(turretAllianceDistance());
     Rotation2d targetRotationPos =
         Geometry.headingPosition(turretFieldPosition(), FieldConstants.ourHubPosition())
             .minus(drive.getRotation());
@@ -102,7 +102,7 @@ public class ShooterControl2 extends Command {
     return turretFieldPosition;
   }
 
-  private double turretHubDistance() {
+  private double turretAllianceDistance() {
     double turretHubDistance =
         Constants.FieldConstants.ourHubPosition().getDistance(turretFieldPosition());
     Logger.recordOutput("ShooterControl2/HubDistance", turretHubDistance);

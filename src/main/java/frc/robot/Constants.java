@@ -74,6 +74,22 @@ public final class Constants {
             VisionConstants.aprilTagLayout.getTagPose(2).get().getX(),
             VisionConstants.aprilTagLayout.getTagPose(10).get().getY());
 
+public static final Translation2d BLUE_ALLIANCE_LEFT_POSITION =
+        new Translation2d(
+            VisionConstants.aprilTagLayout.getTagPose(22).get().getX());
+
+public static final Translation2d BLUE_ALLIANCE_RIGHT_POSITION =
+        new Translation2d(
+            VisionConstants.aprilTagLayout.getTagPose(18).get().getX());
+
+    public static final Translation2d RED_RIGHT_ALLIANCE_POSITION =
+        new Translation2d(
+            VisionConstants.aprilTagLayout.getTagPose(1).get().getX());
+
+public static final Translation2d RED_LEFT_ALLIANCE_POSITION =
+        new Translation2d(
+            VisionConstants.aprilTagLayout.getTagPose(6).get().getX());
+
     public static final double FIELD_LENGTH = 16.54048;
 
     public static Translation2d ourHubPosition() {
@@ -84,6 +100,16 @@ public final class Constants {
         hubP = RED_HUB_POSITION;
       }
       return hubP;
+    }
+
+    public static Translation2d ourAlliancePosition() {
+      Translation2d allianceP = new Translation2d();
+      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) and, {
+        allianceP = BLUE_HUB_POSITION;
+      } else if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
+        allianceP = RED_HUB_POSITION;
+      }
+      return allianceP;
     }
   }
 
@@ -152,23 +178,41 @@ public final class Constants {
       public static final double SUPPLY_VOLTAGE_TIME = 0.02;
     }
 
-    public static final InterpolatingDoubleTreeMap FLYWHEEL_DISTANCE_SPEED_TABLE =
+    public static final InterpolatingDoubleTreeMap FLYWHEEL_HUB_DISTANCE_SPEED_TABLE =
         new InterpolatingDoubleTreeMap();
 
     static {
-      FLYWHEEL_DISTANCE_SPEED_TABLE.put(0.0, 0.0);
-      FLYWHEEL_DISTANCE_SPEED_TABLE.put(1.0, 10.0);
-      FLYWHEEL_DISTANCE_SPEED_TABLE.put(2.0, 30.0);
+      FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.put(0.0, 0.0);
+      FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.put(1.0, 10.0);
+      FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.put(2.0, 30.0);
     }
 
-    public static final InterpolatingDoubleTreeMap HOOD_DISTANCE_ANGLE_TABLE =
+    public static final InterpolatingDoubleTreeMap HOOD_HUB_DISTANCE_ANGLE_TABLE =
         new InterpolatingDoubleTreeMap();
 
     static {
-      HOOD_DISTANCE_ANGLE_TABLE.put(0.0, 0.0);
-      HOOD_DISTANCE_ANGLE_TABLE.put(1.0, 10.0);
-      HOOD_DISTANCE_ANGLE_TABLE.put(2.0, 30.0);
+      HOOD_HUB_DISTANCE_ANGLE_TABLE.put(0.0, 0.0);
+      HOOD_HUB_DISTANCE_ANGLE_TABLE.put(1.0, 10.0);
+      HOOD_HUB_DISTANCE_ANGLE_TABLE.put(2.0, 30.0);
     }
+  public static final InterpolatingDoubleTreeMap FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE =
+      new InterpolatingDoubleTreeMap();
+
+  static {
+    FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE.put(0.0, 0.0);
+    FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE.put(1.0, 10.0);
+    FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE.put(2.0, 30.0);
+   }
+
+  public static final InterpolatingDoubleTreeMap HOOD_ALLIANCE_DISTANCE_ANGLE_TABLE =
+      new InterpolatingDoubleTreeMap();
+
+  static {
+    HOOD_ALLIANCE_DISTANCE_ANGLE_TABLE.put(0.0, 0.0);
+    HOOD_ALLIANCE_DISTANCE_ANGLE_TABLE.put(1.0, 10.0);
+    HOOD_ALLIANCE_DISTANCE_ANGLE_TABLE.put(2.0, 30.0);
+   }
+    
   }
 
   public static final double MAX_VOLTAGE = 12.0;
