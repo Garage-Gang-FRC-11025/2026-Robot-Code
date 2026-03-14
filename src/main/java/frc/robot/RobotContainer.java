@@ -252,7 +252,7 @@ public class RobotContainer {
         .whileTrue(Commands.run(() -> intake.setRollerVoltage(-11)))
         .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
 
-    controller.rightTrigger().whileTrue(new ShooterControl2(shooter, elevator, drive));
+    controller.rightTrigger().whileTrue(new ShooterControl2(shooter, elevator, drive, intake));
 
     controller
         .leftTrigger()
