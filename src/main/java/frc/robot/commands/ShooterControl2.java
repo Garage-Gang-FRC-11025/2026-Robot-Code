@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.Elevator.Elevator;
+import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.Geometry;
@@ -33,11 +34,13 @@ public class ShooterControl2 extends Command {
   private Shooter shooter;
   private Elevator elevator;
   private Drive drive;
+  private Intake intake;
 
-  public ShooterControl2(Shooter shooter, Elevator elevator, Drive drive) {
+  public ShooterControl2(Shooter shooter, Elevator elevator, Drive drive, Intake intake) {
     this.shooter = shooter;
     this.elevator = elevator;
     this.drive = drive;
+    this.intake = intake;
     addRequirements(shooter, elevator);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -68,13 +71,18 @@ public class ShooterControl2 extends Command {
         withinTolerance(targetRotationPos.getDegrees(), shooter.getRotationPos().getDegrees(), 5);
     boolean wheelAtVelocity =
         withinTolerance(wheelVelocityConfig.get(), shooter.getWheelVel().in(Units.RPM), 10);
+    boolean checkExtenderPosition =
+        withinTolerance(Constants.IntakeConstants.ExtenderConstants.MIN_REQ_EXTENDER_ANGLE.getDegrees(), intake.getExtenderPos().getDegrees(), 5);
 
-    if (hoodInPosition && rotationInPosition && wheelAtVelocity)
+
+
+    if (hoodInPosition && rotationInPosition && wheelAtVelocity && checkExtenderPosition)
       elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
 
     Logger.recordOutput("ShooterControl2/hoodInPosition", hoodInPosition);
     Logger.recordOutput("ShooterControl2/rotationInPosition", rotationInPosition);
     Logger.recordOutput("ShooterControl2/wheelAtPosition", wheelAtVelocity);
+    Logger.recordOutput("ShooterControl2/checkExtenderPosition", checkExtenderPosition);
   }
 
   private boolean withinTolerance(double targetState, double currentState, double tolerance) {

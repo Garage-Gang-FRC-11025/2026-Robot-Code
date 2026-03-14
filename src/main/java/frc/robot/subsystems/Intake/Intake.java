@@ -56,7 +56,6 @@ public class Intake extends SubsystemBase {
 
   public Intake(IntakeIO intakeIO) {
     this.intakeIO = intakeIO;
-    this.Intake = intake;
     configExtender();
     configRoller();
   }
@@ -90,7 +89,7 @@ public class Intake extends SubsystemBase {
 
   public void setRollerVoltage(double volts) {
     intakeIO.setRollerVoltage(volts);
-    System.out.println("something1");
+    // System.out.println("something1");
   }
 
   public void setExtenderVoltage(double volts) {
@@ -104,14 +103,20 @@ public class Intake extends SubsystemBase {
   public void setExtenderPos(Rotation2d pos) {
     intakeIO.setExtenderPos(pos);
   }
-  public Rotation2d getExtenderPos(Rotation2d pos) {
+  public Rotation2d getExtenderPos() {
     return inputs.extenderPosition;
   }
   
     // Returns true if extender is out at least 90 degrees from zero, returns false if else 
-  public boolean checkExtenderPosition() {
-        withinTolerance(Constants.IntakeConstants.ExtenderConstants.MIN_REQ_EXTENDER_ANGLE.getDegrees(), intake.getExtenderPos().getDegrees(), 5);
+    public boolean checkExtenderPosition =
+      withinTolerance(Constants.IntakeConstants.ExtenderConstants.MIN_REQ_EXTENDER_ANGLE.getDegrees(), getExtenderPos().getDegrees(), 5);
+
+
+
+  private boolean withinTolerance(double targetState, double currentState, double tolerance) {
+    return Math.abs(currentState - targetState) < tolerance;
   }
+
   public void zeroMotors() {
     intakeIO.zeroMotors();
   }
