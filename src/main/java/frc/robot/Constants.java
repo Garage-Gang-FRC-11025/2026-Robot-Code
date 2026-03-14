@@ -48,6 +48,7 @@ public final class Constants {
       public static final double SUPPLY_VOLTAGE_TIME = 0.02;
       public static final double EXTENDER_MOI = 0.1;
       public static final Distance EXTENDER_LENGTH = Units.Inches.of(12.5);
+      public static final Rotation2d MIN_REQ_EXTENDER_ANGLE = Rotation2d.fromDegrees(90);
     }
 
     public class RollerConstants {
@@ -58,6 +59,7 @@ public final class Constants {
       public static final double SUPPLY_VOLTAGE_TIME = 0.02;
       public static final double ROLLER_MOI = 0.1;
     }
+
   }
 
   public class FieldConstants {
