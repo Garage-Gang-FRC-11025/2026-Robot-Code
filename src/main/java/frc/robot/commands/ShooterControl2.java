@@ -72,9 +72,8 @@ public class ShooterControl2 extends Command {
     boolean wheelAtVelocity =
         withinTolerance(wheelVelocityConfig.get(), shooter.getWheelVel().in(Units.RPM), 10);
     boolean checkExtenderPosition =
-        withinTolerance(Constants.IntakeConstants.ExtenderConstants.MIN_REQ_EXTENDER_ANGLE.getDegrees(), intake.getExtenderPos().getDegrees(), 5);
-
-
+        Constants.IntakeConstants.ExtenderConstants.MIN_REQ_EXTENDER_ANGLE.getDegrees()
+            < intake.getExtenderPos().getDegrees();
 
     if (hoodInPosition && rotationInPosition && wheelAtVelocity && checkExtenderPosition)
       elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
