@@ -228,7 +228,7 @@ public class RobotContainer {
         .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(-300))))
         .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
     controller
-        .leftTrigger()
+        .rightTrigger()
         .whileTrue(
             Commands.run(
                 () -> {
@@ -244,13 +244,6 @@ public class RobotContainer {
 
     controller
         .rightBumper()
-        .onTrue(
-            // Set "tunablePos" to a better variable name. This is not clear.
-            Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(tunablePos.get()))))
-        .onFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
-
-    controller
-        .rightBumper()
         .whileTrue(Commands.run(() -> intake.setRollerVoltage(5)))
         .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
 
@@ -263,14 +256,9 @@ public class RobotContainer {
 
     controller
         .leftTrigger()
-        .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(60))));
-    // .onFalse(Commands.runOnce(() -> shooter.setHoodPos(Rotation2d.fromDegrees(0))));
-    // controller
-    // .rightTrigger()
-    // .whileTrue(Commands.run(() -> shooter.setWheelVoltage(6.5)))
-    // .onFalse(Commands.runOnce(() -> shooter.setWheelVoltage(0)))
-    // .whileTrue(Commands.run(() -> elevator.setElevatorVoltage(5)))
-    // .onFalse(Commands.runOnce(() -> elevator.setElevatorVoltage(0)));
+        .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(60))))
+        .onFalse(Commands.runOnce(() -> shooter.setHoodPos(Rotation2d.fromDegrees(0))));
+   
     controller
         .povLeft()
         .whileTrue(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(180))))
