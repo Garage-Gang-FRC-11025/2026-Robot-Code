@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeConstants.ExtenderConstants;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.ShooterControl2;
+import frc.robot.commands.ShooterControl;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.ElevatorIOReal;
@@ -214,61 +214,24 @@ public class RobotContainer {
     controller
         .y()
         .toggleOnTrue(
-            Commands.run(
-                    () ->
-                        intake.setExtenderPos(
-                            Rotation2d.fromDegrees(
-                                ExtenderConstants.MAX_EXTENDER_ANGLE.getDegrees())))
-                .finallyDo(() -> intake.setExtenderPos(Rotation2d.kZero)));
+            Commands.run(() -> intake.setExtenderPos(ExtenderConstants.MAX_EXTENDER_ANGLE))
+                .finallyDo(() -> intake.setExtenderPos(Rotation2d.kZero))
+                .ignoringDisable(true)); // Sets the extender position
 
+    // Sets the extender position
     controller
         .rightBumper()
         .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(300))))
         .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
+
+    // Runs the intake roller to intake fuel
     controller
         .leftBumper()
         .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(-300))))
         .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
-    controller
-        .rightTrigger()
-        .whileTrue(
-            Commands.run(
-                () -> {
-                  elevator.setElevatorVel(Units.RPM.of(300));
-                  shooter.setWheelVel(Units.RPM.of(300));
-                }))
-        .onFalse(
-            Commands.runOnce(
-                () -> {
-                  elevator.setElevatorVel(Units.RPM.of(0));
-                  shooter.setWheelVel(Units.RPM.of(0));
-                }));
 
-    controller
-        .rightBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVoltage(5)))
-        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
-
-    controller
-        .leftBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVoltage(-11)))
-        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
-
-    controller.rightTrigger().whileTrue(new ShooterControl2(shooter, elevator, drive, intake));
-
-    controller
-        .leftTrigger()
-        .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(60))))
-        .onFalse(Commands.runOnce(() -> shooter.setHoodPos(Rotation2d.fromDegrees(0))));
-
-    controller
-        .povLeft()
-        .whileTrue(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(180))))
-        .onFalse(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(0))));
-    controller
-        .povRight()
-        .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(180))))
-        .onFalse(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(0))));
+    // Runs the Shooter Command to score in the hub
+    controller.rightTrigger().whileTrue(new ShooterControl(shooter, elevator, drive, intake));
   }
 
   /**
