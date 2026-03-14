@@ -96,7 +96,9 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                new VisionIOPhotonVision(camera1Name, robotToCamera1));
+                new VisionIOPhotonVision(camera1Name, robotToCamera1),
+                new VisionIOPhotonVision(camera2Name, robotToCamera2),
+                new VisionIOPhotonVision(camera3Name, robotToCamera3));
         break;
 
       case SIM:
@@ -258,7 +260,7 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(60))))
         .onFalse(Commands.runOnce(() -> shooter.setHoodPos(Rotation2d.fromDegrees(0))));
-   
+
     controller
         .povLeft()
         .whileTrue(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(180))))
