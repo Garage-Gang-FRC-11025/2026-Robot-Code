@@ -48,6 +48,8 @@ public class ElevatorIOReal implements ElevatorIO {
     elevatorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     elevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
+    elevatorConfig.Feedback.SensorToMechanismRatio = ElevatorConstants.ELEVATOR_GEARING;
+
     elevatorConfig.Voltage.SupplyVoltageTimeConstant = ElevatorConstants.SUPPLY_VOLTAGE_TIME;
 
     elevatorMotor.getConfigurator().apply(elevatorConfig);
@@ -82,7 +84,6 @@ public class ElevatorIOReal implements ElevatorIO {
   @Override
   public void setElevatorVoltage(double volts) {
     elevatorMotor.setControl(elevatorOpenLoopControl.withOutput(volts));
-    setElevatorVoltage(11.5);
   }
 
   @Override
@@ -91,7 +92,8 @@ public class ElevatorIOReal implements ElevatorIO {
         elevatorClosedLoopControl.withVelocity(vel.in(Units.RotationsPerSecond)));
   }
 
-  public void configElevators(double kV, double kP, double maxAcceleration) {
+  @Override
+  public void configElevator(double kP, double kV, double maxAcceleration) {
     Slot0Configs pidConfig = new Slot0Configs();
     MotionMagicConfigs mmConfig = new MotionMagicConfigs();
 

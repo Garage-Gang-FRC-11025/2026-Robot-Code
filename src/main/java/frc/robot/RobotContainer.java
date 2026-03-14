@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeConstants.ExtenderConstants;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ShooterControl2;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.ElevatorIOReal;
@@ -86,13 +87,7 @@ public class RobotContainer {
                 new ModuleIOSpark(1),
                 new ModuleIOSpark(2),
                 new ModuleIOSpark(3));
-        // drive =
-        // new Drive(
-        // new GyroIO() {},
-        // new ModuleIOSim(),
-        // new ModuleIOSim(),
-        // new ModuleIOSim(),
-        // new ModuleIOSim());
+
         intake = new Intake(new IntakeIOReal());
         elevator = new Elevator(new ElevatorIOReal());
         shooter = new Shooter(new ShooterIOReal());
@@ -101,7 +96,9 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                new VisionIOPhotonVision(camera1Name, robotToCamera1));
+                new VisionIOPhotonVision(camera1Name, robotToCamera1),
+                new VisionIOPhotonVision(camera2Name, robotToCamera2),
+                new VisionIOPhotonVision(camera3Name, robotToCamera3));
         break;
 
       case SIM:
@@ -218,10 +215,11 @@ public class RobotContainer {
         .y()
         .toggleOnTrue(
             Commands.run(
-                () ->
-                    intake.setExtenderPos(
-                        Rotation2d.fromDegrees(ExtenderConstants.MAX_EXTENDER_ANGLE.getDegrees()))))
-        .toggleOnFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
+                    () ->
+                        intake.setExtenderPos(
+                            Rotation2d.fromDegrees(
+                                ExtenderConstants.MAX_EXTENDER_ANGLE.getDegrees())))
+                .finallyDo(() -> intake.setExtenderPos(Rotation2d.kZero)));
 
     controller
         .rightBumper()
@@ -232,7 +230,7 @@ public class RobotContainer {
         .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(-300))))
         .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
     controller
-        .leftTrigger()
+        .rightTrigger()
         .whileTrue(
             Commands.run(
                 () -> {
@@ -245,10 +243,24 @@ public class RobotContainer {
                   elevator.setElevatorVel(Units.RPM.of(0));
                   shooter.setWheelVel(Units.RPM.of(0));
                 }));
+
     controller
-        .rightTrigger()
-        .whileTrue(Commands.run(() -> shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()))))
-        .onFalse(Commands.runOnce(() -> shooter.setWheelVel(Units.RPM.of(0))));
+        .rightBumper()
+        .whileTrue(Commands.run(() -> intake.setRollerVoltage(5)))
+        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
+
+    controller
+        .leftBumper()
+        .whileTrue(Commands.run(() -> intake.setRollerVoltage(-11)))
+        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
+
+    controller.rightTrigger().whileTrue(new ShooterControl2(shooter, elevator, drive, intake));
+
+    controller
+        .leftTrigger()
+        .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(60))))
+        .onFalse(Commands.runOnce(() -> shooter.setHoodPos(Rotation2d.fromDegrees(0))));
+
     controller
         .povLeft()
         .whileTrue(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(180))))
