@@ -2,6 +2,7 @@ package frc.robot.subsystems.Intake;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -55,6 +56,7 @@ public class Intake extends SubsystemBase {
 
   public Intake(IntakeIO intakeIO) {
     this.intakeIO = intakeIO;
+    this.Intake = intake;
     configExtender();
     configRoller();
   }
@@ -102,7 +104,14 @@ public class Intake extends SubsystemBase {
   public void setExtenderPos(Rotation2d pos) {
     intakeIO.setExtenderPos(pos);
   }
-
+  public Rotation2d getExtenderPos(Rotation2d pos) {
+    return inputs.extenderPosition;
+  }
+  
+    // Returns true if extender is out at least 90 degrees from zero, returns false if else 
+  public boolean checkExtenderPosition() {
+        withinTolerance(Constants.IntakeConstants.ExtenderConstants.MIN_REQ_EXTENDER_ANGLE.getDegrees(), intake.getExtenderPos().getDegrees(), 5);
+  }
   public void zeroMotors() {
     intakeIO.zeroMotors();
   }
