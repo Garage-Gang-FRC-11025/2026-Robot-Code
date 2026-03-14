@@ -181,7 +181,6 @@ public class IntakeIOReal implements IntakeIO {
   public void setExtenderPos(Rotation2d pos) {
     extenderClosedLoopControl.withPosition(pos.getRotations());
     extenderMotor.setControl(extenderClosedLoopControl);
-    System.out.println("extending");
   }
 
   @Override
