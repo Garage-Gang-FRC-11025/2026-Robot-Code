@@ -214,21 +214,21 @@ public class RobotContainer {
     controller
         .y()
         .toggleOnTrue(
-            Commands.run(() -> intake.setExtenderPos(ExtenderConstants.MAX_EXTENDER_ANGLE))
-                .finallyDo(() -> intake.setExtenderPos(Rotation2d.kZero))
+            Commands.run(() -> intake.extendExtender())
+                .finallyDo(() -> intake.retractExtender())
                 .ignoringDisable(true)); // Sets the extender position
 
     // Sets the extender position
     controller
         .rightBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(300))))
-        .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
+        .whileTrue(Commands.run(() -> intake.releaseFuel()))
+        .onFalse(Commands.runOnce(() -> intake.stopRoller()));
 
     // Runs the intake roller to intake fuel
     controller
         .leftBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(-300))))
-        .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
+        .whileTrue(Commands.run(() -> intake.intakeFuel()))
+        .onFalse(Commands.runOnce(() -> intake.stopRoller()));
 
     // Runs the Shooter Command to score in the hub
     controller.rightTrigger().whileTrue(new ShooterControl(shooter, elevator, drive, intake));

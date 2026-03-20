@@ -2,9 +2,11 @@ package frc.robot.subsystems.Intake;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants.ExtenderConstants;
 import frc.robot.Constants.Mode;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -114,5 +116,25 @@ public class Intake extends SubsystemBase {
 
   public void zeroMotors() {
     intakeIO.zeroMotors();
+  }
+
+  public void extendExtender() {
+    setExtenderPos(ExtenderConstants.MAX_EXTENDER_ANGLE);
+  }
+
+  public void retractExtender() {
+    setExtenderPos(Rotation2d.kZero);
+  }
+
+  public void releaseFuel() {
+    setRollerVel(Units.RPM.of(4000));
+  }
+
+  public void intakeFuel() {
+    setRollerVel(Units.RPM.of(-4000));
+  }
+
+  public void stopRoller() {
+    setRollerVel(Units.RPM.of(0));
   }
 }
