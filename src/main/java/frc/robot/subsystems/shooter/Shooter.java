@@ -42,7 +42,7 @@ public class Shooter extends SubsystemBase {
       wKV.initDefault(0.108);
       wheelTargetAccelerationConfig.initDefault(300.0);
 
-      hKP.initDefault(1024);
+      hKP.initDefault(40);
       hKI.initDefault(0);
       hKD.initDefault(0);
 
@@ -123,7 +123,7 @@ public class Shooter extends SubsystemBase {
     shooterIO.setWheelVoltage(volts);
   }
 
-  public void setrotationVoltage(double volts) {
+  public void setRotationVoltage(double volts) {
     shooterIO.setRotationVoltage(volts);
   }
 
