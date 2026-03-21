@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.IntakeConstants.ExtenderConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShooterControl;
 import frc.robot.subsystems.Elevator.Elevator;
@@ -43,7 +42,6 @@ import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -92,13 +90,14 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOReal());
         shooter = new Shooter(new ShooterIOReal());
 
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                new VisionIOPhotonVision(camera1Name, robotToCamera1),
-                new VisionIOPhotonVision(camera2Name, robotToCamera2),
-                new VisionIOPhotonVision(camera3Name, robotToCamera3));
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVision(camera0Name, robotToCamera0),
+        //         new VisionIOPhotonVision(camera1Name, robotToCamera1),
+        //         new VisionIOPhotonVision(camera2Name, robotToCamera2),
+        //         new VisionIOPhotonVision(camera3Name, robotToCamera3));
         break;
 
       case SIM:

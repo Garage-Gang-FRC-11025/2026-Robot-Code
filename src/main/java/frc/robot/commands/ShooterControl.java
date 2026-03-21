@@ -59,22 +59,16 @@ public class ShooterControl extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    Rotation2d targetRotationPos = updateRotation();
+
     Rotation2d targetHoodAngle =
         Rotation2d.fromDegrees(
             Constants.ShooterConstants.HOOD_DISTANCE_ANGLE_TABLE.get(turretHubDistance()));
     double targetFlywheelSpeed =
         Constants.ShooterConstants.FLYWHEEL_DISTANCE_SPEED_TABLE.get(turretHubDistance());
-    Rotation2d targetRotationPos =
-        Geometry.headingPosition(turretFieldPosition(), FieldConstants.ourHubPosition())
-            .minus(drive.getRotation());
-    Logger.recordOutput("RotationTargetPositionBefore", targetRotationPos);
-    if (targetRotationPos.getDegrees() < 0)
-      targetRotationPos = targetRotationPos.plus(Rotation2d.fromDegrees(360));
-    // MathUtil.angleModulus(targetFlywheelSpeed)
-    shooter.setRotationPos(targetRotationPos);
-    Logger.recordOutput("RotationTargetPosition", targetRotationPos);
+
     shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()));
-    shooter.setHoodPos(Rotation2d.fromDegrees(hoodPositionConfig.get()));
+    shooter.setHoodPos(targetHoodAngle);
     boolean hoodInPosition =
         withinTolerance(
             hoodPositionConfig.get(), shooter.getHoodPos().getDegrees(), hoodToleranceConfig.get());
@@ -99,6 +93,26 @@ public class ShooterControl extends Command {
     Logger.recordOutput("ShooterControl2/rotationInPosition", rotationInPosition);
     Logger.recordOutput("ShooterControl2/wheelAtPosition", wheelAtVelocity);
     Logger.recordOutput("ShooterControl2/checkExtenderPosition", checkExtenderPosition);
+  }
+
+  private Rotation2d updateRotation() {
+    final Rotation2d heading =
+        Geometry.headingPosition(turretFieldPosition(), FieldConstants.ourHubPosition());
+    double targetRotationDegrees = heading.getDegrees() - drive.getRotation().getDegrees();
+    Logger.recordOutput(
+        "RotationTargetPositionBefore", Rotation2d.fromDegrees(targetRotationDegrees));
+
+    System.out.println("targetRotationDeg = " + targetRotationDegrees);
+    // if (targetRotationDeg < -170) {
+    //   targetRotationDeg = targetRotationDeg + 360;
+    // } else if (targetRotationDeg > 220) {
+    //   targetRotationDeg = targetRotationDeg - 360;
+    // }
+
+    Rotation2d targetRotationPos = Rotation2d.fromDegrees(targetRotationDegrees);
+    shooter.setRotationPos(targetRotationPos);
+    Logger.recordOutput("RotationTargetPosition", targetRotationPos);
+    return targetRotationPos;
   }
 
   private boolean withinTolerance(double targetState, double currentState, double tolerance) {
