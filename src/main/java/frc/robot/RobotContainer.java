@@ -175,10 +175,17 @@ public class RobotContainer {
                         Rotation2d.fromDegrees(ExtenderConstants.MAX_EXTENDER_ANGLE.getDegrees()))));
 
     //Run Intake:
-   NamedCommands.registerCommand("runIntake", Commands.run(() -> intake.setRollerVel(Units.RPM.of(300))));
-    
+   NamedCommands.registerCommand("runIntake", Commands.run(() -> intake.setRollerVel(Units.RPM.of(4000))));
+
+    //Reverse Intake
+    NamedCommands.registerCommand("reverseIntake", Commands.run(() -> intake.setRollerVel(Units.RPM.of(-4000))));
+
     //Prime to Shoot:
     NamedCommands.registerCommand("primeToShoot", );
+
+    // Run elevator to bring fuel to turret to shoot:
+    NamedCommands.registerCommand("runElevator", );
+
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
