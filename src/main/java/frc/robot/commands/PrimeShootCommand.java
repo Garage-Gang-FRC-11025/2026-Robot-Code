@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
@@ -23,14 +24,14 @@ public class PrimeShootCommand extends Command {
   private static final LoggedTunableNumber wheelVelocityConfig =
       new LoggedTunableNumber("Shooter/Wheel/Velocity", 3500);
 
-  private static final LoggedTunableNumber hoodPositionConfig =
-      new LoggedTunableNumber("Shooter/Hood/Position", 60);
+  private static final LoggedTunableNumber elevationAngleConfig =
+      new LoggedTunableNumber("Shooter/Elevation/Position", 60);
   private static final LoggedTunableNumber wheelToleranceConfig =
-      new LoggedTunableNumber("Shooter/Wheel/Tolerance", 30);
-  private static final LoggedTunableNumber hoodToleranceConfig =
-      new LoggedTunableNumber("Shooter/hood/Tolerance", 5);
-  private static final LoggedTunableNumber rotationToleranceConfig =
-      new LoggedTunableNumber("Shooter/Rotation/Tolerance", 5);
+      new LoggedTunableNumber("Shooter/Wheel/Tolerance", 100);
+  private static final LoggedTunableNumber elevationToleranceConfig =
+      new LoggedTunableNumber("Shooter/Elevation/Tolerance", 5);
+  private static final LoggedTunableNumber turretRotationToleranceConfig =
+      new LoggedTunableNumber("Shooter/Turret/Tolerance", 10);
   private Shooter shooter;
   private Drive drive;
   private Intake intake;
@@ -49,60 +50,79 @@ public class PrimeShootCommand extends Command {
   public void initialize() {
 
     shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()));
-    shooter.setHoodPos(Rotation2d.fromDegrees(hoodPositionConfig.get()));
+    shooter.setHoodElevation(Rotation2d.fromDegrees(elevationAngleConfig.get()));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Rotation2d targetRotationPos = updateRotation();
+    Rotation2d targetTurretRotation = updateTurretRotation();
 
-    Rotation2d targetHoodAngle =
+    Rotation2d targetElevationAngle =
         Rotation2d.fromDegrees(
             Constants.ShooterConstants.HOOD_DISTANCE_ANGLE_TABLE.get(turretHubDistance()));
     double targetFlywheelSpeed =
         Constants.ShooterConstants.FLYWHEEL_DISTANCE_SPEED_TABLE.get(turretHubDistance());
 
-    shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()));
-    shooter.setHoodPos(targetHoodAngle);
-    boolean hoodInPosition =
+    shooter.setWheelVel(Units.RPM.of(targetFlywheelSpeed));
+    shooter.setHoodElevation(targetElevationAngle);
+
+    boolean elevationInPosition =
         withinTolerance(
-            hoodPositionConfig.get(), shooter.getHoodPos().getDegrees(), hoodToleranceConfig.get());
-    boolean rotationInPosition =
+            targetElevationAngle.getDegrees() - 25,
+            shooter.getHoodElevation().getDegrees(),
+            elevationToleranceConfig.get());
+    boolean turretInPosition =
         withinTolerance(
-            targetRotationPos.getDegrees(),
-            shooter.getRotationPos().getDegrees(),
-            rotationToleranceConfig.get());
+            targetTurretRotation.getDegrees(),
+            shooter.getTurretRotation().getDegrees(),
+            turretRotationToleranceConfig.get());
     boolean wheelAtVelocity =
         withinTolerance(
-            wheelVelocityConfig.get(),
-            shooter.getWheelVel().in(Units.RPM),
-            wheelToleranceConfig.get());
+            targetFlywheelSpeed, shooter.getWheelVel().in(Units.RPM), wheelToleranceConfig.get());
     boolean checkExtenderPosition =
         Constants.IntakeConstants.ExtenderConstants.MIN_REQ_EXTENDER_ANGLE.getDegrees()
             < intake.getExtenderPos().getDegrees();
 
-    isPrimed = hoodInPosition && rotationInPosition && wheelAtVelocity && checkExtenderPosition;
-    System.out.println(
-        "hoodInPosition "
-            + hoodInPosition
-            + ", "
-            + "rotationInPosition "
-            + rotationInPosition
-            + ", "
-            + "wheelAtVelocity "
-            + wheelAtVelocity
-            + ", "
-            + "checkExtenderPosition "
-            + checkExtenderPosition);
+    final var msg = "target=%s real=%s tolerance=%s okay=%s";
+    SmartDashboard.putString(
+        "hood elevation",
+        msg.formatted(
+            targetElevationAngle.getDegrees(),
+            shooter.getHoodElevation().getDegrees(),
+            elevationToleranceConfig.get(),
+            elevationInPosition));
+    SmartDashboard.putString(
+        "turret rotation",
+        msg.formatted(
+            targetTurretRotation.getDegrees(),
+            shooter.getTurretRotation().getDegrees(),
+            turretRotationToleranceConfig.get(),
+            turretInPosition));
+    SmartDashboard.putString(
+        "wheel velocity",
+        msg.formatted(
+            targetFlywheelSpeed,
+            shooter.getWheelVel().in(Units.RPM),
+            wheelToleranceConfig.get(),
+            wheelAtVelocity));
+    SmartDashboard.putString(
+        "extender",
+        "%s < %s : %s"
+            .formatted(
+                Constants.IntakeConstants.ExtenderConstants.MIN_REQ_EXTENDER_ANGLE.getDegrees(),
+                intake.getExtenderPos().getDegrees(),
+                checkExtenderPosition));
 
-    Logger.recordOutput("ShooterControl2/hoodInPosition", hoodInPosition);
-    Logger.recordOutput("ShooterControl2/rotationInPosition", rotationInPosition);
+    isPrimed = elevationInPosition && turretInPosition && wheelAtVelocity && checkExtenderPosition;
+
+    Logger.recordOutput("ShooterControl2/hoodInPosition", elevationInPosition);
+    Logger.recordOutput("ShooterControl2/rotationInPosition", turretInPosition);
     Logger.recordOutput("ShooterControl2/wheelAtPosition", wheelAtVelocity);
     Logger.recordOutput("ShooterControl2/checkExtenderPosition", checkExtenderPosition);
   }
 
-  private Rotation2d updateRotation() {
+  private Rotation2d updateTurretRotation() {
     final Rotation2d heading =
         Geometry.headingPosition(turretFieldPosition(), FieldConstants.ourHubPosition());
     double targetRotationDegrees = heading.getDegrees() - drive.getRotation().getDegrees();
@@ -111,9 +131,9 @@ public class PrimeShootCommand extends Command {
 
     System.out.println("targetRotationDeg = " + targetRotationDegrees);
     // if (targetRotationDeg < -170) {
-    //   targetRotationDeg = targetRotationDeg + 360;
+    // targetRotationDeg = targetRotationDeg + 360;
     // } else if (targetRotationDeg > 220) {
-    //   targetRotationDeg = targetRotationDeg - 360;
+    // targetRotationDeg = targetRotationDeg - 360;
     // }
 
     Rotation2d targetRotationPos = Rotation2d.fromDegrees(targetRotationDegrees);
@@ -130,7 +150,7 @@ public class PrimeShootCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.setWheelVel((Units.RPM.of(0)));
-    shooter.setHoodPos(new Rotation2d(0));
+    shooter.setHoodElevation(new Rotation2d(0));
     isPrimed = false;
   }
 

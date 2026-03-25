@@ -48,7 +48,7 @@ public final class Constants {
       public static final double SUPPLY_VOLTAGE_TIME = 0.02;
       public static final double EXTENDER_MOI = 0.1;
       public static final Distance EXTENDER_LENGTH = Units.Inches.of(12.5);
-      public static final Rotation2d MIN_REQ_EXTENDER_ANGLE = Rotation2d.fromDegrees(90);
+      public static final Rotation2d MIN_REQ_EXTENDER_ANGLE = Rotation2d.fromDegrees(8);
     }
 
     public class RollerConstants {
@@ -98,14 +98,6 @@ public final class Constants {
   }
 
   public class CanIDs {
-    public static final int FRONT_LEFT_WHEEL_CAN_ID = 1;
-    public static final int FRONT_LEFT_ANGLE_CAN_ID = 2;
-    public static final int FRONT_RIGHT_WHEEL_CAN_ID = 3;
-    public static final int FRONT_RIGHT_ANGLE_CAN_ID = 4;
-    public static final int BACK_LEFT_WHEEL_CAN_ID = 5;
-    public static final int BACK_LEFT_ANGLE_CAN_ID = 6;
-    public static final int BACK_RIGHT_WHEEL_CAN_ID = 7;
-    public static final int BACK_RIGHT_ANGLE_CAN_ID = 8;
     public static final int INTAKE_EXTENDER_CAN_ID = 16;
     public static final int INTAKE_ROLLER_CAN_ID = 11;
     public static final int ELEVATOR_CAN_ID = 12;
@@ -118,7 +110,7 @@ public final class Constants {
     public static final Translation2d TURRET_TRANSLATION = new Translation2d(-0.130175, -0.1397);
 
     public final class HoodConstants {
-      public static final Rotation2d MIN_HOOD_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d MIN_HOOD_ANGLE = Rotation2d.fromDegrees(-45);
       public static final Rotation2d MAX_HOOD_ANGLE = Rotation2d.fromDegrees(90);
       public static final double HOOD_MOI = 0.0001;
       public static final double STATOR_CURRENT_LIMIT = 20;
@@ -157,9 +149,9 @@ public final class Constants {
         new InterpolatingDoubleTreeMap();
 
     static {
-      FLYWHEEL_DISTANCE_SPEED_TABLE.put(0.0, 0.0);
-      FLYWHEEL_DISTANCE_SPEED_TABLE.put(1.0, 10.0);
-      FLYWHEEL_DISTANCE_SPEED_TABLE.put(2.0, 30.0);
+      FLYWHEEL_DISTANCE_SPEED_TABLE.put(0.0, 500.0);
+      FLYWHEEL_DISTANCE_SPEED_TABLE.put(1.0, 2000.0);
+      FLYWHEEL_DISTANCE_SPEED_TABLE.put(2.0, 3500.0);
     }
 
     public static final InterpolatingDoubleTreeMap HOOD_DISTANCE_ANGLE_TABLE =

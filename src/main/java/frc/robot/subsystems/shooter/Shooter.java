@@ -135,23 +135,23 @@ public class Shooter extends SubsystemBase {
     shooterIO.setWheelVel(vel);
   }
 
-  public void setHoodPos(Rotation2d pos) {
-    shooterIO.setHoodPos(pos);
+  public void setHoodElevation(Rotation2d pos) {
+    shooterIO.setHoodElevation(pos);
   }
 
   public void setRotationPos(Rotation2d pos) {
-    shooterIO.setRotationPos(pos);
+    shooterIO.setTurretRotation(pos);
   }
 
   public void zeroMotors() {
     shooterIO.zeroMotors();
   }
 
-  public Rotation2d getHoodPos() {
+  public Rotation2d getHoodElevation() {
     return inputs.hoodPosition;
   }
 
-  public Rotation2d getRotationPos() {
+  public Rotation2d getTurretRotation() {
     return inputs.rotationPosition;
   }
 

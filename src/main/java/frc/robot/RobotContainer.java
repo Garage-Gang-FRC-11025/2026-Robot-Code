@@ -44,7 +44,6 @@ import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
-import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -64,13 +63,6 @@ public class RobotContainer {
   // Controller
   private final CommandXboxController driverController = new CommandXboxController(0);
   private final CommandXboxController coDriverController = new CommandXboxController(1);
-
-  // Tunable numbers
-  private static final LoggedTunableNumber wheelVelocityConfig =
-      new LoggedTunableNumber("Shooter/Wheel/Velocity", 300);
-  private static final LoggedTunableNumber extenderVelocityConfig =
-      new LoggedTunableNumber("Intake/Extender/Velocity");
-  private static final LoggedTunableNumber tunablePos = new LoggedTunableNumber("tunablePos", 90);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
