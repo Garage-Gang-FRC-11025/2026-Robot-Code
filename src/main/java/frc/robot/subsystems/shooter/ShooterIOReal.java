@@ -73,7 +73,7 @@ public class ShooterIOReal implements ShooterIO {
     wheelConfig.CurrentLimits = wheelCurrentLimitConfig;
 
     wheelConfig.Feedback.SensorToMechanismRatio = WheelConstants.WHEEL_GEARING;
-    wheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    wheelConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     wheelConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     wheelConfig.Voltage.SupplyVoltageTimeConstant = WheelConstants.SUPPLY_VOLTAGE_TIME;
@@ -122,7 +122,7 @@ public class ShooterIOReal implements ShooterIO {
     rotationConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
     rotationConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    rotationConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    rotationConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     rotationConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     rotationConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
@@ -137,7 +137,7 @@ public class ShooterIOReal implements ShooterIO {
 
     rotationConfig.Voltage.SupplyVoltageTimeConstant = HoodConstants.SUPPLY_VOLTAGE_TIME;
 
-    rotationMotor.getConfigurator().apply(hoodConfig);
+    rotationMotor.getConfigurator().apply(rotationConfig);
 
     // Status signals
 
@@ -146,10 +146,10 @@ public class ShooterIOReal implements ShooterIO {
     hoodCurrent = hoodMotor.getStatorCurrent();
     hoodDeviceTemp = hoodMotor.getDeviceTemp();
 
-    rotationAppliedVoltage = hoodMotor.getMotorVoltage();
-    rotationAngle = hoodMotor.getPosition();
-    rotationCurrent = hoodMotor.getStatorCurrent();
-    rotationDeviceTemp = hoodMotor.getDeviceTemp();
+    rotationAppliedVoltage = rotationMotor.getMotorVoltage();
+    rotationAngle = rotationMotor.getPosition();
+    rotationCurrent = rotationMotor.getStatorCurrent();
+    rotationDeviceTemp = rotationMotor.getDeviceTemp();
 
     // Update status signals
 
@@ -158,6 +158,9 @@ public class ShooterIOReal implements ShooterIO {
     BaseStatusSignal.setUpdateFrequencyForAll(1, hoodDeviceTemp);
     BaseStatusSignal.setUpdateFrequencyForAll(50, wheelAppliedVoltage, wheelCurrent, wheelVelocity);
     BaseStatusSignal.setUpdateFrequencyForAll(1, wheelDeviceTemp);
+    BaseStatusSignal.setUpdateFrequencyForAll(100, rotationAppliedVoltage, rotationAngle);
+    BaseStatusSignal.setUpdateFrequencyForAll(50, rotationCurrent);
+    BaseStatusSignal.setUpdateFrequencyForAll(1, rotationDeviceTemp);
 
     hoodMotor.optimizeBusUtilization();
     wheelMotor.optimizeBusUtilization();
@@ -184,12 +187,21 @@ public class ShooterIOReal implements ShooterIO {
     inputs.wheelTempCelsius = wheelDeviceTemp.getValue().in(Units.Celsius);
     inputs.wheelAppliedOutput = wheelAppliedVoltage.getValue().in(Units.Volts);
     inputs.wheelsVelocityRPM = wheelVelocity.getValue().in(Units.RPM);
+
+    inputs.rotationPosition = Rotation2d.fromDegrees(rotationAngle.getValue().in(Units.Degrees));
+    inputs.rotationCurrentAmps = rotationCurrent.getValue().in(Units.Amps);
+    inputs.rotationAppliedOutput = rotationAppliedVoltage.getValue().in(Units.Volts);
+    inputs.rotationTempCelsius = rotationDeviceTemp.getValue().in(Units.Celsius);
+
+    inputs.hoodPosition = Rotation2d.fromDegrees(hoodAngle.getValue().in(Units.Degrees));
+    inputs.hoodCurrentAmps = hoodCurrent.getValue().in(Units.Amps);
+    inputs.hoodAppliedOutput = hoodAppliedVoltage.getValue().in(Units.Volts);
+    inputs.hoodTempCelsius = hoodDeviceTemp.getValue().in(Units.Celsius);
   }
 
   @Override
   public void setWheelVoltage(double volts) {
     wheelMotor.setControl(wheelOpenLoopControl.withOutput(volts));
-    setWheelVoltage(-11.5);
   }
 
   @Override
@@ -223,16 +235,21 @@ public class ShooterIOReal implements ShooterIO {
     wheelConfig.apply(mmConfig);
   }
 
+  @Override
   public void setHoodPos(Rotation2d pos) {
     hoodClosedLoopControl.withPosition(pos.getRotations());
     hoodMotor.setControl(hoodClosedLoopControl);
   }
 
+  @Override
   public void setRotationPos(Rotation2d pos) {
-    rotationClosedLoopControl.withPosition(pos.getRotations());
+    double posRotations = pos.getRotations();
+    if (posRotations < 0) posRotations += 1;
+    rotationClosedLoopControl.withPosition(posRotations);
     rotationMotor.setControl(rotationClosedLoopControl);
   }
 
+  @Override
   public void configHood(double kP, double kI, double kD, MotionMagicConfigs mmConfigs) {
     var slot0Configs = new Slot0Configs();
 
@@ -246,6 +263,7 @@ public class ShooterIOReal implements ShooterIO {
     hoodMotor.getConfigurator().apply(mmConfigs);
   }
 
+  @Override
   public void configRotation(double kP, double kD, MotionMagicConfigs mmConfigs) {
     var slot0Configs = new Slot0Configs();
 
@@ -258,16 +276,17 @@ public class ShooterIOReal implements ShooterIO {
     rotationMotor.getConfigurator().apply(mmConfigs);
   }
 
+  @Override
   public void setHoodVoltage(double volts) {
     hoodMotor.setControl(hoodOpenLoopControl.withOutput(volts));
-    setHoodVoltage(1.5);
   }
 
+  @Override
   public void setRotationVoltage(double volts) {
     rotationMotor.setControl(rotationOpenLoopControl.withOutput(volts));
-    setHoodVoltage(1);
   }
 
+  @Override
   public boolean setHoodNeutralMode(NeutralModeValue value) {
     var config = new MotorOutputConfigs();
 
@@ -281,6 +300,7 @@ public class ShooterIOReal implements ShooterIO {
     return true;
   }
 
+  @Override
   public boolean setRotationNeutralMode(NeutralModeValue value) {
 
     var config = new MotorOutputConfigs();

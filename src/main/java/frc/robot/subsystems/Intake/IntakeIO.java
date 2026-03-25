@@ -16,7 +16,6 @@ public interface IntakeIO {
     public double extenderAppliedOutput;
     public double extenderCurrentAmps;
     public double extenderTempCelsius;
-    public double extenderVelocity;
     public Rotation2d extenderPosition;
   }
 
