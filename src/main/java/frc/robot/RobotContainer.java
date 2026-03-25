@@ -145,7 +145,7 @@ public class RobotContainer {
     // Set up auto routines
     // autChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-    // set up auto chooser
+//------------------set up auto chooser
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -162,11 +162,27 @@ public class RobotContainer {
      */
 
     // register main commandsfor auto
+
+//--------------------------------------------------Named Commands Auto------------------------------------------------------
+    //Drive: Feed Forward Characterization:
     NamedCommands.registerCommand(
         "feedFowardCharacterization", DriveCommands.feedforwardCharacterization(drive));
-    // NamedCommands.registerCommand
+    
+    //Deploy Intake:
+    NamedCommands.registerCommand("deployIntake", Commands.run(
+                () ->
+                    intake.setExtenderPos(
+                        Rotation2d.fromDegrees(ExtenderConstants.MAX_EXTENDER_ANGLE.getDegrees()))));
 
-    // Configure the button bindings
+    //Run Intake:
+   NamedCommands.registerCommand("runIntake", Commands.run(() -> intake.setRollerVel(Units.RPM.of(300))));
+    
+    //Prime to Shoot:
+    NamedCommands.registerCommand("primeToShoot", );
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+
+//-----------------------------------------------------Configure the button bindings---------------------------------------------------------------
     configureButtonBindings();
   }
   // intake pivot 2.25 volts hard limit, both direction. //elavator 11.5 volts, //intake roller 11.5
