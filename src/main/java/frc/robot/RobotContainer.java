@@ -62,7 +62,8 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Vision vision;
   // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController driverController = new CommandXboxController(0);
+  private final CommandXboxController coDriverController = new CommandXboxController(1);
 
   // Tunable numbers
   private static final LoggedTunableNumber wheelVelocityConfig =
@@ -175,22 +176,22 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> controller.getRightX())); // Changed into a positive from a negitive
+            () -> -driverController.getLeftY(),
+            () -> -driverController.getLeftX(),
+            () -> driverController.getRightX())); // Changed into a positive from a negitive
 
     // Lock to 0° when A button is held
-    controller
+    driverController
         .a()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
+                () -> -driverController.getLeftY(),
+                () -> -driverController.getLeftX(),
                 () -> Rotation2d.kZero));
 
     // Switch to X pattern when X button is pressed
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // change rotation on motors to 0° when button on dash is pressed
     SmartDashboard.putData(
@@ -202,9 +203,9 @@ public class RobotContainer {
                 })
             .ignoringDisable(true));
 
-    // Reset gyro to 0° when B button is pressed
-    controller
-        .b()
+    // Reset gyro to 0° when Y button is pressed
+    driverController
+        .y()
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -213,9 +214,9 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // extend the extender to out position when Y button is held
-    controller
-        .y()
+    // extend the extender to out position when Y button is pressed
+    coDriverController
+        .x()
         .toggleOnTrue(
             Commands.run(
                 () ->
@@ -223,15 +224,20 @@ public class RobotContainer {
                         Rotation2d.fromDegrees(ExtenderConstants.MAX_EXTENDER_ANGLE.getDegrees()))))
         .toggleOnFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
 
-    controller
-        .rightBumper()
+    // Rolls the roller to make it intake fuel
+    coDriverController
+        .rightTrigger()
         .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(300))))
         .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
-    controller
-        .leftBumper()
+
+    // Rolls the roller to make it push out fuel
+    coDriverController
+        .rightBumper()
         .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(-300))))
         .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
-    controller
+
+
+    coDriverController
         .leftTrigger()
         .whileTrue(
             Commands.run(
@@ -245,15 +251,15 @@ public class RobotContainer {
                   elevator.setElevatorVel(Units.RPM.of(0));
                   shooter.setWheelVel(Units.RPM.of(0));
                 }));
-    controller
+    coDriverController
         .rightTrigger()
         .whileTrue(Commands.run(() -> shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()))))
         .onFalse(Commands.runOnce(() -> shooter.setWheelVel(Units.RPM.of(0))));
-    controller
+    coDriverController
         .povLeft()
         .whileTrue(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(180))))
         .onFalse(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(0))));
-    controller
+    coDriverController
         .povRight()
         .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(180))))
         .onFalse(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(0))));
