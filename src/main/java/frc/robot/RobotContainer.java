@@ -222,7 +222,7 @@ public class RobotContainer {
         .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(-300))))
         .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
     controller
-        .leftTrigger()
+        .x()
         .whileTrue(
             Commands.run(
                 () -> {
@@ -249,22 +249,17 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
 
     controller
-        .leftBumper()
+        .x()
         .whileTrue(Commands.run(() -> intake.setRollerVoltage(-11)))
         .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
 
     controller.rightTrigger().whileTrue(new ShooterControl2(shooter, elevator, drive));
 
+    // controller.leftTrigger().whileTrue(new ShootToAlliance(shooter, elevator, drive, intake));
+
     controller
         .leftTrigger()
         .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(60))));
-    // .onFalse(Commands.runOnce(() -> shooter.setHoodPos(Rotation2d.fromDegrees(0))));
-    // controller
-    // .rightTrigger()
-    // .whileTrue(Commands.run(() -> shooter.setWheelVoltage(6.5)))
-    // .onFalse(Commands.runOnce(() -> shooter.setWheelVoltage(0)))
-    // .whileTrue(Commands.run(() -> elevator.setElevatorVoltage(5)))
-    // .onFalse(Commands.runOnce(() -> elevator.setElevatorVoltage(0)));
     controller
         .povLeft()
         .whileTrue(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(180))))

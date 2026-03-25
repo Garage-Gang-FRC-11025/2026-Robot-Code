@@ -27,6 +27,7 @@ public final class Constants {
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
   private static Drive drive;
+
   public static enum Mode {
     /** Running on a real robot. */
     REAL,
@@ -49,6 +50,7 @@ public final class Constants {
       public static final double SUPPLY_VOLTAGE_TIME = 0.02;
       public static final double EXTENDER_MOI = 0.1;
       public static final Distance EXTENDER_LENGTH = Units.Inches.of(12.5);
+      public static final Rotation2d MIN_REQ_EXTENDER_ANGLE = Rotation2d.fromDegrees(90);
     }
 
     public class RollerConstants {
@@ -62,7 +64,7 @@ public final class Constants {
   }
 
   public class FieldConstants {
-    // set the hub position and alliance position translation2d, 
+    // set the hub position and alliance position translation2d,
     // used that to translate the value and get
     // our hub position
     // depending on aliance color.
@@ -76,25 +78,34 @@ public final class Constants {
             VisionConstants.aprilTagLayout.getTagPose(2).get().getX(),
             VisionConstants.aprilTagLayout.getTagPose(10).get().getY());
 
-public static final Translation2d BLUE_ALLIANCE_LEFT_POSITION =
+    public static final Translation2d BLUE_ALLIANCE_POSITION =
+        new Translation2d(
+            VisionConstants.aprilTagLayout.getTagPose(18).get().getX(),
+            VisionConstants.aprilTagLayout.getTagPose(26).get().getY());
+
+    public static final Translation2d RED_ALLIANCE_POSITION =
+        new Translation2d(
+            VisionConstants.aprilTagLayout.getTagPose(2).get().getX(),
+            VisionConstants.aprilTagLayout.getTagPose(10).get().getY());
+
+    public static final Translation2d BLUE_ALLIANCE_LEFT_POSITION =
         new Translation2d(
             VisionConstants.aprilTagLayout.getTagPose(22).get().getX(),
             VisionConstants.aprilTagLayout.getTagPose(22).get().getY());
 
-
-public static final Translation2d BLUE_ALLIANCE_RIGHT_POSITION =
+    public static final Translation2d BLUE_ALLIANCE_RIGHT_POSITION =
         new Translation2d(
-            VisionConstants.aprilTagLayout.getTagPose(18).get().getX(), 
+            VisionConstants.aprilTagLayout.getTagPose(18).get().getX(),
             VisionConstants.aprilTagLayout.getTagPose(18).get().getY());
 
     public static final Translation2d RED_ALLIANCE_RIGHT_POSITION =
         new Translation2d(
-            VisionConstants.aprilTagLayout.getTagPose(1).get().getX(), 
+            VisionConstants.aprilTagLayout.getTagPose(1).get().getX(),
             VisionConstants.aprilTagLayout.getTagPose(1).get().getY());
 
-public static final Translation2d RED_ALLIANCE_LEFT_POSITION =
+    public static final Translation2d RED_ALLIANCE_LEFT_POSITION =
         new Translation2d(
-            VisionConstants.aprilTagLayout.getTagPose(6).get().getX(), 
+            VisionConstants.aprilTagLayout.getTagPose(6).get().getX(),
             VisionConstants.aprilTagLayout.getTagPose(6).get().getY());
 
     public static final double FIELD_LENGTH = 16.54048;
@@ -112,18 +123,15 @@ public static final Translation2d RED_ALLIANCE_LEFT_POSITION =
 
     public static Translation2d ourAlliancePosition() {
       Translation2d allianceP = new Translation2d();
-        if (DriverStation.getAlliance().get().equals(Alliance.Blue) && drive.getPose().getY() > 4.03479) {
-          allianceP = BLUE_ALLIANCE_LEFT_POSITION;}
-        else if (DriverStation.getAlliance().get().equals(Alliance.Blue) && drive.getPose().getY() < 4.03479) {
-          allianceP = BLUE_ALLIANCE_RIGHT_POSITION;}
-        else if (DriverStation.getAlliance().get().equals(Alliance.Red) && drive.getPose().getY() < 4.03479) {
-          allianceP = RED_ALLIANCE_LEFT_POSITION;}
-        else if (DriverStation.getAlliance().get().equals(Alliance.Red) && drive.getPose().getY() > 4.03479) {
-          allianceP = RED_ALLIANCE_RIGHT_POSITION;
-        } 
-      return allianceP;
-        }
+      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
+        allianceP = BLUE_ALLIANCE_POSITION;
+      } else if (DriverStation.getAlliance().get().equals(Alliance.Red)
+          && drive.getPose().getY() > 4.03479) {
+        allianceP = RED_ALLIANCE_POSITION;
       }
+      return allianceP;
+    }
+  }
 
   public class ElevatorConstants {
 
@@ -207,27 +215,26 @@ public static final Translation2d RED_ALLIANCE_LEFT_POSITION =
       HOOD_HUB_DISTANCE_ANGLE_TABLE.put(1.0, 10.0);
       HOOD_HUB_DISTANCE_ANGLE_TABLE.put(2.0, 30.0);
     }
-  public static final InterpolatingDoubleTreeMap FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE =
-      new InterpolatingDoubleTreeMap();
 
-  static {
-    FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE.put(0.0, 0.0);
-    FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE.put(1.0, 10.0);
-    FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE.put(2.0, 30.0);
-   }
+    public static final InterpolatingDoubleTreeMap FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE =
+        new InterpolatingDoubleTreeMap();
 
-  public static final InterpolatingDoubleTreeMap HOOD_ALLIANCE_DISTANCE_ANGLE_TABLE =
-      new InterpolatingDoubleTreeMap();
+    static {
+      FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE.put(0.0, 0.0);
+      FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE.put(1.0, 10.0);
+      FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE.put(2.0, 30.0);
+    }
 
-  static {
-    HOOD_ALLIANCE_DISTANCE_ANGLE_TABLE.put(0.0, 0.0);
-    HOOD_ALLIANCE_DISTANCE_ANGLE_TABLE.put(1.0, 10.0);
-    HOOD_ALLIANCE_DISTANCE_ANGLE_TABLE.put(2.0, 30.0);
-   }
-    
+    public static final InterpolatingDoubleTreeMap HOOD_ALLIANCE_DISTANCE_ANGLE_TABLE =
+        new InterpolatingDoubleTreeMap();
+
+    static {
+      HOOD_ALLIANCE_DISTANCE_ANGLE_TABLE.put(0.0, 0.0);
+      HOOD_ALLIANCE_DISTANCE_ANGLE_TABLE.put(1.0, 10.0);
+      HOOD_ALLIANCE_DISTANCE_ANGLE_TABLE.put(2.0, 30.0);
+    }
   }
 
   public static final double MAX_VOLTAGE = 12.0;
   public static final double kDefaultPeriod = 0.02;
 }
-

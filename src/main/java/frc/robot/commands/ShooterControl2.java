@@ -53,10 +53,10 @@ public class ShooterControl2 extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Rotation2d targetHoodAngle =
+    Rotation2d targetHubHoodAngle =
         Rotation2d.fromDegrees(
             Constants.ShooterConstants.HOOD_HUB_DISTANCE_ANGLE_TABLE.get(turretHubDistance()));
-    double targetFlywheelSpeed =
+    double targetHubFlywheelSpeed =
         Constants.ShooterConstants.FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.get(turretHubDistance());
     Rotation2d targetRotationPos =
         Geometry.headingPosition(turretFieldPosition(), FieldConstants.ourHubPosition())
