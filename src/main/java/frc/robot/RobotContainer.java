@@ -21,7 +21,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.ShooterControl;
+import frc.robot.commands.PrimeShootCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.ElevatorIOReal;
@@ -210,7 +211,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // extend the extender to out position when Y button is pressed
+    // extend the extender to out position when X button is pressed
     coDriverController
         .x()
         .toggleOnTrue(
@@ -230,22 +231,9 @@ public class RobotContainer {
         .whileTrue(Commands.run(() -> intake.releaseFuel()))
         .onFalse(Commands.runOnce(() -> intake.stopRoller()));
 
-
-    coDriverController
-        .leftTrigger()
-        .whileTrue(new ShooterControl(shooter, elevator, drive, intake));
-    coDriverController
-        .rightTrigger()
-        .whileTrue(Commands.run(() -> shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()))))
-        .onFalse(Commands.runOnce(() -> shooter.setWheelVel(Units.RPM.of(0))));
-    coDriverController
-        .povLeft()
-        .whileTrue(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(180))))
-        .onFalse(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(0))));
-    coDriverController
-        .povRight()
-        .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(180))))
-        .onFalse(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(0))));
+    PrimeShootCommand primeShootCommand = new PrimeShootCommand(shooter, drive, intake);
+    coDriverController.leftBumper().whileTrue(primeShootCommand);
+    coDriverController.leftTrigger().whileTrue(new ShootCommand(elevator, primeShootCommand));
   }
 
   /**

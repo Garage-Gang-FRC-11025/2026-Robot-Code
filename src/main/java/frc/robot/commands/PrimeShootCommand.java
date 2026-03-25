@@ -10,7 +10,6 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
@@ -19,13 +18,11 @@ import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ShooterControl extends Command {
+public class PrimeShootCommand extends Command {
   /** Creates a new ShooterControl2. */
   private static final LoggedTunableNumber wheelVelocityConfig =
       new LoggedTunableNumber("Shooter/Wheel/Velocity", 3500);
 
-  private static final LoggedTunableNumber elevatorVelocityConfig =
-      new LoggedTunableNumber("Elevator/Elevator/Velocity", 400);
   private static final LoggedTunableNumber hoodPositionConfig =
       new LoggedTunableNumber("Shooter/Hood/Position", 60);
   private static final LoggedTunableNumber wheelToleranceConfig =
@@ -35,16 +32,15 @@ public class ShooterControl extends Command {
   private static final LoggedTunableNumber rotationToleranceConfig =
       new LoggedTunableNumber("Shooter/Rotation/Tolerance", 5);
   private Shooter shooter;
-  private Elevator elevator;
   private Drive drive;
   private Intake intake;
+  private boolean isPrimed = false;
 
-  public ShooterControl(Shooter shooter, Elevator elevator, Drive drive, Intake intake) {
+  public PrimeShootCommand(Shooter shooter, Drive drive, Intake intake) {
     this.shooter = shooter;
-    this.elevator = elevator;
     this.drive = drive;
     this.intake = intake;
-    addRequirements(shooter, elevator);
+    addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -86,8 +82,19 @@ public class ShooterControl extends Command {
         Constants.IntakeConstants.ExtenderConstants.MIN_REQ_EXTENDER_ANGLE.getDegrees()
             < intake.getExtenderPos().getDegrees();
 
-    if (hoodInPosition && rotationInPosition && wheelAtVelocity && checkExtenderPosition)
-      elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
+    isPrimed = hoodInPosition && rotationInPosition && wheelAtVelocity && checkExtenderPosition;
+    System.out.println(
+        "hoodInPosition "
+            + hoodInPosition
+            + ", "
+            + "rotationInPosition "
+            + rotationInPosition
+            + ", "
+            + "wheelAtVelocity "
+            + wheelAtVelocity
+            + ", "
+            + "checkExtenderPosition "
+            + checkExtenderPosition);
 
     Logger.recordOutput("ShooterControl2/hoodInPosition", hoodInPosition);
     Logger.recordOutput("ShooterControl2/rotationInPosition", rotationInPosition);
@@ -124,13 +131,17 @@ public class ShooterControl extends Command {
   public void end(boolean interrupted) {
     shooter.setWheelVel((Units.RPM.of(0)));
     shooter.setHoodPos(new Rotation2d(0));
-    elevator.setElevatorVel(Units.RPM.of(0));
+    isPrimed = false;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  public boolean isPrimed() {
+    return isPrimed;
   }
 
   private Translation2d turretFieldPosition() {
