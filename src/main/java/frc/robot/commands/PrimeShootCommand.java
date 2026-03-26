@@ -22,16 +22,16 @@ import org.littletonrobotics.junction.Logger;
 public class PrimeShootCommand extends Command {
   /** Creates a new ShooterControl2. */
   private static final LoggedTunableNumber wheelVelocityConfig =
-      new LoggedTunableNumber("Shooter/Wheel/Velocity", 3500);
+      new LoggedTunableNumber("PrimeShootCommand/Wheel/Velocity", 3500);
 
   private static final LoggedTunableNumber elevationAngleConfig =
-      new LoggedTunableNumber("Shooter/Elevation/Position", 60);
+      new LoggedTunableNumber("PrimeShootCommand/Elevation/Position", 60);
   private static final LoggedTunableNumber wheelToleranceConfig =
-      new LoggedTunableNumber("Shooter/Wheel/Tolerance", 100);
+      new LoggedTunableNumber("PrimeShootCommand/Wheel/Tolerance", 100);
   private static final LoggedTunableNumber elevationToleranceConfig =
-      new LoggedTunableNumber("Shooter/Elevation/Tolerance", 5);
+      new LoggedTunableNumber("PrimeShootCommand/Elevation/Tolerance", 5);
   private static final LoggedTunableNumber turretRotationToleranceConfig =
-      new LoggedTunableNumber("Shooter/Turret/Tolerance", 10);
+      new LoggedTunableNumber("PrimeShootCommand/Turret/Tolerance", 10);
   private Shooter shooter;
   private Drive drive;
   private Intake intake;
@@ -47,29 +47,28 @@ public class PrimeShootCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-    shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()));
-    shooter.setHoodElevation(Rotation2d.fromDegrees(elevationAngleConfig.get()));
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     Rotation2d targetTurretRotation = updateTurretRotation();
 
-    Rotation2d targetElevationAngle =
-        Rotation2d.fromDegrees(
-            Constants.ShooterConstants.HOOD_DISTANCE_ANGLE_TABLE.get(turretHubDistance()));
-    double targetFlywheelSpeed =
-        Constants.ShooterConstants.FLYWHEEL_DISTANCE_SPEED_TABLE.get(turretHubDistance());
+    // Rotation2d targetElevationAngle =
+    //     Rotation2d.fromDegrees(
+    //         Constants.ShooterConstants.HOOD_DISTANCE_ANGLE_TABLE.get(turretHubDistance()));
+    // double targetFlywheelSpeed =
+    //     Constants.ShooterConstants.FLYWHEEL_DISTANCE_SPEED_TABLE.get(turretHubDistance());
+
+    double targetFlywheelSpeed = wheelVelocityConfig.get();
+    Rotation2d targetElevationAngle = Rotation2d.fromDegrees(elevationAngleConfig.get());
 
     shooter.setWheelVel(Units.RPM.of(targetFlywheelSpeed));
     shooter.setHoodElevation(targetElevationAngle);
 
     boolean elevationInPosition =
         withinTolerance(
-            targetElevationAngle.getDegrees() - 25,
+            targetElevationAngle.getDegrees(),
             shooter.getHoodElevation().getDegrees(),
             elevationToleranceConfig.get());
     boolean turretInPosition =
@@ -116,10 +115,10 @@ public class PrimeShootCommand extends Command {
 
     isPrimed = elevationInPosition && turretInPosition && wheelAtVelocity && checkExtenderPosition;
 
-    Logger.recordOutput("ShooterControl2/hoodInPosition", elevationInPosition);
-    Logger.recordOutput("ShooterControl2/rotationInPosition", turretInPosition);
-    Logger.recordOutput("ShooterControl2/wheelAtPosition", wheelAtVelocity);
-    Logger.recordOutput("ShooterControl2/checkExtenderPosition", checkExtenderPosition);
+    Logger.recordOutput("PrimeShootCommand/hoodInPosition", elevationInPosition);
+    Logger.recordOutput("PrimeShootCommand/rotationInPosition", turretInPosition);
+    Logger.recordOutput("PrimeShootCommand/wheelAtPosition", wheelAtVelocity);
+    Logger.recordOutput("PrimeShootCommand/checkExtenderPosition", checkExtenderPosition);
   }
 
   private Rotation2d updateTurretRotation() {
@@ -169,7 +168,7 @@ public class PrimeShootCommand extends Command {
   private double turretHubDistance() {
     double turretHubDistance =
         Constants.FieldConstants.ourHubPosition().getDistance(turretFieldPosition());
-    Logger.recordOutput("ShooterControl2/HubDistance", turretHubDistance);
+    Logger.recordOutput("PrimeShootCommand/HubDistance", turretHubDistance);
     return turretHubDistance;
   }
 }
