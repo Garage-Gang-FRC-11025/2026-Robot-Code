@@ -20,8 +20,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.IntakeConstants.ExtenderConstants;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ShooterControl;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.ElevatorIOReal;
@@ -42,7 +42,6 @@ import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -86,22 +85,19 @@ public class RobotContainer {
                 new ModuleIOSpark(1),
                 new ModuleIOSpark(2),
                 new ModuleIOSpark(3));
-        // drive =
-        // new Drive(
-        // new GyroIO() {},
-        // new ModuleIOSim(),
-        // new ModuleIOSim(),
-        // new ModuleIOSim(),
-        // new ModuleIOSim());
+
         intake = new Intake(new IntakeIOReal());
         elevator = new Elevator(new ElevatorIOReal());
         shooter = new Shooter(new ShooterIOReal());
 
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                new VisionIOPhotonVision(camera1Name, robotToCamera1));
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVision(camera0Name, robotToCamera0),
+        //         new VisionIOPhotonVision(camera1Name, robotToCamera1),
+        //         new VisionIOPhotonVision(camera2Name, robotToCamera2),
+        //         new VisionIOPhotonVision(camera3Name, robotToCamera3));
         break;
 
       case SIM:
@@ -217,46 +213,24 @@ public class RobotContainer {
     controller
         .y()
         .toggleOnTrue(
-            Commands.run(
-                () ->
-                    intake.setExtenderPos(
-                        Rotation2d.fromDegrees(ExtenderConstants.MAX_EXTENDER_ANGLE.getDegrees()))))
-        .toggleOnFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
+            Commands.run(() -> intake.extendExtender())
+                .finallyDo(() -> intake.retractExtender())
+                .ignoringDisable(true)); // Sets the extender position
 
+    // Sets the extender position
     controller
         .rightBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(300))))
-        .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
+        .whileTrue(Commands.run(() -> intake.releaseFuel()))
+        .onFalse(Commands.runOnce(() -> intake.stopRoller()));
+
+    // Runs the intake roller to intake fuel
     controller
         .leftBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(-300))))
-        .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
-    controller
-        .leftTrigger()
-        .whileTrue(
-            Commands.run(
-                () -> {
-                  elevator.setElevatorVel(Units.RPM.of(300));
-                  shooter.setWheelVel(Units.RPM.of(300));
-                }))
-        .onFalse(
-            Commands.runOnce(
-                () -> {
-                  elevator.setElevatorVel(Units.RPM.of(0));
-                  shooter.setWheelVel(Units.RPM.of(0));
-                }));
-    controller
-        .rightTrigger()
-        .whileTrue(Commands.run(() -> shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()))))
-        .onFalse(Commands.runOnce(() -> shooter.setWheelVel(Units.RPM.of(0))));
-    controller
-        .povLeft()
-        .whileTrue(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(180))))
-        .onFalse(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(0))));
-    controller
-        .povRight()
-        .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(180))))
-        .onFalse(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(0))));
+        .whileTrue(Commands.run(() -> intake.intakeFuel()))
+        .onFalse(Commands.runOnce(() -> intake.stopRoller()));
+
+    // Runs the Shooter Command to score in the hub
+    controller.rightTrigger().whileTrue(new ShooterControl(shooter, elevator, drive, intake));
   }
 
   /**
