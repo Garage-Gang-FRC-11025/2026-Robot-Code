@@ -181,10 +181,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("reverseIntake", Commands.run(() -> intake.setRollerVel(Units.RPM.of(-4000))));
 
     //Prime to Shoot:
-    NamedCommands.registerCommand("primeToShoot", );
+    NamedCommands.registerCommand("primeToShoot", new PrimeShootCommand(shooter, drive, intake));
 
     // Run elevator to bring fuel to turret to shoot:
-    NamedCommands.registerCommand("runElevator", );
+    NamedCommands.registerCommand("runElevator", new ShootCommand(elevator));
 
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
