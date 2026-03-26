@@ -110,8 +110,8 @@ public final class Constants {
     public static final Translation2d TURRET_TRANSLATION = new Translation2d(-0.130175, -0.1397);
 
     public final class HoodConstants {
-      public static final Rotation2d MIN_HOOD_ANGLE = Rotation2d.fromDegrees(-45);
-      public static final Rotation2d MAX_HOOD_ANGLE = Rotation2d.fromDegrees(90);
+      public static final Rotation2d MIN_HOOD_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d MAX_HOOD_ANGLE = Rotation2d.fromDegrees(45);
       public static final double HOOD_MOI = 0.0001;
       public static final double STATOR_CURRENT_LIMIT = 20;
       public static final double SUPPLY_CURRENT_LIMIT = 20;
