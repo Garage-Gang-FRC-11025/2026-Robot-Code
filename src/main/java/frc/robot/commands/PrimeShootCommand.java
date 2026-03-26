@@ -130,11 +130,6 @@ public class PrimeShootCommand extends Command {
         "RotationTargetPositionBefore", Rotation2d.fromDegrees(targetRotationDegrees));
 
     System.out.println("targetRotationDeg = " + targetRotationDegrees);
-    // if (targetRotationDeg < -170) {
-    // targetRotationDeg = targetRotationDeg + 360;
-    // } else if (targetRotationDeg > 220) {
-    // targetRotationDeg = targetRotationDeg - 360;
-    // }
 
     Rotation2d targetRotationPos = Rotation2d.fromDegrees(targetRotationDegrees);
     shooter.setRotationPos(targetRotationPos);
