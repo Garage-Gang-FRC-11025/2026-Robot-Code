@@ -133,12 +133,20 @@ public final class Constants {
     }
 
     public static Translation2d targetedTrenchDirection() {
-      Translation2d trenchTurrerDecision = new Translation2d();
-      if (drive.getPose().getY() > 4.03479) {
-        trenchTurretDecision = 
+      Translation2d trenchTurretDecision = new Translation2d();
+      if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
+      if (drive.getPose().getY() > FIELD_WIDTH/2.0) {
+        trenchTurretDecision = BLUE_ALLIANCE_BOTTOM_POSITION;
       }
-
-      return 
+      else trenchTurretDecision = BLUE_ALLIANCE_TOP_POSITION;
+    }
+    else {
+      if (drive.getPose().getY() > FIELD_WIDTH/2.0) {
+        trenchTurretDecision = RED_ALLIANCE_BOTTOM_POSITION;
+      }
+      else trenchTurretDecision = RED_ALLIANCE_TOP_POSITION;
+    }
+      return trenchTurretDecision;
     }
 
   }
