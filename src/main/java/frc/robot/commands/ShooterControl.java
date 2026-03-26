@@ -68,7 +68,7 @@ public class ShooterControl extends Command {
         Constants.ShooterConstants.FLYWHEEL_DISTANCE_SPEED_TABLE.get(turretHubDistance());
 
     shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()));
-    shooter.setHoodPos(targetHoodAngle);
+    shooter.setHoodPos(Rotation2d.fromDegrees(hoodPositionConfig.get()));
     boolean hoodInPosition =
         withinTolerance(
             hoodPositionConfig.get(), shooter.getHoodPos().getDegrees(), hoodToleranceConfig.get());
@@ -99,15 +99,6 @@ public class ShooterControl extends Command {
     final Rotation2d heading =
         Geometry.headingPosition(turretFieldPosition(), FieldConstants.ourHubPosition());
     double targetRotationDegrees = heading.getDegrees() - drive.getRotation().getDegrees();
-    Logger.recordOutput(
-        "RotationTargetPositionBefore", Rotation2d.fromDegrees(targetRotationDegrees));
-
-    System.out.println("targetRotationDeg = " + targetRotationDegrees);
-    // if (targetRotationDeg < -170) {
-    //   targetRotationDeg = targetRotationDeg + 360;
-    // } else if (targetRotationDeg > 220) {
-    //   targetRotationDeg = targetRotationDeg - 360;
-    // }
 
     Rotation2d targetRotationPos = Rotation2d.fromDegrees(targetRotationDegrees);
     shooter.setRotationPos(targetRotationPos);
