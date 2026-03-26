@@ -73,37 +73,38 @@ public final class Constants {
         new Translation2d(
             VisionConstants.aprilTagLayout.getTagPose(18).get().getX(),
             VisionConstants.aprilTagLayout.getTagPose(26).get().getY());
+
     public static final Translation2d RED_HUB_POSITION =
         new Translation2d(
-            VisionConstants.aprilTagLayout.getTagPose(2).get().getX(),
-            VisionConstants.aprilTagLayout.getTagPose(10).get().getY());
+            VisionConstants.aprilTagLayout.getTagPose(4).get().getX(),
+            VisionConstants.aprilTagLayout.getTagPose(4).get().getY());
 
     public static final Translation2d BLUE_ALLIANCE_POSITION =
         new Translation2d(
-            VisionConstants.aprilTagLayout.getTagPose(18).get().getX(),
-            VisionConstants.aprilTagLayout.getTagPose(26).get().getY());
+            VisionConstants.aprilTagLayout.getTagPose(20).get().getX(),
+            VisionConstants.aprilTagLayout.getTagPose(20).get().getY());
 
     public static final Translation2d RED_ALLIANCE_POSITION =
         new Translation2d(
             VisionConstants.aprilTagLayout.getTagPose(2).get().getX(),
             VisionConstants.aprilTagLayout.getTagPose(10).get().getY());
 
-    public static final Translation2d BLUE_ALLIANCE_LEFT_POSITION =
+   public static final Translation2d BLUE_ALLIANCE_BOTTOM_POSITION =
         new Translation2d(
             VisionConstants.aprilTagLayout.getTagPose(22).get().getX(),
             VisionConstants.aprilTagLayout.getTagPose(22).get().getY());
 
-    public static final Translation2d BLUE_ALLIANCE_RIGHT_POSITION =
+    public static final Translation2d BLUE_ALLIANCE_TOP_POSITION =
         new Translation2d(
-            VisionConstants.aprilTagLayout.getTagPose(18).get().getX(),
-            VisionConstants.aprilTagLayout.getTagPose(18).get().getY());
+            VisionConstants.aprilTagLayout.getTagPose(17).get().getX(),
+            VisionConstants.aprilTagLayout.getTagPose(17).get().getY());
 
-    public static final Translation2d RED_ALLIANCE_RIGHT_POSITION =
+    public static final Translation2d RED_ALLIANCE_BOTTOM_POSITION =
         new Translation2d(
             VisionConstants.aprilTagLayout.getTagPose(1).get().getX(),
             VisionConstants.aprilTagLayout.getTagPose(1).get().getY());
 
-    public static final Translation2d RED_ALLIANCE_LEFT_POSITION =
+    public static final Translation2d RED_ALLIANCE_TOP_POSITION =
         new Translation2d(
             VisionConstants.aprilTagLayout.getTagPose(6).get().getX(),
             VisionConstants.aprilTagLayout.getTagPose(6).get().getY());
@@ -125,12 +126,21 @@ public final class Constants {
       Translation2d allianceP = new Translation2d();
       if (DriverStation.getAlliance().get().equals(Alliance.Blue)) {
         allianceP = BLUE_ALLIANCE_POSITION;
-      } else if (DriverStation.getAlliance().get().equals(Alliance.Red)
-          && drive.getPose().getY() > 4.03479) {
+      } else if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
         allianceP = RED_ALLIANCE_POSITION;
       }
       return allianceP;
     }
+
+    public static Translation2d targetedTrenchDirection() {
+      Translation2d trenchTurrerDecision = new Translation2d();
+      if (drive.getPose().getY() > 4.03479) {
+        trenchTurretDecision = 
+      }
+
+      return 
+    }
+
   }
 
   public class ElevatorConstants {
