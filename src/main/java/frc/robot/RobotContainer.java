@@ -204,28 +204,24 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // extend the extender to out position when X button is pressed
-    coDriverController
-        .x()
-        .toggleOnTrue(
-            Commands.run(() -> intake.extendExtender())
-                .finallyDo(() -> intake.retractExtender())
-                .ignoringDisable(true)); // Sets the extender position
+    coDriverController.povDown().onTrue(Commands.run(() -> intake.extendExtender()));
+    coDriverController.povUp().onTrue(Commands.run(() -> intake.retractExtender()));
 
     // Rolls the roller to make it intake fuel
     coDriverController
-        .rightTrigger()
+        .rightBumper()
         .whileTrue(Commands.run(() -> intake.intakeFuel()))
         .onFalse(Commands.runOnce(() -> intake.stopRoller()));
 
     // Rolls the roller to make it push out fuel
     coDriverController
-        .rightBumper()
+        .leftBumper()
         .whileTrue(Commands.run(() -> intake.releaseFuel()))
         .onFalse(Commands.runOnce(() -> intake.stopRoller()));
 
     PrimeShootCommand primeShootCommand = new PrimeShootCommand(shooter, drive, intake);
-    coDriverController.leftBumper().whileTrue(primeShootCommand);
-    coDriverController.leftTrigger().whileTrue(new ShootCommand(elevator, primeShootCommand));
+    coDriverController.povRight().whileTrue(primeShootCommand);
+    coDriverController.a().whileTrue(new ShootCommand(elevator, primeShootCommand));
   }
 
   /**
