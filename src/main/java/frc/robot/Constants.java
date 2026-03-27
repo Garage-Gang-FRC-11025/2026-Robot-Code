@@ -113,8 +113,8 @@ public final class Constants {
       public static final Rotation2d MIN_HOOD_ANGLE = Rotation2d.fromDegrees(0);
       public static final Rotation2d MAX_HOOD_ANGLE = Rotation2d.fromDegrees(45);
       public static final double HOOD_MOI = 0.0001;
-      public static final double STATOR_CURRENT_LIMIT = 20;
-      public static final double SUPPLY_CURRENT_LIMIT = 20;
+      public static final double STATOR_CURRENT_LIMIT = 35;
+      public static final double SUPPLY_CURRENT_LIMIT = 35;
       public static final double MAX_VELOCITY = 10;
       public static final double TARGET_ACCELERATION = 10;
       public static final double GEAR_RATIO = 11.3333333333;
