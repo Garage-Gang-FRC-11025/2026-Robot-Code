@@ -135,10 +135,9 @@ public class PrimeShootCommand extends Command {
 
     System.out.println("targetRotationDeg = " + targetRotationDegrees);
 
-    Rotation2d targetRotationPos = Rotation2d.fromDegrees(targetRotationDegrees);
+    Rotation2d targetRotationPos = 
     Rotation2d.fromRadians(
-          (MathUtil.angleModulus(shooter.targetRotationDegrees().getRadians())))
-        .getDegrees();
+          (MathUtil.angleModulus(Rotation2d.fromDegrees(targetRotationDegrees).getRadians())));
     shooter.setRotationPos(targetRotationPos);
     Logger.recordOutput("RotationTargetPosition", targetRotationPos);
     return targetRotationPos;
