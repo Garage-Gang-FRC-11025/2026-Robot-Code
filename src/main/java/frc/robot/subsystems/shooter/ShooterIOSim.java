@@ -86,6 +86,12 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   @Override
+  public void zeroMotors() {
+    rotationSim.setState(0, 0);
+    hoodSim.setState(0, 0);
+  }
+
+  @Override
   public void configWheel(double kV, double kP, double kI, double maxAcceleration) {
     TalonFXConfiguration config = new TalonFXConfiguration();
     Slot0Configs slot0Configs = new Slot0Configs();
@@ -105,7 +111,7 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   @Override
-  public void setHoodPos(Rotation2d angle) {
+  public void setHoodElevation(Rotation2d angle) {
     hoodSim.setControl(hoodClosedLoopControl.withPosition(angle.getRotations()));
   }
 
@@ -130,7 +136,7 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   @Override
-  public void setRotationPos(Rotation2d angle) {
+  public void setTurretRotation(Rotation2d angle) {
     rotationSim.setControl(rotationClosedLoopControl.withPosition(angle.getRotations()));
   }
 

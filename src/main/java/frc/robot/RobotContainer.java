@@ -15,13 +15,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.IntakeConstants.ExtenderConstants;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.ShooterControl2;
+import frc.robot.commands.PrimeShootCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.ElevatorIOReal;
@@ -44,7 +45,6 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
-import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -62,14 +62,8 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Vision vision;
   // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
-
-  // Tunable numbers
-  private static final LoggedTunableNumber wheelVelocityConfig =
-      new LoggedTunableNumber("Shooter/Wheel/Velocity", 300);
-  private static final LoggedTunableNumber extenderVelocityConfig =
-      new LoggedTunableNumber("Intake/Extender/Velocity");
-  private static final LoggedTunableNumber tunablePos = new LoggedTunableNumber("tunablePos", 90);
+  private final CommandXboxController driverController = new CommandXboxController(0);
+  private final CommandXboxController coDriverController = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -95,7 +89,9 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                new VisionIOPhotonVision(camera1Name, robotToCamera1));
+                new VisionIOPhotonVision(camera1Name, robotToCamera1),
+                new VisionIOPhotonVision(camera2Name, robotToCamera2),
+                new VisionIOPhotonVision(camera3Name, robotToCamera3));
         break;
 
       case SIM:
@@ -169,32 +165,36 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> controller.getRightX())); // Changed into a positive from a negitive
+            () -> -driverController.getLeftY(),
+            () -> -driverController.getLeftX(),
+            () -> driverController.getRightX())); // Changed into a positive from a negitive
 
     // Lock to 0° when A button is held
-    controller
+    driverController
         .a()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
+                () -> -driverController.getLeftY(),
+                () -> -driverController.getLeftX(),
                 () -> Rotation2d.kZero));
-    // Intake should move in and out when A button is held
-    var pos1 = Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(0)), intake);
-    var pos2 = Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(130)), intake);
-    Command alternatingCommand =
-        Commands.sequence(pos1, Commands.waitSeconds(1.0), pos2, Commands.waitSeconds(0.5))
-            .repeatedly();
 
     // Switch to X pattern when X button is pressed
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    // Reset gyro to 0° when B button is pressed
-    controller
-        .b()
+    // change rotation on motors to 0° when button on dash is pressed
+    SmartDashboard.putData(
+        "Zero Robot",
+        Commands.runOnce(
+                () -> {
+                  shooter.zeroMotors();
+                  intake.zeroMotors();
+                })
+            .ignoringDisable(true));
+
+    // Reset gyro to 0° when Y button is pressed
+    driverController
+        .y()
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -203,71 +203,25 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // extend the extender to out position when Y button is held
-    controller
-        .y()
-        .onTrue(
-            Commands.run(
-                () ->
-                    intake.setExtenderPos(
-                        Rotation2d.fromDegrees(ExtenderConstants.MAX_EXTENDER_ANGLE.getDegrees()))))
-        .onFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
+    // extend the extender to out position when X button is pressed
+    coDriverController.povDown().onTrue(Commands.run(() -> intake.extendExtender()));
+    coDriverController.povUp().onTrue(Commands.run(() -> intake.retractExtender()));
 
-    controller
+    // Rolls the roller to make it intake fuel
+    driverController
         .rightBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(300))))
-        .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
-    controller
+        .whileTrue(Commands.run(() -> intake.intakeFuel()))
+        .onFalse(Commands.runOnce(() -> intake.stopRoller()));
+
+    // Rolls the roller to make it push out fuel
+    driverController
         .leftBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVel(Units.RPM.of(-300))))
-        .onFalse(Commands.runOnce(() -> intake.setRollerVel(Units.RPM.of(0))));
-    controller
-        .x()
-        .whileTrue(
-            Commands.run(
-                () -> {
-                  elevator.setElevatorVel(Units.RPM.of(300));
-                  shooter.setWheelVel(Units.RPM.of(300));
-                }))
-        .onFalse(
-            Commands.runOnce(
-                () -> {
-                  elevator.setElevatorVel(Units.RPM.of(0));
-                  shooter.setWheelVel(Units.RPM.of(0));
-                }));
+        .whileTrue(Commands.run(() -> intake.releaseFuel()))
+        .onFalse(Commands.runOnce(() -> intake.stopRoller()));
 
-    controller
-        .rightBumper()
-        .onTrue(
-            // Set "tunablePos" to a better variable name. This is not clear.
-            Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.fromDegrees(tunablePos.get()))))
-        .onFalse(Commands.runOnce(() -> intake.setExtenderPos(Rotation2d.kZero)));
-
-    controller
-        .rightBumper()
-        .whileTrue(Commands.run(() -> intake.setRollerVoltage(5)))
-        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
-
-    controller
-        .x()
-        .whileTrue(Commands.run(() -> intake.setRollerVoltage(-11)))
-        .onFalse(Commands.runOnce(() -> intake.setRollerVoltage(0)));
-
-    controller.rightTrigger().whileTrue(new ShooterControl2(shooter, elevator, drive));
-
-    // controller.leftTrigger().whileTrue(new ShootToAlliance(shooter, elevator, drive, intake));
-
-    controller
-        .leftTrigger()
-        .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(60))));
-    controller
-        .povLeft()
-        .whileTrue(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(180))))
-        .onFalse(Commands.run(() -> shooter.setRotationPos(Rotation2d.fromDegrees(0))));
-    controller
-        .povRight()
-        .whileTrue(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(180))))
-        .onFalse(Commands.run(() -> shooter.setHoodPos(Rotation2d.fromDegrees(0))));
+    PrimeShootCommand primeShootCommand = new PrimeShootCommand(shooter, drive, intake, false);
+    coDriverController.povRight().whileTrue(primeShootCommand);
+    coDriverController.a().whileTrue(new ShootCommand(elevator, primeShootCommand));
   }
 
   /**

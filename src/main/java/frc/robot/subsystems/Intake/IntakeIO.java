@@ -16,7 +16,6 @@ public interface IntakeIO {
     public double extenderAppliedOutput;
     public double extenderCurrentAmps;
     public double extenderTempCelsius;
-    public double extenderVelocity;
     public Rotation2d extenderPosition;
   }
 
@@ -33,6 +32,8 @@ public interface IntakeIO {
   public default void configRoller(double kP, double kI, double kV, double maxAcceleration) {}
 
   public default void configExtender(double kP, double kD, MotionMagicConfigs mmConfigs) {}
+
+  public default void zeroMotors() {}
 
   public default boolean setExtenderNeutralMode(NeutralModeValue value) {
     return false;

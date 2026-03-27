@@ -2,9 +2,11 @@ package frc.robot.subsystems.Intake;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants.ExtenderConstants;
 import frc.robot.Constants.Mode;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -34,7 +36,7 @@ public class Intake extends SubsystemBase {
       rKV.initDefault(0.15);
       rollerTargetAccelerationConfig.initDefault(300.0);
 
-      eKP.initDefault(0.5);
+      eKP.initDefault(100);
       eKD.initDefault(0);
 
       extenderMaxVelocityConfig.initDefault(10);
@@ -105,5 +107,35 @@ public class Intake extends SubsystemBase {
 
   public Rotation2d getExtenderPos() {
     return inputs.extenderPosition;
+  }
+
+  // Returns true if extender is out at least 90 degrees from zero, returns false if else
+  public boolean checkExtenderPosition() {
+    return getExtenderPos().getDegrees()
+        > Constants.IntakeConstants.ExtenderConstants.MIN_REQ_EXTENDER_ANGLE.getDegrees();
+  }
+
+  public void zeroMotors() {
+    intakeIO.zeroMotors();
+  }
+
+  public void extendExtender() {
+    setExtenderPos(ExtenderConstants.MAX_EXTENDER_ANGLE);
+  }
+
+  public void retractExtender() {
+    setExtenderPos(Rotation2d.kZero);
+  }
+
+  public void releaseFuel() {
+    setRollerVel(Units.RPM.of(4000));
+  }
+
+  public void intakeFuel() {
+    setRollerVel(Units.RPM.of(-4000));
+  }
+
+  public void stopRoller() {
+    setRollerVel(Units.RPM.of(0));
   }
 }

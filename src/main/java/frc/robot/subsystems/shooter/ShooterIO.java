@@ -37,9 +37,9 @@ public interface ShooterIO {
 
   public default void setWheelVel(AngularVelocity vel) {}
 
-  public default void setHoodPos(Rotation2d pos) {}
+  public default void setHoodElevation(Rotation2d pos) {}
 
-  public default void setRotationPos(Rotation2d pos) {}
+  public default void setTurretRotation(Rotation2d pos) {}
 
   public default void setRotationVel(AngularVelocity vel) {}
 
@@ -48,6 +48,8 @@ public interface ShooterIO {
   public default void configHood(double kP, double kI, double kD, MotionMagicConfigs mmConfigs) {}
 
   public default void configRotation(double kP, double kD, MotionMagicConfigs mmConfigs) {}
+
+  public default void zeroMotors() {}
 
   public default boolean setHoodNeutralMode(NeutralModeValue value) {
     return false;

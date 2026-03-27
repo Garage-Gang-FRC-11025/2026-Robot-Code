@@ -10,8 +10,12 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -43,18 +47,20 @@ public final class Constants {
     public class ExtenderConstants {
 
       public static final double GEAR_RATIO = 45; // will need to be changed ALOT
-      public static final Rotation2d MAX_EXTENDER_ANGLE = Rotation2d.fromDegrees(130);
+      public static final Rotation2d MAX_EXTENDER_ANGLE = Rotation2d.fromDegrees(123);
       public static final Rotation2d MIN_EXTENDER_ANGLE = Rotation2d.fromDegrees(0);
-      public static final double SUPPLY_CURRENT_LIMIT = 30;
-      public static final double STATOR_CURRENT_LIMIT = 30;
+      public static final double SUPPLY_CURRENT_LIMIT = 40;
+      public static final double STATOR_CURRENT_LIMIT = 40;
       public static final double SUPPLY_VOLTAGE_TIME = 0.02;
       public static final double EXTENDER_MOI = 0.1;
       public static final Distance EXTENDER_LENGTH = Units.Inches.of(12.5);
-      public static final Rotation2d MIN_REQ_EXTENDER_ANGLE = Rotation2d.fromDegrees(90);
+      public static final Rotation2d MIN_REQ_EXTENDER_ANGLE = Rotation2d.fromDegrees(8);
     }
 
     public class RollerConstants {
 
+      public static final double SUPPLY_CURRENT_LIMIT = 30;
+      public static final double STATOR_CURRENT_LIMIT = 30;
       public static final double SUPPLY_CURRENT_LIMIT = 30;
       public static final double STATOR_CURRENT_LIMIT = 30;
       public static final double ROLLER_GEARING = 3;
@@ -182,13 +188,13 @@ public final class Constants {
 
     public final class HoodConstants {
       public static final Rotation2d MIN_HOOD_ANGLE = Rotation2d.fromDegrees(0);
-      public static final Rotation2d MAX_HOOD_ANGLE = Rotation2d.fromDegrees(90);
+      public static final Rotation2d MAX_HOOD_ANGLE = Rotation2d.fromDegrees(45);
       public static final double HOOD_MOI = 0.0001;
-      public static final double STATOR_CURRENT_LIMIT = 20;
-      public static final double SUPPLY_CURRENT_LIMIT = 20;
+      public static final double STATOR_CURRENT_LIMIT = 35;
+      public static final double SUPPLY_CURRENT_LIMIT = 35;
       public static final double MAX_VELOCITY = 10;
       public static final double TARGET_ACCELERATION = 10;
-      public static final double GEAR_RATIO = 0.017647;
+      public static final double GEAR_RATIO = 11.3333333333;
       public static final double SUPPLY_VOLTAGE_TIME = 0.5;
       public static final double MAX_VOLTAGE = 12.0;
       public static final double kDefaultPeriod = 0.02;
@@ -196,14 +202,14 @@ public final class Constants {
     }
 
     public final class RotationConstants {
-      public static final Rotation2d MIN_ROTATION_ANGLE = Rotation2d.fromDegrees(-90);
-      public static final Rotation2d MAX_ROTATION_ANGLE = Rotation2d.fromDegrees(180);
+      public static final Rotation2d MIN_ROTATION_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d MAX_ROTATION_ANGLE = Rotation2d.fromDegrees(390);
       public static final double ROTATION_MOI = 0.1;
       public static final double STATOR_CURRENT_LIMIT = 20;
       public static final double SUPPLY_CURRENT_LIMIT = 20;
       public static final double MAX_VELOCITY = 10;
       public static final double TARGET_ACCELERATION = 10;
-      public static final double GEAR_RATIO = 6.6667;
+      public static final double GEAR_RATIO = 13.333333;
       public static final double SUPPLY_VOLTAGE_TIME = 0.02;
     }
 

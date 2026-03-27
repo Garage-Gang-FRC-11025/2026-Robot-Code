@@ -53,7 +53,6 @@ public class IntakeIOSim implements IntakeIO {
 
     inputs.extenderPosition = new Rotation2d(extenderSim.getPosition());
     inputs.extenderAppliedOutput = extenderSim.getVoltage().in(Units.Volts);
-    inputs.extenderVelocity = extenderSim.getVelocity().in(Units.DegreesPerSecond);
   }
 
   @Override
@@ -105,5 +104,10 @@ public class IntakeIOSim implements IntakeIO {
     config.MotionMagic = mmConfigs;
 
     extenderSim.setConfig(config);
+  }
+
+  @Override
+  public void zeroMotors() {
+    extenderSim.setState(0, 0);
   }
 }
