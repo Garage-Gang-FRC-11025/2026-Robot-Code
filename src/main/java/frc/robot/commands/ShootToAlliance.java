@@ -62,7 +62,8 @@ public class ShootToAlliance extends Command {
         Constants.ShooterConstants.FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE.get(
             turretAllianceDistance());
     Rotation2d targetAllianceRotationPos =
-        Geometry.headingPosition(turretFieldPosition(), FieldConstants.targetedTrenchDirection(drive.getPose()))
+        Geometry.headingPosition(
+                turretFieldPosition(), FieldConstants.targetedTrenchDirection(drive.getPose()))
             .minus(drive.getRotation());
     shooter.setRotationPos(targetAllianceRotationPos);
     boolean hoodInPosition =
@@ -92,7 +93,8 @@ public class ShootToAlliance extends Command {
 
   public Rotation2d updateAllianceRotation() {
     final Rotation2d Allianceheading =
-        Geometry.headingPosition(turretFieldPosition(), FieldConstants.targetedTrenchDirection(drive.getPose()));
+        Geometry.headingPosition(
+            turretFieldPosition(), FieldConstants.targetedTrenchDirection(drive.getPose()));
     double targetAllianceRotationDegrees =
         Allianceheading.getDegrees() - drive.getRotation().getDegrees();
     Logger.recordOutput(
@@ -130,7 +132,8 @@ public class ShootToAlliance extends Command {
 
   private double turretAllianceDistance() {
     double turretAllianceDistance =
-        Constants.FieldConstants.targetedTrenchDirection(drive.getPose()).getDistance(turretFieldPosition());
+        Constants.FieldConstants.targetedTrenchDirection(drive.getPose())
+            .getDistance(turretFieldPosition());
     Logger.recordOutput("ShootToAlliance/AllianceDistance", turretAllianceDistance);
     return turretAllianceDistance;
   }

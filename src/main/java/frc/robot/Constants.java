@@ -16,7 +16,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.vision.VisionConstants;
 
 /**
@@ -119,7 +118,7 @@ public final class Constants {
           trenchTurretDecision = BLUE_ALLIANCE_BOTTOM_POSITION;
         } else trenchTurretDecision = BLUE_ALLIANCE_TOP_POSITION;
       } else {
-        
+
         if (robotPose.getY() > FIELD_WIDTH / 2.0) {
           trenchTurretDecision = RED_ALLIANCE_BOTTOM_POSITION;
         } else trenchTurretDecision = RED_ALLIANCE_TOP_POSITION;

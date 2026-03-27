@@ -10,6 +10,8 @@ package frc.robot;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.*;
@@ -46,6 +48,8 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import java.io.IOException;
+import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -148,6 +152,31 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    PrimeShootCommand primeShootCommand = new PrimeShootCommand(shooter, drive, intake, false);
+    try {
+      PathPlannerPath startingAutoPath = PathPlannerPath.fromPathFile("Left_Side_Collect_Shoot");
+      autoChooser.addOption(
+          "Left_Side_Collect_Shoot",
+          Commands.runOnce(() -> drive.setPose(startingAutoPath.getPathPoses().get(0)))
+              .andThen(
+                  Commands.runOnce(() -> intake.extendExtender())
+                      .alongWith(Commands.run(() -> intake.intakeFuel()))
+                      .alongWith(
+                          AutoBuilder.followPath(startingAutoPath)
+                              .andThen(
+                                  primeShootCommand.alongWith(
+                                      new ShootCommand(
+                                          elevator, primeShootCommand, primeShootCommand))))));
+    } catch (FileVersionException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (ParseException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 
     // Configure the button bindings
     configureButtonBindings();

@@ -26,15 +26,14 @@ public class VisionConstants {
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
   public static Transform3d robotToCamera0 =
-      new Transform3d(0.0, 0.33, 0.127, new Rotation3d(0.0, -0.4, 0.0));
+      new Transform3d(-0.282, 0.319, 0.154, new Rotation3d(0.0, -0.4, Math.PI * 1.0 / 2.0));
   public static Transform3d robotToCamera1 =
       new Transform3d(
           -0.2974848, -0.2462022, -0.1484376, new Rotation3d(0.0, -0.2, Math.PI - 0.521993073));
   public static Transform3d robotToCamera2 =
-      new Transform3d(
-          -0.2974848, -0.2462022, -0.1484376, new Rotation3d(0.0, -0.2, Math.PI - 0.521993073));
+      new Transform3d(-0.282, 0.319, 0.154, new Rotation3d(0.0, -0.2, Math.PI * 7.0 / 6.0));
   public static Transform3d robotToCamera3 =
-      new Transform3d(0.0, (-0.33), 0.127, new Rotation3d(0.0, -0.4, Math.PI));
+      new Transform3d(-0.282, -0.319, 0.154, new Rotation3d(0.0, -0.4, Math.PI * 1.5));
   public static Transform3d tagToGoal =
       new Transform3d(0, 2.5, 0.0, new Rotation3d(0.0, -0.4, 0.0));
 
