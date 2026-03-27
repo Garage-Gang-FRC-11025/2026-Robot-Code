@@ -211,7 +211,7 @@ public class ShooterIOReal implements ShooterIO {
 
   @Override
   public void zeroMotors() {
-    turretMotor.setPosition(0);
+    turretMotor.setPosition(0.5);
     hoodMotor.setPosition(0);
   }
 

@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Units;
@@ -37,7 +38,7 @@ public class PrimeShootCommand extends Command {
   private Intake intake;
   private boolean isPrimed = false;
 
-  public PrimeShootCommand(Shooter shooter, Drive drive, Intake intake) {
+  public PrimeShootCommand(Shooter shooter, Drive drive, Intake intake, boolean simpleShoot) {
     this.shooter = shooter;
     this.drive = drive;
     this.intake = intake;
@@ -74,7 +75,9 @@ public class PrimeShootCommand extends Command {
     boolean turretInPosition =
         withinTolerance(
             targetTurretRotation.getDegrees(),
-            shooter.getTurretRotation().getDegrees(),
+            Rotation2d.fromRadians(
+                    (MathUtil.angleModulus(shooter.getTurretRotation().getRadians())))
+                .getDegrees(),
             turretRotationToleranceConfig.get());
     boolean wheelAtVelocity =
         withinTolerance(
@@ -119,6 +122,8 @@ public class PrimeShootCommand extends Command {
     Logger.recordOutput("PrimeShootCommand/rotationInPosition", turretInPosition);
     Logger.recordOutput("PrimeShootCommand/wheelAtPosition", wheelAtVelocity);
     Logger.recordOutput("PrimeShootCommand/checkExtenderPosition", checkExtenderPosition);
+    Logger.recordOutput(
+        "PrimeShootCommand/actualTurretPosition", shooter.getTurretRotation().getDegrees());
   }
 
   private Rotation2d updateTurretRotation() {
@@ -131,6 +136,9 @@ public class PrimeShootCommand extends Command {
     System.out.println("targetRotationDeg = " + targetRotationDegrees);
 
     Rotation2d targetRotationPos = Rotation2d.fromDegrees(targetRotationDegrees);
+    Rotation2d.fromRadians(
+          (MathUtil.angleModulus(shooter.targetRotationDegrees().getRadians())))
+        .getDegrees();
     shooter.setRotationPos(targetRotationPos);
     Logger.recordOutput("RotationTargetPosition", targetRotationPos);
     return targetRotationPos;
