@@ -23,12 +23,12 @@ https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-
 public class ShootToAlliance extends Command {
   /** Creates a new ShootToalliance. */
   private static final LoggedTunableNumber wheelVelocityConfig =
-      new LoggedTunableNumber("Shooter/Wheel/Velocity", 350);
+      new LoggedTunableNumber("ShootToAlliance/Wheel/Velocity", 350);
 
   private static final LoggedTunableNumber elevatorVelocityConfig =
-      new LoggedTunableNumber("Elevator/Elevator/Velocity", 350);
+      new LoggedTunableNumber("ShootToAlliance/Elevator/Velocity", 350);
   private static final LoggedTunableNumber hoodPositionConfig =
-      new LoggedTunableNumber("Shooter/Hood/Position", 60);
+      new LoggedTunableNumber("ShootToAlliance/Hood/Position", 60);
 
   private Shooter shooter;
   private Elevator elevator;
@@ -62,12 +62,11 @@ public class ShootToAlliance extends Command {
         Constants.ShooterConstants.FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE.get(
             turretAllianceDistance());
     Rotation2d targetAllianceRotationPos =
-        Geometry.headingPosition(turretFieldPosition(), FieldConstants.ourAlliancePosition())
+        Geometry.headingPosition(turretFieldPosition(), FieldConstants.targetedTrenchDirection(drive.getPose()))
             .minus(drive.getRotation());
     shooter.setRotationPos(targetAllianceRotationPos);
     boolean hoodInPosition =
-        withinTolerance(targetAllianceHoodAngle.getDegrees(), shooter.getHoodPos().getDegrees(),
-5);
+        withinTolerance(targetAllianceHoodAngle.getDegrees(), shooter.getHoodPos().getDegrees(), 5);
     boolean rotationInPosition =
         withinTolerance(
             targetAllianceRotationPos.getDegrees(), shooter.getRotationPos().getDegrees(), 5);
@@ -81,10 +80,10 @@ public class ShootToAlliance extends Command {
     if (hoodInPosition && rotationInPosition && wheelAtVelocity && checkExtenderPosition)
       elevator.setElevatorVel(Units.RPM.of(elevatorVelocityConfig.get()));
 
-    Logger.recordOutput("ShooterControl2/hoodInPosition", hoodInPosition);
-    Logger.recordOutput("ShooterControl2/rotationInPosition", rotationInPosition);
-    Logger.recordOutput("ShooterControl2/wheelAtPosition", wheelAtVelocity);
-    Logger.recordOutput("ShooterControl2/checkExtenderPosition", checkExtenderPosition);
+    Logger.recordOutput("ShootToAlliance/hoodInPosition", hoodInPosition);
+    Logger.recordOutput("ShootToAlliance/rotationInPosition", rotationInPosition);
+    Logger.recordOutput("ShootToAlliance/wheelAtPosition", wheelAtVelocity);
+    Logger.recordOutput("ShootToAlliance/checkExtenderPosition", checkExtenderPosition);
   }
 
   private boolean withinTolerance(double targetState, double currentState, double tolerance) {
@@ -93,20 +92,20 @@ public class ShootToAlliance extends Command {
 
   public Rotation2d updateAllianceRotation() {
     final Rotation2d Allianceheading =
-        Geometry.headingPosition(turretFieldPosition(), FieldConstants.ourAlliancePosition());
-    double targetAllianceRotationDegrees = Allianceheading.getDegrees() -
-drive.getRotation().getDegrees();
+        Geometry.headingPosition(turretFieldPosition(), FieldConstants.targetedTrenchDirection(drive.getPose()));
+    double targetAllianceRotationDegrees =
+        Allianceheading.getDegrees() - drive.getRotation().getDegrees();
     Logger.recordOutput(
         "RotationTargetPositionBefore", Rotation2d.fromDegrees(targetAllianceRotationDegrees));
 
     System.out.println("targetRotationDeg = " + targetAllianceRotationDegrees);
-     if (targetAllianceRotationDegrees < -170) {
-       targetAllianceRotationDegrees = targetAllianceRotationDegrees + 360;
-     } else if (targetAllianceRotationDegrees > 220) {
-       targetAllianceRotationDegrees = targetAllianceRotationDegrees - 360;
+    if (targetAllianceRotationDegrees < -170) {
+      targetAllianceRotationDegrees = targetAllianceRotationDegrees + 360;
+    } else if (targetAllianceRotationDegrees > 220) {
+      targetAllianceRotationDegrees = targetAllianceRotationDegrees - 360;
     }
     return Allianceheading;
-}
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -125,15 +124,14 @@ drive.getRotation().getDegrees();
   private Translation2d turretFieldPosition() {
     Translation2d turretTranslation2d =
         Constants.ShooterConstants.TURRET_TRANSLATION.rotateBy(drive.getRotation());
-    Translation2d turretFieldPosition =
-turretTranslation2d.plus(drive.getPose().getTranslation());
+    Translation2d turretFieldPosition = turretTranslation2d.plus(drive.getPose().getTranslation());
     return turretFieldPosition;
   }
 
   private double turretAllianceDistance() {
     double turretAllianceDistance =
-        Constants.FieldConstants.ourAlliancePosition().getDistance(turretFieldPosition());
-    Logger.recordOutput("ShooterControl2/AllianceDistance", turretAllianceDistance);
+        Constants.FieldConstants.targetedTrenchDirection(drive.getPose()).getDistance(turretFieldPosition());
+    Logger.recordOutput("ShootToAlliance/AllianceDistance", turretAllianceDistance);
     return turretAllianceDistance;
   }
 }
