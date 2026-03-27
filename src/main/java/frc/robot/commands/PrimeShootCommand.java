@@ -36,12 +36,14 @@ public class PrimeShootCommand extends Command {
   private Shooter shooter;
   private Drive drive;
   private Intake intake;
+  private boolean simpleShoot;
   private boolean isPrimed = false;
 
   public PrimeShootCommand(Shooter shooter, Drive drive, Intake intake, boolean simpleShoot) {
     this.shooter = shooter;
     this.drive = drive;
     this.intake = intake;
+    this.simpleShoot = simpleShoot;
     addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -61,8 +63,9 @@ public class PrimeShootCommand extends Command {
     // double targetFlywheelSpeed =
     //     Constants.ShooterConstants.FLYWHEEL_DISTANCE_SPEED_TABLE.get(turretHubDistance());
 
-    double targetFlywheelSpeed = wheelVelocityConfig.get();
-    Rotation2d targetElevationAngle = Rotation2d.fromDegrees(elevationAngleConfig.get());
+    double targetFlywheelSpeed = simpleShoot ? 3500 : wheelVelocityConfig.get();
+    Rotation2d targetElevationAngle =
+        Rotation2d.fromDegrees(simpleShoot ? 0.0 : elevationAngleConfig.get());
 
     shooter.setWheelVel(Units.RPM.of(targetFlywheelSpeed));
     shooter.setHoodElevation(targetElevationAngle);
@@ -129,15 +132,16 @@ public class PrimeShootCommand extends Command {
   private Rotation2d updateTurretRotation() {
     final Rotation2d heading =
         Geometry.headingPosition(turretFieldPosition(), FieldConstants.ourHubPosition());
-    double targetRotationDegrees = heading.getDegrees() - drive.getRotation().getDegrees();
+    double targetRotationDegrees =
+        simpleShoot ? 5.0 : heading.getDegrees() - drive.getRotation().getDegrees();
     Logger.recordOutput(
         "RotationTargetPositionBefore", Rotation2d.fromDegrees(targetRotationDegrees));
 
     System.out.println("targetRotationDeg = " + targetRotationDegrees);
 
-    Rotation2d targetRotationPos = 
-    Rotation2d.fromRadians(
-          (MathUtil.angleModulus(Rotation2d.fromDegrees(targetRotationDegrees).getRadians())));
+    Rotation2d targetRotationPos =
+        Rotation2d.fromRadians(
+            (MathUtil.angleModulus(Rotation2d.fromDegrees(targetRotationDegrees).getRadians())));
     shooter.setRotationPos(targetRotationPos);
     Logger.recordOutput("RotationTargetPosition", targetRotationPos);
     return targetRotationPos;
