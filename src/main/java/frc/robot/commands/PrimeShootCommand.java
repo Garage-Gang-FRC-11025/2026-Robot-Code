@@ -25,7 +25,7 @@ public class PrimeShootCommand extends Command {
       new LoggedTunableNumber("PrimeShootCommand/Wheel/Velocity", 3500);
 
   private static final LoggedTunableNumber elevationAngleConfig =
-      new LoggedTunableNumber("PrimeShootCommand/Elevation/Position", 60);
+      new LoggedTunableNumber("PrimeShootCommand/Elevation/Position", 5);
   private static final LoggedTunableNumber wheelToleranceConfig =
       new LoggedTunableNumber("PrimeShootCommand/Wheel/Tolerance", 100);
   private static final LoggedTunableNumber elevationToleranceConfig =
