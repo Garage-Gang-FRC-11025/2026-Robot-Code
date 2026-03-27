@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PrimeShootCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.ShootToAlliance;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.ElevatorIOReal;
@@ -206,6 +207,10 @@ public class RobotContainer {
     // extend the extender to out position when X button is pressed
     coDriverController.povDown().onTrue(Commands.run(() -> intake.extendExtender()));
     coDriverController.povUp().onTrue(Commands.run(() -> intake.retractExtender()));
+    // manually extends the intake to desired location via voltages
+    coDriverController.rightTrigger().whileTrue(Commands.run(() -> intake.setExtenderVoltage(-4)));
+    // manually retracts the intake to desired location via voltages
+    coDriverController.leftTrigger().whileTrue(Commands.run(() -> intake.setExtenderVoltage(4)));
 
     // Rolls the roller to make it intake fuel
     driverController
@@ -220,8 +225,17 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> intake.stopRoller()));
 
     PrimeShootCommand primeShootCommand = new PrimeShootCommand(shooter, drive, intake, false);
+    PrimeShootCommand simplePrimeShootCommand = new PrimeShootCommand(shooter, drive, intake, true);
+
     coDriverController.povRight().whileTrue(primeShootCommand);
-    coDriverController.a().whileTrue(new ShootCommand(elevator, primeShootCommand));
+
+    coDriverController.povLeft().whileTrue(new ShootToAlliance(shooter, elevator, drive, intake));
+
+    coDriverController.x().whileTrue(simplePrimeShootCommand);
+
+    coDriverController
+        .a()
+        .whileTrue(new ShootCommand(elevator, primeShootCommand, simplePrimeShootCommand));
   }
 
   /**
