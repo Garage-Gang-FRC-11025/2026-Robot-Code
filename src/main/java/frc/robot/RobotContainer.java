@@ -208,13 +208,13 @@ public class RobotContainer {
     coDriverController.povUp().onTrue(Commands.run(() -> intake.retractExtender()));
 
     // Rolls the roller to make it intake fuel
-    coDriverController
+    driverController
         .rightBumper()
         .whileTrue(Commands.run(() -> intake.intakeFuel()))
         .onFalse(Commands.runOnce(() -> intake.stopRoller()));
 
     // Rolls the roller to make it push out fuel
-    coDriverController
+    driverController
         .leftBumper()
         .whileTrue(Commands.run(() -> intake.releaseFuel()))
         .onFalse(Commands.runOnce(() -> intake.stopRoller()));
