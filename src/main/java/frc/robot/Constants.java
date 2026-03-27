@@ -61,8 +61,6 @@ public final class Constants {
 
       public static final double SUPPLY_CURRENT_LIMIT = 30;
       public static final double STATOR_CURRENT_LIMIT = 30;
-      public static final double SUPPLY_CURRENT_LIMIT = 30;
-      public static final double STATOR_CURRENT_LIMIT = 30;
       public static final double ROLLER_GEARING = 3;
       public static final double SUPPLY_VOLTAGE_TIME = 0.02;
       public static final double ROLLER_MOI = 0.1;

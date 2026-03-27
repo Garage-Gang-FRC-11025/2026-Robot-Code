@@ -48,7 +48,7 @@ public class ShootToAlliance extends Command {
   @Override
   public void initialize() {
     shooter.setWheelVel(Units.RPM.of(wheelVelocityConfig.get()));
-    shooter.setHoodPos(Rotation2d.fromDegrees(hoodPositionConfig.get()));
+    shooter.setHoodElevation(Rotation2d.fromDegrees(hoodPositionConfig.get()));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -112,7 +112,7 @@ drive.getRotation().getDegrees();
   @Override
   public void end(boolean interrupted) {
     shooter.setWheelVel((Units.RPM.of(0)));
-    shooter.setHoodPos(new Rotation2d(0));
+    shooter.setHoodElevation(new Rotation2d(0));
     elevator.setElevatorVel(Units.RPM.of(0));
   }
 
