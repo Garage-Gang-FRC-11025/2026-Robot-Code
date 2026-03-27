@@ -56,16 +56,11 @@ public class PrimeShootCommand extends Command {
   @Override
   public void execute() {
     Rotation2d targetTurretRotation = updateTurretRotation();
+    turretHubDistance();
 
-    // Rotation2d targetElevationAngle =
-    //     Rotation2d.fromDegrees(
-    //         Constants.ShooterConstants.HOOD_DISTANCE_ANGLE_TABLE.get(turretHubDistance()));
-    // double targetFlywheelSpeed =
-    //     Constants.ShooterConstants.FLYWHEEL_DISTANCE_SPEED_TABLE.get(turretHubDistance());
-
-    double targetFlywheelSpeed = simpleShoot ? 3500 : wheelVelocityConfig.get();
+    double targetFlywheelSpeed = simpleShoot ? 3500 : Constants.ShooterConstants.FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.get(turretHubDistance());
     Rotation2d targetElevationAngle =
-        Rotation2d.fromDegrees(simpleShoot ? 0.0 : elevationAngleConfig.get());
+        Rotation2d.fromDegrees(simpleShoot ? 0.0 : Constants.ShooterConstants.HOOD_HUB_DISTANCE_ANGLE_TABLE.get(turretHubDistance()));
 
     shooter.setWheelVel(Units.RPM.of(targetFlywheelSpeed));
     shooter.setHoodElevation(targetElevationAngle);

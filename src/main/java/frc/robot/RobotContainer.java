@@ -154,7 +154,8 @@ public class RobotContainer {
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     PrimeShootCommand primeShootCommand = new PrimeShootCommand(shooter, drive, intake, false);
     try {
-      PathPlannerPath startingAutoPath = PathPlannerPath.fromPathFile("Left_Side_Collect_Shoot");
+      PathPlannerPath startingAutoPath =
+          PathPlannerPath.fromPathFile("Safe_Left_Side_Collect_Shoot");
       autoChooser.addOption(
           "Left_Side_Collect_Shoot",
           Commands.runOnce(() -> drive.setPose(startingAutoPath.getPathPoses().get(0)))
@@ -233,13 +234,21 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // extend the extender to out position when X button is pressed
+    // extend the extender to out position when dpad down button is pressed
     coDriverController.povDown().onTrue(Commands.run(() -> intake.extendExtender()));
+    // retract the intake when dpad up is pressed
     coDriverController.povUp().onTrue(Commands.run(() -> intake.retractExtender()));
     // manually extends the intake to desired location via voltages
-    coDriverController.rightTrigger().whileTrue(Commands.run(() -> intake.setExtenderVoltage(-4)));
+    coDriverController
+        .rightTrigger()
+        .whileTrue(Commands.run(() -> intake.setExtenderVoltage(-4)))
+        .onFalse(Commands.runOnce(() -> intake.setExtenderVoltage(0)));
+
     // manually retracts the intake to desired location via voltages
-    coDriverController.leftTrigger().whileTrue(Commands.run(() -> intake.setExtenderVoltage(4)));
+    coDriverController
+        .leftTrigger()
+        .whileTrue(Commands.run(() -> intake.setExtenderVoltage(4)))
+        .onFalse(Commands.runOnce(() -> intake.setExtenderVoltage(0)));
 
     // Rolls the roller to make it intake fuel
     driverController
