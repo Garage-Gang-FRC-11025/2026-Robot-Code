@@ -36,14 +36,14 @@ public class PrimeShootCommand extends Command {
   private Shooter shooter;
   private Drive drive;
   private Intake intake;
-  private boolean simpleShoot;
+  private ShootingType shootingType;
   private boolean isPrimed = false;
 
-  public PrimeShootCommand(Shooter shooter, Drive drive, Intake intake, boolean simpleShoot) {
+  public PrimeShootCommand(Shooter shooter, Drive drive, Intake intake, ShootingType shootingType) {
     this.shooter = shooter;
     this.drive = drive;
     this.intake = intake;
-    this.simpleShoot = simpleShoot;
+    this.shootingType = shootingType;
     addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -55,20 +55,41 @@ public class PrimeShootCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Rotation2d targetTurretRotation = updateTurretRotation();
+    Rotation2d targetTurretRotation;
+    double targetFlywheelSpeed;
+    Rotation2d targetElevationAngle;
     turretHubDistance();
-
-    double targetFlywheelSpeed =
-        simpleShoot
-            ? 3500
-            : Constants.ShooterConstants.FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.get(turretHubDistance());
-    Rotation2d targetElevationAngle =
-        Rotation2d.fromDegrees(
-            simpleShoot
-                ? 0.0
-                : Constants.ShooterConstants.HOOD_HUB_DISTANCE_ANGLE_TABLE.get(
-                    turretHubDistance()));
-
+    switch (shootingType) {
+      case SIMPLE_SHOOT:
+        targetTurretRotation = Rotation2d.fromDegrees(5.0);
+        targetFlywheelSpeed = 3500.0;
+        targetElevationAngle = Rotation2d.fromDegrees(0.0);
+        break;
+      case HUB_SHOOT:
+        targetTurretRotation = updateTurretRotation();
+        targetFlywheelSpeed =
+            Constants.ShooterConstants.FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.get(turretHubDistance());
+        targetElevationAngle =
+            Rotation2d.fromDegrees(
+                Constants.ShooterConstants.HOOD_HUB_DISTANCE_ANGLE_TABLE.get(turretHubDistance()));
+        break;
+      case ALLIANCE_SHOOT:
+        targetTurretRotation = Rotation2d.fromDegrees(0).minus(drive.getRotation());
+        targetFlywheelSpeed = 5000.0;
+        targetElevationAngle = Rotation2d.fromDegrees(45.0);
+        break;
+      case TUNING_SHOOT:
+        targetTurretRotation = updateTurretRotation();
+        targetFlywheelSpeed = wheelVelocityConfig.get();
+        targetElevationAngle = Rotation2d.fromDegrees(elevationAngleConfig.get());
+        break;
+      default:
+        targetTurretRotation = Rotation2d.fromDegrees(5.0);
+        targetFlywheelSpeed = 3500.0;
+        targetElevationAngle = Rotation2d.fromDegrees(0.0);
+    }
+    shooter.setRotationPos(targetTurretRotation);
+    Logger.recordOutput("RotationTargetPosition", targetTurretRotation);
     shooter.setWheelVel(Units.RPM.of(targetFlywheelSpeed));
     shooter.setHoodElevation(targetElevationAngle);
 
@@ -134,8 +155,7 @@ public class PrimeShootCommand extends Command {
   private Rotation2d updateTurretRotation() {
     final Rotation2d heading =
         Geometry.headingPosition(turretFieldPosition(), FieldConstants.ourHubPosition());
-    double targetRotationDegrees =
-        simpleShoot ? 5.0 : heading.getDegrees() - drive.getRotation().getDegrees();
+    double targetRotationDegrees = heading.getDegrees() - drive.getRotation().getDegrees();
     Logger.recordOutput(
         "RotationTargetPositionBefore", Rotation2d.fromDegrees(targetRotationDegrees));
 
@@ -144,8 +164,6 @@ public class PrimeShootCommand extends Command {
     Rotation2d targetRotationPos =
         Rotation2d.fromRadians(
             (MathUtil.angleModulus(Rotation2d.fromDegrees(targetRotationDegrees).getRadians())));
-    shooter.setRotationPos(targetRotationPos);
-    Logger.recordOutput("RotationTargetPosition", targetRotationPos);
     return targetRotationPos;
   }
 
@@ -184,4 +202,11 @@ public class PrimeShootCommand extends Command {
     Logger.recordOutput("PrimeShootCommand/HubDistance", turretHubDistance);
     return turretHubDistance;
   }
+
+  public enum ShootingType {
+    SIMPLE_SHOOT,
+    HUB_SHOOT,
+    ALLIANCE_SHOOT,
+    TUNING_SHOOT
+  };
 }

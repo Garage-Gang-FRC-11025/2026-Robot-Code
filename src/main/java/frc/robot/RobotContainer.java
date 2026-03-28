@@ -24,8 +24,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PrimeShootCommand;
+import frc.robot.commands.PrimeShootCommand.ShootingType;
 import frc.robot.commands.ShootCommand;
-import frc.robot.commands.ShootToAlliance;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.ElevatorIOReal;
@@ -152,10 +152,17 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    PrimeShootCommand primeShootCommand = new PrimeShootCommand(shooter, drive, intake, false);
+    PrimeShootCommand primeShootCommand =
+        new PrimeShootCommand(shooter, drive, intake, ShootingType.HUB_SHOOT);
+    PrimeShootCommand primeShootCommandSecond =
+        new PrimeShootCommand(shooter, drive, intake, ShootingType.HUB_SHOOT);
+    PrimeShootCommand primeShootCommandThird =
+        new PrimeShootCommand(shooter, drive, intake, ShootingType.HUB_SHOOT);
     try {
       PathPlannerPath startingAutoPath =
           PathPlannerPath.fromPathFile("Safe_Left_Side_Collect_Shoot");
+        PathPlannerPath centerAutoPath =
+        PathPlannerPath.fromPathFile("Center_Shoot");
       autoChooser.addOption(
           "Left_Side_Collect_Shoot",
           Commands.runOnce(() -> drive.setPose(startingAutoPath.getPathPoses().get(0)))
@@ -167,23 +174,40 @@ public class RobotContainer {
                               .andThen(
                                   primeShootCommand.alongWith(
                                       new ShootCommand(
-                                          elevator, primeShootCommand, primeShootCommand))))));
-      PathPlannerPath startingAutoPathMirrored =
-          PathPlannerPath.fromPathFile("Safe_Left_Side_Collect_Shoot").mirrorPath();
+                                          elevator,
+                                          primeShootCommand,
+                                          primeShootCommand,
+                                          primeShootCommand))))));
       autoChooser.addOption(
           "Right_Side_Collect_Shoot",
-          Commands.runOnce(() -> drive.setPose(startingAutoPath.getPathPoses().get(0)))
+          Commands.runOnce(() -> drive.setPose(startingAutoPath.mirrorPath().getPathPoses().get(0)))
               .andThen(
                   Commands.runOnce(() -> intake.extendExtender())
                       .alongWith(Commands.run(() -> intake.intakeFuel()))
                       .alongWith(
-                          AutoBuilder.followPath(startingAutoPath)
+                          AutoBuilder.followPath(startingAutoPath.mirrorPath())
                               .andThen(
-                                  primeShootCommand.alongWith(
+                                  primeShootCommandSecond.alongWith(
                                       new ShootCommand(
-                                          elevator, primeShootCommand, primeShootCommand))))));
+                                          elevator,
+                                          primeShootCommandSecond,
+                                          primeShootCommandSecond,
+                                          primeShootCommandSecond))))));
 
-                                          
+        autoChooser.addOption(
+            "Center_Shoot",
+             Commands.runOnce(() -> drive.setPose(centerAutoPath.mirrorPath().getPathPoses().get(0)))
+             .andThen(
+                 Commands.runOnce(() -> intake.extendExtender())
+                 .alongWith( AutoBuilder.followPath(centerAutoPath.mirrorPath())
+                              .andThen(
+                                  primeShootCommandThird.alongWith(
+                                      new ShootCommand(
+                                          elevator,
+                                          primeShootCommandThird,
+                                          primeShootCommandThird,
+                                          primeShootCommandThird))))));
+
     } catch (FileVersionException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -250,6 +274,13 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
+    coDriverController
+        .b()
+        .whileTrue(
+            Commands.run(()-> elevator.setElevatorVoltage(-8)))
+        .onFalse(
+            Commands.runOnce(()-> elevator.setElevatorVoltage(0)));
+
     // extend the extender to out position when dpad down button is pressed
     coDriverController.povDown().onTrue(Commands.run(() -> intake.extendExtender()));
     // retract the intake when dpad up is pressed
@@ -278,18 +309,24 @@ public class RobotContainer {
         .whileTrue(Commands.run(() -> intake.releaseFuel()))
         .onFalse(Commands.runOnce(() -> intake.stopRoller()));
 
-    PrimeShootCommand primeShootCommand = new PrimeShootCommand(shooter, drive, intake, false);
-    PrimeShootCommand simplePrimeShootCommand = new PrimeShootCommand(shooter, drive, intake, true);
+    PrimeShootCommand primeShootCommand =
+        new PrimeShootCommand(shooter, drive, intake, ShootingType.HUB_SHOOT);
+    PrimeShootCommand simplePrimeShootCommand =
+        new PrimeShootCommand(shooter, drive, intake, ShootingType.SIMPLE_SHOOT);
+    PrimeShootCommand alliancePrimeShootCommand =
+        new PrimeShootCommand(shooter, drive, intake, ShootingType.ALLIANCE_SHOOT);
 
     coDriverController.povRight().whileTrue(primeShootCommand);
 
-    coDriverController.povLeft().whileTrue(new ShootToAlliance(shooter, elevator, drive, intake));
+    coDriverController.povLeft().whileTrue(alliancePrimeShootCommand);
 
     coDriverController.x().whileTrue(simplePrimeShootCommand);
 
     coDriverController
         .a()
-        .whileTrue(new ShootCommand(elevator, primeShootCommand, simplePrimeShootCommand));
+        .whileTrue(
+            new ShootCommand(
+                elevator, primeShootCommand, simplePrimeShootCommand, alliancePrimeShootCommand));
   }
 
   /**

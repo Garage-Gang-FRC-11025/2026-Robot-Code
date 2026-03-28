@@ -198,6 +198,7 @@ public final class Constants {
     static {
       FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.put(2.34, 3500.0);
       FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.put(3.218, 4200.0);
+      FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.put(3.35, 4400.0);
       FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.put(4.09, 4600.0);
     }
 
@@ -207,6 +208,7 @@ public final class Constants {
     static {
       HOOD_HUB_DISTANCE_ANGLE_TABLE.put(2.34, 5.0);
       HOOD_HUB_DISTANCE_ANGLE_TABLE.put(3.218, 20.0);
+      HOOD_HUB_DISTANCE_ANGLE_TABLE.put(3.35, 5.0);
       HOOD_HUB_DISTANCE_ANGLE_TABLE.put(4.09, 30.0);
     }
 
