@@ -196,20 +196,18 @@ public final class Constants {
         new InterpolatingDoubleTreeMap();
 
     static {
-      FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.put(1.0, 4000.0);
-      FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.put(2.0, 4000.0);
+      FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.put(2.34, 3500.0);
       FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.put(3.218, 4200.0);
-      FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.put(5.0, 4500.0);
+      FLYWHEEL_HUB_DISTANCE_SPEED_TABLE.put(4.09, 4600.0);
     }
 
     public static final InterpolatingDoubleTreeMap HOOD_HUB_DISTANCE_ANGLE_TABLE =
         new InterpolatingDoubleTreeMap();
 
     static {
-      HOOD_HUB_DISTANCE_ANGLE_TABLE.put(0.0, 5.0);
-      HOOD_HUB_DISTANCE_ANGLE_TABLE.put(2.0, 15.0);
+      HOOD_HUB_DISTANCE_ANGLE_TABLE.put(2.34, 5.0);
       HOOD_HUB_DISTANCE_ANGLE_TABLE.put(3.218, 20.0);
-      HOOD_HUB_DISTANCE_ANGLE_TABLE.put(5.0, 33.0);
+      HOOD_HUB_DISTANCE_ANGLE_TABLE.put(4.09, 30.0);
     }
 
     public static final InterpolatingDoubleTreeMap FLYWHEEL_ALLIANCE_DISTANCE_SPEED_TABLE =

@@ -168,6 +168,22 @@ public class RobotContainer {
                                   primeShootCommand.alongWith(
                                       new ShootCommand(
                                           elevator, primeShootCommand, primeShootCommand))))));
+      PathPlannerPath startingAutoPathMirrored =
+          PathPlannerPath.fromPathFile("Safe_Left_Side_Collect_Shoot").mirrorPath();
+      autoChooser.addOption(
+          "Right_Side_Collect_Shoot",
+          Commands.runOnce(() -> drive.setPose(startingAutoPath.getPathPoses().get(0)))
+              .andThen(
+                  Commands.runOnce(() -> intake.extendExtender())
+                      .alongWith(Commands.run(() -> intake.intakeFuel()))
+                      .alongWith(
+                          AutoBuilder.followPath(startingAutoPath)
+                              .andThen(
+                                  primeShootCommand.alongWith(
+                                      new ShootCommand(
+                                          elevator, primeShootCommand, primeShootCommand))))));
+
+                                          
     } catch (FileVersionException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

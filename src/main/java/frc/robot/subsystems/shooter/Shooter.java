@@ -42,7 +42,7 @@ public class Shooter extends SubsystemBase {
       wKV.initDefault(0.108);
       wheelTargetAccelerationConfig.initDefault(300.0);
 
-      hKP.initDefault(1024);
+      hKP.initDefault(200);
       hKI.initDefault(0);
       hKD.initDefault(0);
 
