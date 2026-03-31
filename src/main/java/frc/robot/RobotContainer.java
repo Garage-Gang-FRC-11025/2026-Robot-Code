@@ -15,13 +15,14 @@ import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.*;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.PrimeShootCommand;
 import frc.robot.commands.PrimeShootCommand.ShootingType;
@@ -138,20 +139,20 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Set up SysId routines
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    //     "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Forward)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Quasistatic Reverse)",
+    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     PrimeShootCommand primeShootCommand =
         new PrimeShootCommand(shooter, drive, intake, ShootingType.HUB_SHOOT);
     PrimeShootCommand primeShootCommandSecond =
@@ -161,8 +162,7 @@ public class RobotContainer {
     try {
       PathPlannerPath startingAutoPath =
           PathPlannerPath.fromPathFile("Safe_Left_Side_Collect_Shoot");
-        PathPlannerPath centerAutoPath =
-        PathPlannerPath.fromPathFile("Center_Shoot");
+      PathPlannerPath centerAutoPath = PathPlannerPath.fromPathFile("Center_Shoot");
       autoChooser.addOption(
           "Left_Side_Collect_Shoot",
           Commands.runOnce(() -> drive.setPose(startingAutoPath.getPathPoses().get(0)))
@@ -194,12 +194,18 @@ public class RobotContainer {
                                           primeShootCommandSecond,
                                           primeShootCommandSecond))))));
 
-        autoChooser.addOption(
-            "Center_Shoot",
-             Commands.runOnce(() -> drive.setPose(centerAutoPath.mirrorPath().getPathPoses().get(0)))
-             .andThen(
-                 Commands.runOnce(() -> intake.extendExtender())
-                 .alongWith( AutoBuilder.followPath(centerAutoPath.mirrorPath())
+      autoChooser.addOption(
+          "Center_Shoot",
+          Commands.runOnce(
+                  () ->
+                      drive.setPose(
+                          DriverStation.getAlliance().get().equals(Alliance.Blue)
+                              ? centerAutoPath.getStartingHolonomicPose().get()
+                              : centerAutoPath.flipPath().getStartingHolonomicPose().get()))
+              .andThen(
+                  Commands.runOnce(() -> intake.extendExtender())
+                      .alongWith(
+                          AutoBuilder.followPath(centerAutoPath)
                               .andThen(
                                   primeShootCommandThird.alongWith(
                                       new ShootCommand(
@@ -276,10 +282,8 @@ public class RobotContainer {
 
     coDriverController
         .b()
-        .whileTrue(
-            Commands.run(()-> elevator.setElevatorVoltage(-8)))
-        .onFalse(
-            Commands.runOnce(()-> elevator.setElevatorVoltage(0)));
+        .whileTrue(Commands.run(() -> elevator.setElevatorVoltage(-8)))
+        .onFalse(Commands.runOnce(() -> elevator.setElevatorVoltage(0)));
 
     // extend the extender to out position when dpad down button is pressed
     coDriverController.povDown().onTrue(Commands.run(() -> intake.extendExtender()));

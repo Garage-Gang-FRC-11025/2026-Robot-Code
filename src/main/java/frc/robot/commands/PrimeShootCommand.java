@@ -8,6 +8,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -74,7 +76,8 @@ public class PrimeShootCommand extends Command {
                 Constants.ShooterConstants.HOOD_HUB_DISTANCE_ANGLE_TABLE.get(turretHubDistance()));
         break;
       case ALLIANCE_SHOOT:
-        targetTurretRotation = Rotation2d.fromDegrees(0).minus(drive.getRotation());
+        targetTurretRotation = Rotation2d.fromDegrees(DriverStation.getAlliance().get().equals(Alliance.Red)?0:180
+        a).minus(drive.getRotation());
         targetFlywheelSpeed = 5000.0;
         targetElevationAngle = Rotation2d.fromDegrees(45.0);
         break;

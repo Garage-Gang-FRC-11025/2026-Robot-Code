@@ -49,7 +49,6 @@ public class Shooter extends SubsystemBase {
       hoodMaxVelocityConfig.initDefault(10);
       hoodTargetAccelerationConfig.initDefault(10);
 
-      
       rKP.initDefault(20);
       rKD.initDefault(0.007);
 
