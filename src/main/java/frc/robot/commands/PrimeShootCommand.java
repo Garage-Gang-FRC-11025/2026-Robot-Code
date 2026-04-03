@@ -77,8 +77,8 @@ public class PrimeShootCommand extends Command {
         break;
       case ALLIANCE_SHOOT:
         targetTurretRotation = Rotation2d.fromDegrees(DriverStation.getAlliance().get().equals(Alliance.Red)?0:180
-        a).minus(drive.getRotation());
-        targetFlywheelSpeed = 5000.0;
+        ).minus(drive.getRotation());
+        targetFlywheelSpeed = 5000.0; 
         targetElevationAngle = Rotation2d.fromDegrees(45.0);
         break;
       case TUNING_SHOOT:
