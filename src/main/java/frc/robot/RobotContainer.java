@@ -269,6 +269,12 @@ public class RobotContainer {
                 })
             .ignoringDisable(true));
 
+            double shiftTimer = 20;
+
+//Timer for GameTime Shifts tm
+SmartDashboard.putNumber("Shift Time Remaining", angularStdDevBaseline);
+
+
     // Reset gyro to 0° when Y button is pressed
     driverController
         .y()
@@ -292,13 +298,19 @@ public class RobotContainer {
     // manually extends the intake to desired location via voltages
     coDriverController
         .rightTrigger()
-        .whileTrue(Commands.run(() -> intake.setExtenderVoltage(-4)))
+        .whileTrue(Commands.run(() -> intake.setExtenderVoltage(-3)))
         .onFalse(Commands.runOnce(() -> intake.setExtenderVoltage(0)));
 
     // manually retracts the intake to desired location via voltages
+    // double LTriggerVal = coDriverController.getLeftTriggerAxis();
+    // intake.setExtenderVoltage(4 * LTriggerVal);
     coDriverController
         .leftTrigger()
-        .whileTrue(Commands.run(() -> intake.setExtenderVoltage(4)))
+        .whileTrue(
+            Commands.run(
+                () ->
+                    intake.setExtenderVoltage(
+                        Math.pow(coDriverController.getLeftTriggerAxis(), 2) * -1)))
         .onFalse(Commands.runOnce(() -> intake.setExtenderVoltage(0)));
 
     // Rolls the roller to make it intake fuel
