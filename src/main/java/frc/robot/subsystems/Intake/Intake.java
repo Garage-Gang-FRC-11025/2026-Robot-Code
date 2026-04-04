@@ -90,7 +90,6 @@ public class Intake extends SubsystemBase {
 
   public void setRollerVoltage(double volts) {
     intakeIO.setRollerVoltage(volts);
-    System.out.println("something1");
   }
 
   public void setExtenderVoltage(double volts) {

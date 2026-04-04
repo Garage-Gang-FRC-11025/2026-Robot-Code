@@ -47,7 +47,6 @@ public class PrimeShootCommand extends Command {
     this.intake = intake;
     this.shootingType = shootingType;
     addRequirements(shooter);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -60,7 +59,6 @@ public class PrimeShootCommand extends Command {
     Rotation2d targetTurretRotation;
     double targetFlywheelSpeed;
     Rotation2d targetElevationAngle;
-    turretHubDistance();
     switch (shootingType) {
       case SIMPLE_SHOOT:
         targetTurretRotation = Rotation2d.fromDegrees(5.0);
@@ -86,6 +84,7 @@ public class PrimeShootCommand extends Command {
         targetTurretRotation = updateTurretRotation();
         targetFlywheelSpeed = wheelVelocityConfig.get();
         targetElevationAngle = Rotation2d.fromDegrees(elevationAngleConfig.get());
+        turretHubDistance();
         break;
       default:
         targetTurretRotation = Rotation2d.fromDegrees(5.0);
@@ -148,22 +147,20 @@ public class PrimeShootCommand extends Command {
 
     isPrimed = elevationInPosition && turretInPosition && wheelAtVelocity && checkExtenderPosition;
 
-    Logger.recordOutput("PrimeShootCommand/hoodInPosition", elevationInPosition);
-    Logger.recordOutput("PrimeShootCommand/rotationInPosition", turretInPosition);
-    Logger.recordOutput("PrimeShootCommand/wheelAtPosition", wheelAtVelocity);
-    Logger.recordOutput("PrimeShootCommand/checkExtenderPosition", checkExtenderPosition);
+    String PrimeShootString = "PrimeShootCommand";
+
+    Logger.recordOutput(PrimeShootString + "/hoodInPosition", elevationInPosition);
+    Logger.recordOutput(PrimeShootString + "/rotationInPosition", turretInPosition);
+    Logger.recordOutput(PrimeShootString + "/wheelAtPosition", wheelAtVelocity);
+    Logger.recordOutput(PrimeShootString + "/checkExtenderPosition", checkExtenderPosition);
     Logger.recordOutput(
-        "PrimeShootCommand/actualTurretPosition", shooter.getTurretRotation().getDegrees());
+        PrimeShootString + "/actualTurretPosition", shooter.getTurretRotation().getDegrees());
   }
 
   private Rotation2d updateTurretRotation() {
     final Rotation2d heading =
         Geometry.headingPosition(turretFieldPosition(), FieldConstants.ourHubPosition());
     double targetRotationDegrees = heading.getDegrees() - drive.getRotation().getDegrees();
-    Logger.recordOutput(
-        "RotationTargetPositionBefore", Rotation2d.fromDegrees(targetRotationDegrees));
-
-    System.out.println("targetRotationDeg = " + targetRotationDegrees);
 
     Rotation2d targetRotationPos =
         Rotation2d.fromRadians(
