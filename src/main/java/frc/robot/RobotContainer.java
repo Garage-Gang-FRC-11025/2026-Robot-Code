@@ -269,11 +269,10 @@ public class RobotContainer {
                 })
             .ignoringDisable(true));
 
-            double shiftTimer = 20;
+    double shiftTimer = 20;
 
-//Timer for GameTime Shifts tm
-SmartDashboard.putNumber("Shift Time Remaining", angularStdDevBaseline);
-
+    // Timer for GameTime Shifts tm
+    SmartDashboard.putNumber("Shift Time Remaining", angularStdDevBaseline);
 
     // Reset gyro to 0° when Y button is pressed
     driverController
@@ -292,27 +291,26 @@ SmartDashboard.putNumber("Shift Time Remaining", angularStdDevBaseline);
         .onFalse(Commands.runOnce(() -> elevator.setElevatorVoltage(0)));
 
     // extend the extender to out position when dpad down button is pressed
-    coDriverController.povDown().onTrue(Commands.run(() -> intake.extendExtender()));
+    coDriverController.povDown().whileTrue(Commands.run(() -> intake.extendExtender()));
     // retract the intake when dpad up is pressed
-    coDriverController.povUp().onTrue(Commands.run(() -> intake.retractExtender()));
+    coDriverController.povUp().whileTrue(Commands.run(() -> intake.retractExtender()));
     // manually extends the intake to desired location via voltages
     coDriverController
-        .rightTrigger()
-        .whileTrue(Commands.run(() -> intake.setExtenderVoltage(-3)))
+        .rightTrigger(0.01)
+        .whileTrue(
+            Commands.run(
+                () -> intake.setExtenderVoltage(coDriverController.getRightTriggerAxis() * -2)))
         .onFalse(Commands.runOnce(() -> intake.setExtenderVoltage(0)));
 
     // manually retracts the intake to desired location via voltages
     // double LTriggerVal = coDriverController.getLeftTriggerAxis();
     // intake.setExtenderVoltage(4 * LTriggerVal);
     coDriverController
-        .leftTrigger()
+        .leftTrigger(0.01)
         .whileTrue(
             Commands.run(
-                () ->
-                    intake.setExtenderVoltage(
-                        Math.pow(coDriverController.getLeftTriggerAxis(), 2) * -1)))
+                () -> intake.setExtenderVoltage(coDriverController.getLeftTriggerAxis() * 2)))
         .onFalse(Commands.runOnce(() -> intake.setExtenderVoltage(0)));
-
     // Rolls the roller to make it intake fuel
     driverController
         .rightBumper()
@@ -326,11 +324,11 @@ SmartDashboard.putNumber("Shift Time Remaining", angularStdDevBaseline);
         .onFalse(Commands.runOnce(() -> intake.stopRoller()));
 
     PrimeShootCommand primeShootCommand =
-        new PrimeShootCommand(shooter, drive, intake, ShootingType.HUB_SHOOT);
+        new PrimeShootCommand(shooter, drive, intake, ShootingType.TUNING_SHOOT);
     PrimeShootCommand simplePrimeShootCommand =
         new PrimeShootCommand(shooter, drive, intake, ShootingType.SIMPLE_SHOOT);
     PrimeShootCommand alliancePrimeShootCommand =
-        new PrimeShootCommand(shooter, drive, intake, ShootingType.ALLIANCE_SHOOT);
+        new PrimeShootCommand(shooter, drive, intake, ShootingType.TUNING_SHOOT);
 
     coDriverController.povRight().whileTrue(primeShootCommand);
 
