@@ -181,6 +181,7 @@ public final class Constants {
       public static final double TARGET_ACCELERATION = 10;
       public static final double GEAR_RATIO = 13.333333;
       public static final double SUPPLY_VOLTAGE_TIME = 0.02;
+      public static final double TIME_ADJUST_TURRET = 2;
     }
 
     public final class WheelConstants {

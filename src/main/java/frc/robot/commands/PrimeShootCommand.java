@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
@@ -72,6 +74,7 @@ public class PrimeShootCommand extends Command {
         targetElevationAngle =
             Rotation2d.fromDegrees(
                 Constants.ShooterConstants.HOOD_HUB_DISTANCE_ANGLE_TABLE.get(turretHubDistance()));
+
         break;
       case ALLIANCE_SHOOT:
         targetTurretRotation =
@@ -159,13 +162,27 @@ public class PrimeShootCommand extends Command {
 
   private Rotation2d updateTurretRotation() {
     final Rotation2d heading =
-        Geometry.headingPosition(turretFieldPosition(), FieldConstants.ourHubPosition());
+        Geometry.headingPosition(adjustTurretPosition(), FieldConstants.ourHubPosition());
     double targetRotationDegrees = heading.getDegrees() - drive.getRotation().getDegrees();
 
     Rotation2d targetRotationPos =
         Rotation2d.fromRadians(
             (MathUtil.angleModulus(Rotation2d.fromDegrees(targetRotationDegrees).getRadians())));
     return targetRotationPos;
+  }
+
+  private Translation2d adjustTurretPosition() {
+    ChassisSpeeds robotVelocityChassisSpeeds =
+        ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeeds(), drive.getRotation());
+    Translation2d robotVelocity =
+        new Translation2d(
+            robotVelocityChassisSpeeds.vxMetersPerSecond,
+            robotVelocityChassisSpeeds.vyMetersPerSecond);
+    Translation2d adjustTurretPosition =
+        turretFieldPosition()
+            .plus(robotVelocity.times(ShooterConstants.RotationConstants.TIME_ADJUST_TURRET));
+    Logger.recordOutput("PrimeShootCommand/AdjustedTurretPosition", adjustTurretPosition);
+    return adjustTurretPosition;
   }
 
   private boolean withinTolerance(double targetState, double currentState, double tolerance) {
@@ -199,7 +216,7 @@ public class PrimeShootCommand extends Command {
 
   private double turretHubDistance() {
     double turretHubDistance =
-        Constants.FieldConstants.ourHubPosition().getDistance(turretFieldPosition());
+        Constants.FieldConstants.ourHubPosition().getDistance(adjustTurretPosition());
     Logger.recordOutput("PrimeShootCommand/HubDistance", turretHubDistance);
     return turretHubDistance;
   }
