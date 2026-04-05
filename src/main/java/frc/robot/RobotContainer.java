@@ -338,7 +338,7 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(() -> intake.stopRoller()));
 
     PrimeShootCommand primeShootCommand =
-        new PrimeShootCommand(shooter, drive, intake, ShootingType.TUNING_SHOOT);
+        new PrimeShootCommand(shooter, drive, intake, ShootingType.HUB_SHOOT);
     PrimeShootCommand simplePrimeShootCommand =
         new PrimeShootCommand(shooter, drive, intake, ShootingType.SIMPLE_SHOOT);
     PrimeShootCommand alliancePrimeShootCommand =

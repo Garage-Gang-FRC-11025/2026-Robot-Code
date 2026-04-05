@@ -21,6 +21,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.Geometry;
 import frc.robot.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -163,12 +164,17 @@ public class PrimeShootCommand extends Command {
   private Rotation2d updateTurretRotation() {
     final Rotation2d heading =
         Geometry.headingPosition(adjustTurretPosition(), FieldConstants.ourHubPosition());
-    double targetRotationDegrees = heading.getDegrees() - drive.getRotation().getDegrees();
+    double targetRotationDegrees =
+        heading.getDegrees() - drive.getRotation().getDegrees() - fudgeFactor();
 
     Rotation2d targetRotationPos =
         Rotation2d.fromRadians(
             (MathUtil.angleModulus(Rotation2d.fromDegrees(targetRotationDegrees).getRadians())));
     return targetRotationPos;
+  }
+
+  private double fudgeFactor() {
+    return drive.getPose().getY() > Constants.FieldConstants.FIELD_WIDTH / 2 ? -8 : 8;
   }
 
   private Translation2d adjustTurretPosition() {
@@ -207,6 +213,7 @@ public class PrimeShootCommand extends Command {
     return isPrimed;
   }
 
+  @AutoLogOutput(key = "PrimeShootCommand/TurretPosition")
   private Translation2d turretFieldPosition() {
     Translation2d turretTranslation2d =
         Constants.ShooterConstants.TURRET_TRANSLATION.rotateBy(drive.getRotation());
