@@ -271,8 +271,22 @@ public class RobotContainer {
 
     double shiftTimer = 20;
 
+    while (shiftTimer >= 0) {
+      try {
+        try {
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        shiftTimer--;
+      } finally {
+      }
+    }
+
+    if (shiftTimer == 0) {}
+
     // Timer for GameTime Shifts tm
-    SmartDashboard.putNumber("Shift Time Remaining", angularStdDevBaseline);
+    SmartDashboard.putNumber("Shift Time Remaining", shiftTimer);
 
     // Reset gyro to 0° when Y button is pressed
     driverController
