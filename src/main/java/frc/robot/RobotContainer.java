@@ -51,6 +51,7 @@ import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -160,12 +161,26 @@ public class RobotContainer {
     PrimeShootCommand primeShootCommandThird =
         new PrimeShootCommand(shooter, drive, intake, ShootingType.HUB_SHOOT);
     try {
-      PathPlannerPath startingAutoPath =
-          PathPlannerPath.fromPathFile("Safe_Left_Side_Collect_Shoot");
+      PathPlannerPath startingAutoPath = PathPlannerPath.fromPathFile("Left_Side_Collect_Shoot");
       PathPlannerPath centerAutoPath = PathPlannerPath.fromPathFile("Center_Shoot");
       autoChooser.addOption(
           "Left_Side_Collect_Shoot",
-          Commands.runOnce(() -> drive.setPose(startingAutoPath.getPathPoses().get(0)))
+          Commands.runOnce(
+                  () -> {
+                    var startPose =
+                        // drive.setPose(
+                        DriverStation.getAlliance().get().equals(Alliance.Blue)
+                            ? startingAutoPath.getPathPoses().get(0)
+                            : startingAutoPath.flipPath().getPathPoses().get(0);
+                    if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
+                      startPose =
+                          new Pose2d(
+                              startPose.getTranslation(),
+                              startPose.getRotation().rotateBy(Rotation2d.kPi));
+                    }
+                    drive.setPose(startPose);
+                    Logger.recordOutput("Debug/StartPose", startPose);
+                  })
               .andThen(
                   Commands.runOnce(() -> intake.extendExtender())
                       .alongWith(Commands.run(() -> intake.intakeFuel()))
@@ -178,9 +193,16 @@ public class RobotContainer {
                                           primeShootCommand,
                                           primeShootCommand,
                                           primeShootCommand))))));
+
+      // drive.setPose(startingAutoPath.getPathPoses().get(0)
       autoChooser.addOption(
           "Right_Side_Collect_Shoot",
-          Commands.runOnce(() -> drive.setPose(startingAutoPath.mirrorPath().getPathPoses().get(0)))
+          Commands.runOnce(
+                  () ->
+                      drive.setPose(
+                          DriverStation.getAlliance().get().equals(Alliance.Blue)
+                              ? startingAutoPath.mirrorPath().getPathPoses().get(0)
+                              : startingAutoPath.getPathPoses().get(0)))
               .andThen(
                   Commands.runOnce(() -> intake.extendExtender())
                       .alongWith(Commands.run(() -> intake.intakeFuel()))

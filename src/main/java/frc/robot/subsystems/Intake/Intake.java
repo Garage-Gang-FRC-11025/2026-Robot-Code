@@ -122,6 +122,13 @@ public class Intake extends SubsystemBase {
     setExtenderPos(ExtenderConstants.MAX_EXTENDER_ANGLE);
   }
 
+  public void shakeExtender() {
+    setExtenderVoltage(-1);
+    setExtenderVoltage(1);
+    setExtenderVoltage(-1);
+    setExtenderVoltage(1);
+  }
+
   public void retractExtender() {
     setExtenderPos(Rotation2d.kZero);
   }
