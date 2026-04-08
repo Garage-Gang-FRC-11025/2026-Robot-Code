@@ -213,10 +213,10 @@ public class RobotContainer {
                                       .alongWith(
                                           Commands.repeatingSequence(
                                               Commands.runOnce(
-                                                  () -> intake.setExtenderVoltage(0.5)),
+                                                  () -> intake.setExtenderVoltage(-2.5)),
                                               Commands.waitSeconds(0.5),
                                               Commands.runOnce(
-                                                  () -> intake.setExtenderVoltage(-0.5)),
+                                                  () -> intake.setExtenderVoltage(2.5)),
                                               Commands.waitSeconds(0.5)))))));
       // .alongWith(new ShakeIntakeComand(intake))))));
 
@@ -260,9 +260,9 @@ public class RobotContainer {
                                                       Commands.waitSeconds(0.5),
                                                       Commands.runOnce(
                                                           () -> intake.setExtenderVoltage(-0.5)),
-                                                      Commands.waitSeconds(0.5))).andThen(
-                                  Commands.waitSeconds(4.0)
-                                      .deadlineFor(
+                                                      Commands.waitSeconds(0.5))))
+                                      .andThen(
+                                          Commands.waitSeconds(4.0)
                                               .andThen(
                                                   AutoBuilder.followPath(
                                                       doubleCollectShootTwo)))))));
@@ -404,20 +404,20 @@ public class RobotContainer {
     // retract the intake when dpad up is pressed
     coDriverController.povUp().whileTrue(Commands.run(() -> intake.retractExtender()));
     // manually extends the intake to desired location via voltages
-    // coDriverController
-    // .rightTrigger(0.01)
-    // .whileTrue(
-    // Commands.run(
-    // () -> intake.setExtenderVoltage(coDriverController.getRightTriggerAxis() * -2)))
-    // .onFalse(Commands.runOnce(() -> intake.setExtenderVoltage(0)));
+    coDriverController
+        .rightTrigger(0.01)
+        .whileTrue(
+            Commands.run(
+                () -> intake.setExtenderVoltage(coDriverController.getRightTriggerAxis() * -2)))
+        .onFalse(Commands.runOnce(() -> intake.setExtenderVoltage(0)));
 
     coDriverController
         .rightBumper()
         .whileTrue(
             Commands.repeatingSequence(
-                Commands.runOnce(() -> intake.setExtenderVoltage(0.5)),
+                Commands.runOnce(() -> intake.setExtenderVoltage(-2)),
                 Commands.waitSeconds(0.5),
-                Commands.runOnce(() -> intake.setExtenderVoltage(-0.5)),
+                Commands.runOnce(() -> intake.setExtenderVoltage(2)),
                 Commands.waitSeconds(0.5)))
         .onFalse(Commands.runOnce(() -> intake.setExtenderVoltage(0)));
 
